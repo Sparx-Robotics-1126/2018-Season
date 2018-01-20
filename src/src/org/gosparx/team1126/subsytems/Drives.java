@@ -178,10 +178,10 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * switches between driving and climbing
-	 * @param isDrive - true if driving, false if climbing
+	 * @param switchingToClimb - true if driving, false if climbing
 	 */
-	public void PTOSwitch(boolean isDrive) {
-
+	public void PTOSwitch(boolean switchingToClimb) {
+		cylinder.set(switchingToClimb);
 	}
 
 	/**
