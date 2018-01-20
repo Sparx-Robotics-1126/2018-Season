@@ -73,9 +73,17 @@ public class Drives extends GenericSubsytem {
 	public void turn(int degree) {
 		isMoving = true;
 		gyro.reset();
-		do {
-			
-		}while(degree > gyro.getAngle());
+		if(degree > 0) {
+			do {
+				setRightMtrs(1);
+				setLeftMtrs(-1);
+			}while(degree > gyro.getAngle());
+		}else
+			do {
+				setLeftMtrs(1);
+				setRightMtrs(-1);
+			}while(degree < gyro.getAngle());
+		stop();
 		isMoving = false;
 	}
 	
@@ -93,7 +101,8 @@ public class Drives extends GenericSubsytem {
 	 * stops all motors
 	 */
 	public void stop() {
-		
+		setRightMtrs(0);
+		setLeftMtrs(0);
 	}
 	
 	/**
@@ -109,6 +118,26 @@ public class Drives extends GenericSubsytem {
 	 */
 	public boolean getIsMoving() {
 		return isMoving;
+	}
+	
+	/**
+	 * sets all right motors to the same speed
+	 * @param val - the specified speed
+	 */
+	private void setRightMtrs(double val) {
+		rightMtr1.set(val);
+		rightMtr2.set(val);
+		rightMtr3.set(val);
+	}
+	
+	/**
+	 * sets all  left motors to the same speed
+	 * @param val - the specified speed
+	 */
+	private void setLeftMtrs(double val) {
+		leftMtr1.set(val);
+		leftMtr2.set(val);
+		leftMtr3.set(val);
 	}
 
 	@Override
