@@ -10,6 +10,8 @@ public class Autonomous extends Controls {
 	private boolean isRightOppenentSwitch;
 	
 	SendableChooser autoChooser;
+	
+	private int selectedAuto;
 	//used to hold a reference to a sendableChooser Object
 	
 	public Autonomous() {
@@ -22,6 +24,8 @@ public class Autonomous extends Controls {
 		autoChooser.addDefault("Do Nothing", new Integer(0));
 		autoChooser.addObject("Example1", new Integer(1));
 		//Use these to create the default and buttons that are to be selected
+		selectedAuto = ((Integer) autoChooser.getSelected()).intValue();
+		
 
 		//DriverStation.getInstance().getGameSpecificMessage(); //-> 3 character string
 	}
@@ -47,6 +51,8 @@ public class Autonomous extends Controls {
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
+		selectedAuto = ((Integer) autoChooser.getSelected()).intValue();
+		
 		
 	}
 	
