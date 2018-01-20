@@ -1,7 +1,10 @@
 package src.org.gosparx.team1126.subsytems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Drives extends GenericSubsytem {
@@ -24,6 +27,14 @@ public class Drives extends GenericSubsytem {
 	
 	private Encoder leftEnc;
 	
+	private Solenoid cylinder;
+	
+	private AHRS gyro;
+	
+	//-------------------------------------------------------Variables------------------------------------------------------------
+	
+	private boolean isMoving;
+	
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -39,12 +50,57 @@ public class Drives extends GenericSubsytem {
 		leftMtr1 = new WPI_TalonSRX(0);
 		rightEnc = new Encoder(0, 0);
 		leftEnc = new Encoder(0, 0);
+		cylinder = new Solenoid(0);
+		//gyro = new AHRS(0, 0, 0);
+		isMoving = false;
 	}
 	
 	@Override
 	public void execute() {
 		
 		
+	}
+	
+	/**
+	 * turns the robot the specified degrees
+	 * @param degree - the degree amount 
+	 */
+	public void turn(int degree) {
+		isMoving = true;
+		
+		isMoving = false;
+	}
+	
+	/**
+	 * moves the robot a specified distance
+	 * @param dist - decimal value in feet
+	 */
+	public void move(double dist) {
+		isMoving = true;
+		
+		isMoving = false;
+	}
+	
+	/**
+	 * stops all motors
+	 */
+	public void stop() {
+		
+	}
+	
+	/**
+	 * switches between driving and climbing
+	 * @param isDrive - true if driving, false if climbing
+	 */
+	public void PTOSwitch(boolean isDrive) {
+		
+	}
+	
+	/**
+	 * returns if the robot is currently moving
+	 */
+	public boolean getMoving() {
+		return isMoving;
 	}
 
 	@Override
