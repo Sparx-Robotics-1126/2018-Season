@@ -14,7 +14,6 @@ public class Robot extends IterativeRobot{
 	public void autonomous() {
 		
 	}
-
 	
 	public void operatorControl() {
 	}
