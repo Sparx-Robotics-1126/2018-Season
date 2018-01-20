@@ -1,2 +1,2 @@
 # 2018-Season
-READ ME NOW
+Got You, HAHA 
