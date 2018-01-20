@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -86,9 +87,9 @@ public class Drives extends GenericSubsytem {
 		switch(state) {
 		case STANDBY:  break;
 		case RUNNING:
+
 			setRightMtrs(speedRight);
 			setLeftMtrs(speedLeft);
-			//to-do: PID loop
 			break;
 		}
 	}
@@ -115,7 +116,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void turn(int degree) {
 		isMoving = true;
-		gyro.reset();
+		gyro.zeroYaw();
 		if(degree > 0) {
 			do {
 				setRightMtrs(1);
@@ -136,16 +137,24 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void move(double dist) {
 		isMoving = true;
+		
+		boolean straightened = false;
+		
 		leftEnc.reset();
+		rightEnc.reset();
+		gyro.zeroYaw();
+		
 		if(dist > 0) {
-			while(leftEnc.getDistance() < dist) {
-				straighten();
+			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
+				if(!straightened)
+					straightened = straighten();
 				setRightMtrs(speedRight);
 				setLeftMtrs(speedLeft);
 			}
 		}else {
-			while(leftEnc.getDistance() > dist) {
-				straighten();
+			while((leftEnc.getDistance() + rightEnc.getDistance())/2 > dist) {
+				if(!straightened)
+					straightened = straighten();
 				setRightMtrs(-speedRight);
 				setLeftMtrs(-speedLeft);
 			}
@@ -155,17 +164,21 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * makes sure the robot is straight(within -10 - 10)
+	 * makes sure the robot is straight(within -10 to 10)
+	 * @return a boolean, true if robot was straightened
 	 */
-	private void straighten() {
+	private boolean straighten() {
 		if(gyro.getAngle() > 10) {
 			speedLeft = speedLeft - (speedLeft * 0.1);
 			setLeftMtrs(speedLeft);
-		}else if(gyro.getAngle() < -10) {
+			return true;
+		}if(gyro.getAngle() < -10) {
 			speedRight = speedRight - (speedRight *  0.1);
 			setRightMtrs(speedRight);
+			return true;
 		}
-
+		return false;
+		
 	}
 
 	/**
