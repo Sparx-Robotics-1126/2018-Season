@@ -4,12 +4,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
 
 	float height; //Height of elevator
+	boolean init;
 	int top;
 	int middle;
 	int floor;
@@ -44,10 +44,7 @@ public class Elevations extends GenericSubsytem {
 		motor2 = new WPI_TalonSRX(0);
 		limitSwitch = new DigitalInput(0); //TODO: get actual channel  
 		encoder = new Encoder(0, 0); //TODO: find correct channels
-		
-		motor1.stopMotor();
-		motor2.stopMotor();
-		encoder.reset();
+		init = true;
 	}
 
 	@Override
@@ -60,8 +57,10 @@ public class Elevations extends GenericSubsytem {
 				{
 					motor1.stopMotor();
 					motor2.stopMotor();
+					encoder.reset();
+					init = false;
 				}
-				
+				break;
 			}
 			case standBy: //while in standby, does nothing
 			{
@@ -134,24 +133,36 @@ public class Elevations extends GenericSubsytem {
 	//Methods called to control elevator movement
 	public void goSwitch() //Goes top
 	{
-		state = State.moveUp;
+		if(!init)
+		{
+			state = State.moveUp;
+		}
 	}
 	
 	public void goScale() //Goes middle
 	{
-		state = State.moveMiddle;
+		if(!init)
+		{
+			state = State.moveMiddle;
+		}
 	}
 	
 	public void goFloor() //Goes bottom 
 	{
-		state = State.moveDown;
+		if(!init)
+		{
+			state = State.moveDown;
+		}
 	}
 	
 	
 	public void stop()
 	{
-		state = State.standBy;
-		motor1.stopMotor();
-		motor2.stopMotor();
+		if(!init)
+		{
+			state = State.standBy;
+			motor1.stopMotor();
+			motor2.stopMotor();
+		}
 	}
 }
