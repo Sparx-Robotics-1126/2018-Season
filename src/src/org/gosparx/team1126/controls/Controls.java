@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public abstract class Controls {
-
+	
 	//protected Drives drives;
 	//protected Elevations elevations;
 	//protected Acquisitions acquisitions;
@@ -20,7 +20,7 @@ public abstract class Controls {
 		//acquisitions = new Acquisitions();
 		//climbing = new Climbing();
 		ds = DriverStation.getInstance();
-		joysticks = new Joystick[] {new Joystick(0), new Joystick(1), new Joystick(2)};
+		joysticks = new Joystick[] {new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 	
 	public abstract void execute();
@@ -55,6 +55,10 @@ public abstract class Controls {
 		return joysticks[joy].getRawAxis(axis);
 	}
 	
+	public boolean isOffZeroAxis(int joy, int axis) {
+		return getAxis(joy, axis) > CtrlMap.DEADBAND || getAxis(joy, axis) < -CtrlMap.DEADBAND;
+	}
+	
 	public boolean isAutonomous() {
 		return ds.isAutonomous();
 	}
@@ -70,5 +74,8 @@ public abstract class Controls {
 	public boolean isDisabled() {
 		return ds.isDisabled();
 	}
-	
+
+	public boolean isEnabled() {
+		return ds.isEnabled();
+	}
 }
