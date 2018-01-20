@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
@@ -31,6 +33,8 @@ public class Drives extends GenericSubsytem {
 	
 	private AHRS gyro;
 	
+	private SPI.Port port1;
+	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 	
 	private boolean isMoving;
@@ -51,7 +55,8 @@ public class Drives extends GenericSubsytem {
 		rightEnc = new Encoder(0, 0);
 		leftEnc = new Encoder(0, 0);
 		cylinder = new Solenoid(0);
-		//gyro = new AHRS(0, 0, 0);
+		//port1 = new SPI.Port(0);
+		gyro = new AHRS(port1);
 		isMoving = false;
 	}
 	
@@ -67,7 +72,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void turn(int degree) {
 		isMoving = true;
-		
+		gyro.reset();
+		do {
+			
+		}while(degree > gyro.getAngle());
 		isMoving = false;
 	}
 	
@@ -99,7 +107,7 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * returns if the robot is currently moving
 	 */
-	public boolean getMoving() {
+	public boolean getIsMoving() {
 		return isMoving;
 	}
 
