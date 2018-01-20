@@ -1,8 +1,15 @@
 package src.org.gosparx.team1126.subsytems;
-import java.lang.Thread.State;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
+import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
+
+
+/**
+ * This class allows for the control of the acquisitions subsystem.
+ * @author Aidan Cheeseman (cheesemanaidan@gmail.com)
+ * @author Andrew Thompson (andrewt015@gmail.com)
+ */
 public class Acquisitions extends GenericSubsytem{
 
 	//Objects
@@ -12,7 +19,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private Solenoid pincher;
 	
-	private Solenoid raise;
+	private Solenoid wrist;
 	
 	
 	//Constants
@@ -47,6 +54,27 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	
+	public enum State{
+		STANDBY,
+		HOME,
+		RAISE,
+		LOWER,
+		SCORE;
+	}
+	
+	@Override
+	public void init() {
+		AcqState = State.STANDBY;
+		rightMotorPower = MOTOR_STOP;
+		leftMotorPower = MOTOR_STOP;
+		pinchPosition = RELEASED;
+		wristPosition = RAISED;
+		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
+		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
+		wrist = new Solenoid(IO.PNU_WRIST);
+		pincher = new Solenoid(IO.PNU_PINCHER);
+	}
+	
 	
 	
 	@Override
@@ -55,11 +83,7 @@ public class Acquisitions extends GenericSubsytem{
 		
 	}
 
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void logger() {
