@@ -10,40 +10,41 @@ import edu.wpi.first.wpilibj.Solenoid;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Drives extends GenericSubsytem {
-	
+
 	//-----------------------------------------------------Motors/Sensors--------------------------------------------------------
-	
+
 	private WPI_TalonSRX rightMtr1;
-	
+
 	private WPI_TalonSRX rightMtr2;
-	
+
 	private WPI_TalonSRX rightMtr3;
-	
+
 	private WPI_TalonSRX leftMtr1;
-	
+
 	private WPI_TalonSRX leftMtr2;
-	
+
 	private WPI_TalonSRX leftMtr3;
-	
+
 	private Encoder rightEnc;
-	
+
 	private Encoder leftEnc;
-	
+
 	private Solenoid cylinder;
-	
+
 	private AHRS gyro;
-	
+
 	private SPI.Port port1;
-	
+
 	//-------------------------------------------------------Variables------------------------------------------------------------
-	
+
 	private boolean isMoving;
-	
+
 	// speedRight and speedLeft are magnitudes
 	private double speedRight;
-	
+
 	private double speedLeft;
-	
+
+	private DriveState state;
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -67,13 +68,37 @@ public class Drives extends GenericSubsytem {
 		speedLeft = 1;
 	}
 	
+	/**
+	 * contains the possible states of drives
+	 * STANDBY - drives is off
+	 * RUNNING - motor speeds are set
+	 */
+	enum DriveState{
+		STANDBY,
+		RUNNING;
+	}
+
 	@Override
+	/**
+	 * sets motor speeds based on joystick values
+	 */
 	public void execute() {
-		
+		switch(state) {
+		case STANDBY:  break;
+		case RUNNING:
+			setRightMtrs(speedRight);
+			setLeftMtrs(speedLeft);
+			//to-do: PID loop
+			break;
+		}
 	}
 	
-	enum state{
-		standby;
+	/**
+	 * changes drives state
+	 * @param st - the state to switch to
+	 */
+	public void changeState(DriveState st) {
+		state = st;
 	}
 	
 	/**
@@ -81,12 +106,9 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void joysticks(double speedR, double speedL) {
 		speedRight = speedR;
-		speedLeft = speedL;
-		setRightMtrs(speedRight);
-		setLeftMtrs(speedLeft);
-		//to-do: PID loop
+		speedLeft = speedL;		
 	}
-	
+
 	/**
 	 * turns the robot the specified degrees
 	 * @param degree - the degree amount 
@@ -107,7 +129,7 @@ public class Drives extends GenericSubsytem {
 		stop();
 		isMoving = false;
 	}
-	
+
 	/**
 	 * moves the robot a specified distance
 	 * @param dist - decimal value in feet
@@ -131,7 +153,7 @@ public class Drives extends GenericSubsytem {
 		stop();
 		isMoving = false;
 	}
-	
+
 	/**
 	 * makes sure the robot is straight(within -10 - 10)
 	 */
@@ -143,9 +165,9 @@ public class Drives extends GenericSubsytem {
 			speedRight = speedRight - (speedRight *  0.1);
 			setRightMtrs(speedRight);
 		}
-			
+
 	}
-	
+
 	/**
 	 * stops all motors
 	 */
@@ -153,22 +175,22 @@ public class Drives extends GenericSubsytem {
 		setRightMtrs(0);
 		setLeftMtrs(0);
 	}
-	
+
 	/**
 	 * switches between driving and climbing
 	 * @param isDrive - true if driving, false if climbing
 	 */
 	public void PTOSwitch(boolean isDrive) {
-		
+
 	}
-	
+
 	/**
 	 * returns if the robot is currently moving
 	 */
 	public boolean getIsMoving() {
 		return isMoving;
 	}
-	
+
 	/**
 	 * sets all right motors to the same speed
 	 * @param val - the specified speed
@@ -178,7 +200,7 @@ public class Drives extends GenericSubsytem {
 		rightMtr2.set(val);
 		rightMtr3.set(val);
 	}
-	
+
 	/**
 	 * sets all  left motors to the same speed
 	 * @param val - the specified speed
@@ -192,7 +214,7 @@ public class Drives extends GenericSubsytem {
 	@Override
 	public void logger() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
