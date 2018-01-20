@@ -70,7 +70,21 @@ public class Drives extends GenericSubsytem {
 	@Override
 	public void execute() {
 		
-		
+	}
+	
+	enum state{
+		standby;
+	}
+	
+	/**
+	 * moves robot according to joystick values
+	 */
+	public void joysticks(double speedR, double speedL) {
+		speedRight = speedR;
+		speedLeft = speedL;
+		setRightMtrs(speedRight);
+		setLeftMtrs(speedLeft);
+		//to-do: PID loop
 	}
 	
 	/**
@@ -114,6 +128,7 @@ public class Drives extends GenericSubsytem {
 				setLeftMtrs(-speedLeft);
 			}
 		}
+		stop();
 		isMoving = false;
 	}
 	
