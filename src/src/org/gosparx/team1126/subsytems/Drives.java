@@ -39,6 +39,11 @@ public class Drives extends GenericSubsytem {
 	
 	private boolean isMoving;
 	
+	// speedRight and speedLeft are magnitudes
+	private double speedRight;
+	
+	private double speedLeft;
+	
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -58,6 +63,8 @@ public class Drives extends GenericSubsytem {
 		//port1 = new SPI.Port(0);
 		gyro = new AHRS(port1);
 		isMoving = false;
+		speedRight = 1;
+		speedLeft = 1;
 	}
 	
 	@Override
@@ -93,8 +100,35 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void move(double dist) {
 		isMoving = true;
-		
+		leftEnc.reset();
+		if(dist > 0) {
+			while(leftEnc.getDistance() < dist) {
+				straighten();
+				setRightMtrs(speedRight);
+				setLeftMtrs(speedLeft);
+			}
+		}else {
+			while(leftEnc.getDistance() > dist) {
+				straighten();
+				setRightMtrs(-speedRight);
+				setLeftMtrs(-speedLeft);
+			}
+		}
 		isMoving = false;
+	}
+	
+	/**
+	 * makes sure the robot is straight(within -10 - 10)
+	 */
+	private void straighten() {
+		if(gyro.getAngle() > 10) {
+			speedLeft = speedLeft - (speedLeft * 0.1);
+			setLeftMtrs(speedLeft);
+		}else if(gyro.getAngle() < -10) {
+			speedRight = speedRight - (speedRight *  0.1);
+			setRightMtrs(speedRight);
+		}
+			
 	}
 	
 	/**
