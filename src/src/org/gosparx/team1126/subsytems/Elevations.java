@@ -1,7 +1,6 @@
 package src.org.gosparx.team1126.subsytems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -9,7 +8,7 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Elevations extends GenericSubsytem {
 
 	float height; //Height of elevator
-	boolean init;
+	boolean homed; //Determines if input methods should be allowed
 	int top;
 	int middle;
 	int floor;
@@ -44,7 +43,7 @@ public class Elevations extends GenericSubsytem {
 		motor2 = new WPI_TalonSRX(0);
 		limitSwitch = new DigitalInput(0); //TODO: get actual channel  
 		encoder = new Encoder(0, 0); //TODO: find correct channels
-		init = true;
+		homed = false;
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class Elevations extends GenericSubsytem {
 					motor1.stopMotor();
 					motor2.stopMotor();
 					encoder.reset();
-					init = false;
+					homed = true;
 				}
 				break;
 			}
@@ -66,7 +65,7 @@ public class Elevations extends GenericSubsytem {
 			{
 				break; 
 			}
-			case moveUp: //while in moveUp, elevator goes up
+			case moveUp: //while in moveUp, elevator goes up to the top
 			{
 				if(top+deadBand>height 
 				&& top-deadBand<height)
@@ -81,19 +80,19 @@ public class Elevations extends GenericSubsytem {
 				}
 				break;
 			}
-			case moveMiddle:
+			case moveMiddle: //while in moveMiddle goes to the middle
 				if(middle+deadBand>height 
 				&& middle-deadBand<height)
 				{
 					state = State.standBy;
 					break;
 				} 
-				else if(height>middle)
+				else if(height>middle) //If below go up
 				{
 					motor1.set(10);
 					motor2.set(10);
 				}
-				else
+				else //If above goes down
 				{
 					motor1.set(-10);
 					motor2.set(-10);
@@ -131,38 +130,42 @@ public class Elevations extends GenericSubsytem {
 	}
 	
 	//Methods called to control elevator movement
-	public void goSwitch() //Goes top
+	public boolean goSwitch() //Goes top
 	{
-		if(!init)
+		if(!homed) //To make sure init is not messed up by inputs
 		{
 			state = State.moveUp;
-		}
+			return true;
+		}else {return false;}
 	}
 	
-	public void goScale() //Goes middle
+	public boolean goScale() //Exe goes middle, state = moveMiddle
 	{
-		if(!init)
+		if(!homed) //To make sure init is not messed up by inputs
 		{
-			state = State.moveMiddle;
-		}
+			state = State.moveMiddle; 
+			return true;
+		}else {return false;}
 	}
 	
-	public void goFloor() //Goes bottom 
+	public boolean goFloor() //Exe goes bottom, state = moveDown
 	{
-		if(!init)
+		if(!homed) //To make sure init is not messed up by inputs
 		{
 			state = State.moveDown;
-		}
+			return true;
+		}else {return false;}
 	}
 	
 	
-	public void stop()
+	public boolean stop() //Stops all motors and state to standby 
 	{
-		if(!init)
+		if(!homed) //To make sure init is not messed up by inputs
 		{
 			state = State.standBy;
 			motor1.stopMotor();
 			motor2.stopMotor();
-		}
+			return true;
+		}else {return false;}
 	}
 }
