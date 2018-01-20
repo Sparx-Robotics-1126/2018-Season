@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Drives extends GenericSubsytem {
@@ -36,6 +37,18 @@ public class Drives extends GenericSubsytem {
 
 	private SPI.Port port1;
 
+	private SpeedControllerGroup leftDrives;
+	
+	private SpeedControllerGroup rightDrives;
+	//-------------------------------------------------------Constants------------------------------------------------------------
+
+	private final double PORPORTIONAL = 1;
+
+	private final double INTEGRAL = 1;
+
+	private final double DIFFERENTIAL = 1;
+
+
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -46,6 +59,10 @@ public class Drives extends GenericSubsytem {
 	private double speedLeft;
 
 	private DriveState state;
+
+	private  PIDController rightPID;
+	
+	private PIDController leftPID;
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -67,8 +84,12 @@ public class Drives extends GenericSubsytem {
 		isMoving = false;
 		speedRight = 1;
 		speedLeft = 1;
+		rightDrives = new SpeedControllerGroup(rightMtr1, rightMtr2, rightMtr3);
+		leftDrives = new SpeedControllerGroup(leftMtr1, leftMtr2, leftMtr3);
+		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
+		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
 	}
-	
+
 	/**
 	 * contains the possible states of drives
 	 * STANDBY - drives is off
@@ -79,21 +100,22 @@ public class Drives extends GenericSubsytem {
 		RUNNING;
 	}
 
-	@Override
+
 	/**
 	 * sets motor speeds based on joystick values
 	 */
+	@Override
 	public void execute() {
 		switch(state) {
 		case STANDBY:  break;
 		case RUNNING:
-
 			setRightMtrs(speedRight);
 			setLeftMtrs(speedLeft);
+
 			break;
 		}
 	}
-	
+
 	/**
 	 * changes drives state
 	 * @param st - the state to switch to
@@ -101,7 +123,7 @@ public class Drives extends GenericSubsytem {
 	public void changeState(DriveState st) {
 		state = st;
 	}
-	
+
 	/**
 	 * moves robot according to joystick values
 	 */
@@ -137,13 +159,13 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void move(double dist) {
 		isMoving = true;
-		
+
 		boolean straightened = false;
-		
+
 		leftEnc.reset();
 		rightEnc.reset();
 		gyro.zeroYaw();
-		
+
 		if(dist > 0) {
 			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
 				if(!straightened)
@@ -178,7 +200,7 @@ public class Drives extends GenericSubsytem {
 			return true;
 		}
 		return false;
-		
+
 	}
 
 	/**
