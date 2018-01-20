@@ -43,5 +43,11 @@ public class Autonomous extends Controls {
 		return false;
 
 	}
+
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
