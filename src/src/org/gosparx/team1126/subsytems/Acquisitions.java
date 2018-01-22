@@ -96,5 +96,39 @@ public class Acquisitions extends GenericSubsytem{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	/**
+	 * Sets acquisition state to lower.
+	 */
+	public void setLower() {
+		AcqState = State.LOWER;
+	}
+	
+	/**
+	 * Sets acquisition state to Home.
+	 */
+	public void setHome() {
+		AcqState = State.HOME;
+	}
+	
+	/**
+	 * Sets acquisition state to raise.
+	 */
+	public void setRaise() {
+		AcqState = State.RAISE;
+	}
+	
+	/**
+	 * Sets acquisition state to score.
+	 */
+	public void setScore() {
+		AcqState = State.SCORE;
+	}
+	
+	/**
+	 * Sets acquisition state to standby.
+	 */
+	public void setStandby() {
+		AcqState = State.STANDBY;
+	}
 }
