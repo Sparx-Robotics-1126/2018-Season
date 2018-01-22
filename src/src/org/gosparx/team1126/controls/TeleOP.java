@@ -4,6 +4,10 @@ public class TeleOP extends Controls{
 
 	private State state;
 
+	public TeleOP() {
+		state = State.STANDBY;
+	}
+	
 	@Override
 	public void execute() {
 		switch(state) {
@@ -76,6 +80,69 @@ public class TeleOP extends Controls{
 			if(isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_LEFT)) {
 				
 			}
+			//xBox Buttons
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L3)) {
+				
+			}
+			if(isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R3)) {
+				
+			}
+			//Axis Right
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_X)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
+			}
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_Y)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+			}
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_X)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+			}
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+			}
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+			}
+			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R2)) {
+				//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+			}
+			//POV Right
+			if(isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_UP)) {
+				
+			}
+			if(isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_RIGHT)) {
+				
+			}
+			if(isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_DOWN)) {
+				
+			}
+			if(isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_LEFT)) {
+				
+			}
 			break;
 		default:
 			System.out.println("oops");
@@ -86,6 +153,10 @@ public class TeleOP extends Controls{
 	public enum State{
 		RUNNING,
 		STANDBY;
+	}
+	
+	public void setState(State states) {
+		state = states;
 	}
 	
 }
