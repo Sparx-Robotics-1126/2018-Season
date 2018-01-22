@@ -18,7 +18,7 @@ public class Elevations extends GenericSubsytem {
 	DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	Encoder encoder; 
 	
-	enum State { //Execute decides what to do based on these states
+	enum State { //Execute decides what to do based on state
 		init,
 		standBy, 
 		moveMiddle,
@@ -26,7 +26,7 @@ public class Elevations extends GenericSubsytem {
 		moveDown;
 	}
 	
-	enum Location {
+	enum Location { 
 		top,
 		middle,
 		bottom;
