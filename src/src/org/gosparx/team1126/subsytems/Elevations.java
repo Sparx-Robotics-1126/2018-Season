@@ -7,6 +7,7 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
 
+	boolean debug;
 	float height; //Height of elevator
 	boolean homed; //Determines if input methods should be allowed
 	int top;
@@ -37,6 +38,7 @@ public class Elevations extends GenericSubsytem {
 	
 	@Override
 	public void init() {
+		debug = true; //Debug
 		state = State.init;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(0); //TODO: get actual motor ID
@@ -48,6 +50,12 @@ public class Elevations extends GenericSubsytem {
 
 	@Override
 	public void execute() {
+		if(debug)
+		{
+			System.out.println("State is "+state);
+			System.out.println("motor1 is "+motor1.get());
+			System.out.println("motor2 is "+motor2.get());
+		}
 		switch(state)
 		{
 			case init:
