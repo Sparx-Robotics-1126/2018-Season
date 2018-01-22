@@ -7,7 +7,7 @@ public class Autonomous extends Controls {
 
 	private boolean isRightAllySwitch;
 	private boolean isRightScale;
-	private boolean isRightOppenentSwitch;
+	private boolean isRightOpponentSwitch;
 	
 	SendableChooser autoChooser;
 	
@@ -18,7 +18,7 @@ public class Autonomous extends Controls {
 		
 		isRightAllySwitch = false;
 		isRightScale = false;
-		isRightOppenentSwitch = false;
+		isRightOpponentSwitch = false;
 		
 		autoChooser = new SendableChooser();
 		autoChooser.addDefault("Do Nothing", new Integer(0));
@@ -30,17 +30,28 @@ public class Autonomous extends Controls {
 		//DriverStation.getInstance().getGameSpecificMessage(); //-> 3 character string
 	}
 	
+	public enum Locations {
+		//location on the board where the robot can go, NOT where it is
+		
+		STARTINGPOSITIONLEFT, STARTINGPOSITIONMIDDLE, STARTINGPOSITIONRIGHT,
+		NULLLEFT, NULLRIGHT,
+		PASTLINELEFTCLOSE, PASTLINELEFTFAR,
+		PASTLINERIGHTCLOSE, PASTLINERIGHTFAR,
+		PLATFORMZONEOFFRAMP, PLATFORMZONEONRAMP
+		
+		
+	}
+
+	//check for rules before competition
 	public boolean setFieldConditions() {
 		String fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
 		if(!fieldConditions.equals("")) {
 			if (fieldConditions.charAt(0) == 'r') {
 				isRightAllySwitch = true;
+				isRightOpponentSwitch = true;
 			}
 			if (fieldConditions.charAt(1) == 'r') {
 				isRightScale = true;
-			}
-			if (fieldConditions.charAt(2) == 'r') {
-				isRightOppenentSwitch = true;
 			}
 			return true;
 		}
@@ -51,7 +62,15 @@ public class Autonomous extends Controls {
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
-		selectedAuto = ((Integer) autoChooser.getSelected()).intValue();
+		
+		
+		if(isAutonomous() && isEnabled()) {
+			
+			
+			
+		} else {
+			selectedAuto = ((Integer) autoChooser.getSelected()).intValue();
+		}
 		
 		
 	}
