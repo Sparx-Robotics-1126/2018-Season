@@ -13,13 +13,13 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Acquisitions extends GenericSubsytem{
 
 	//Objects
-	private WPI_TalonSRX leftIntake;
+	private static WPI_TalonSRX leftIntake;
 	
-	private WPI_TalonSRX rightIntake;
+	private static WPI_TalonSRX rightIntake;
 	
-	private Solenoid pincher;
+	private static Solenoid pincher;
 	
-	private Solenoid wrist;
+	private static Solenoid wrist;
 	
 	
 	//Constants
@@ -37,16 +37,15 @@ public class Acquisitions extends GenericSubsytem{
 	
 	
 	//Variables
-	private State AcqState;
+	private static State AcqState;
 	
-	private double rightMotorPower;
+	private static double rightMotorPower;
 	
-	private double leftMotorPower;
+	private static double leftMotorPower;
 	
-	private boolean pinchPosition;  //true = pinched 
+	private static boolean pinchPosition;  //true = pinched 
 	
-	private boolean wristPosition;  //true = lowered
-	
+	private static boolean wristPosition;  //true = lowered
 	
 	
 	public Acquisitions() {
@@ -62,6 +61,7 @@ public class Acquisitions extends GenericSubsytem{
 		SCORE;
 	}
 	
+	
 	@Override
 	public void init() {
 		AcqState = State.STANDBY;
@@ -76,7 +76,6 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	
-	
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
@@ -84,7 +83,6 @@ public class Acquisitions extends GenericSubsytem{
 	}
 
 	
-
 	@Override
 	public void logger() {
 		// TODO Auto-generated method stub
@@ -130,5 +128,57 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setStandby() {
 		AcqState = State.STANDBY;
+	}
+	
+	/**
+	 * Sets the wrist to the raised position
+	 */
+	private void raise(){
+		wrist.set(RAISED);
+	}
+	
+	/**
+	 * Sets the wrist to the lowered position
+	 */
+	private void lower(){
+		wrist.set(LOWERED);
+	}
+	
+	/**
+	 * Sets the claw to pinch
+	 */
+	private void pinch(){
+		pincher.set(PINCHED);
+	}
+	
+	/**
+	 * Sets the claw to released
+	 */
+	private void release(){
+		pincher.set(RELEASED);
+	}
+	
+	/**
+	 * Reverses the intake motors to score the cube
+	 */
+	private void rollerScore(){
+		rightIntake.set(-MOTOR_ON);
+		leftIntake.set(-MOTOR_ON);
+	}
+	
+	/**
+	 * Turns intake motors on to acquire cube
+	 */
+	private void rollerAcq(){
+		rightIntake.set(MOTOR_ON);
+		leftIntake.set(MOTOR_ON);
+	}
+	
+	/**
+	 * Sets the intake motors to off
+	 */
+	private void stopRollers(){
+		rightIntake.stopMotor();
+		leftIntake.stopMotor();
 	}
 }
