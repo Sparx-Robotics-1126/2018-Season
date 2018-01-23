@@ -7,7 +7,6 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
 
-	boolean debug;
 	float height; //Height of elevator
 	boolean homed; //Determines if input methods should be allowed
 	int top;
@@ -18,7 +17,7 @@ public class Elevations extends GenericSubsytem {
 	WPI_TalonSRX motor2;
 	DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	Encoder encoder; 
-	
+
 	enum State { //Execute decides what to do based on state
 		init,
 		standBy, 
@@ -26,36 +25,28 @@ public class Elevations extends GenericSubsytem {
 		moveUp,
 		moveDown;
 	}
+
 	
-	enum Location { 
-		top,
-		middle,
-		bottom;
-	}
-	
-	Location location;
 	State state;
 	
 	@Override
 	public void init() {
-		debug = true; //Debug
+//		top = 100; //TODO: Change these 
+		middle = 50;
+		floor = 0;
 		state = State.init;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(0); //TODO: get actual motor ID
 		motor2 = new WPI_TalonSRX(0);
-		limitSwitch = new DigitalInput(0); //TODO: get actual channel  
-		encoder = new Encoder(0, 0); //TODO: find correct channels
+		limitSwitch = new DigitalInput(2); //TODO: get actual channel  
+		encoder = new Encoder(0, 1); //TODO: find correct channels
 		homed = false;
 	}
 
 	@Override
 	public void execute() {
-		if(debug)
-		{
-			System.out.println("State is "+state);
-			System.out.println("motor1 is "+motor1.get());
-			System.out.println("motor2 is "+motor2.get());
-		}
+		height = encoder.get();
+		System.out.println("Encoder value "+height);
 		switch(state)
 		{
 			case init:
