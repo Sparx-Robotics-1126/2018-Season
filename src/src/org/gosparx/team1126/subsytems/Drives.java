@@ -7,9 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import src.org.gosparx.team1126.util.DebuggerResult;
 import src.org.gosparx.team1126.util.MotorGroup;
 
@@ -42,13 +40,14 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup leftDrives;
 	
 	private MotorGroup rightDrives;
+	
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double PORPORTIONAL = 1;
-
-	private final double INTEGRAL = 1;
-
-	private final double DIFFERENTIAL = 1;
+//	private final double PORPORTIONAL = 1;
+//
+//	private final double INTEGRAL = 1;
+//
+//	private final double DIFFERENTIAL = 1;
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -65,9 +64,9 @@ public class Drives extends GenericSubsytem {
 	
 	private double speedLeftOffset;
 	
-	private  PIDController rightPID;
-	
-	private PIDController leftPID;
+//	private  PIDController rightPID;
+//	
+//	private PIDController leftPID;
 	
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
@@ -94,8 +93,8 @@ public class Drives extends GenericSubsytem {
 		speedLeftOffset = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
-		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
-		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
+//		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
+//		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		
@@ -153,15 +152,18 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * moves robot according to joystick values, -100 to 100
+	 * @param speedR - the right joystick speed
+	 * @param speedL - the left joystick speed
 	 */
 	public void joysticks(double speedR, double speedL) {
-		speedRight = speedR;
-		speedLeft = speedL;	
+		speedRight = speedR/100;
+		speedLeft = speedL/100;	
 	}
 
 	/**
 	 * turns the robot the specified degrees
 	 * @param degree - the degree amount 
+	 * @param speed - the speed amount
 	 */
 	public void turn(int degree, int speed) {
 		isMoving = true;
@@ -259,12 +261,18 @@ public class Drives extends GenericSubsytem {
 	}
 
 	@Override
+	/**
+	 * posts all logs
+	 */
 	public void logger() {
 		
 
 	}
 
 	@Override
+	/**
+	 * debuggs the code to make sure motors are spinning correctly
+	 */
 	public DebuggerResult[] debug() {
 		
 		return null;
