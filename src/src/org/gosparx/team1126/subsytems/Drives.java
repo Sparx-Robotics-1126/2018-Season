@@ -1,5 +1,6 @@
 package src.org.gosparx.team1126.subsytems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import src.org.gosparx.team1126.util.DebuggerResult;
+import src.org.gosparx.team1126.util.MotorGroup;
 
 public class Drives extends GenericSubsytem {
 
@@ -37,9 +39,9 @@ public class Drives extends GenericSubsytem {
 
 	private SPI.Port port1;
 
-	private SpeedControllerGroup leftDrives;
+	private MotorGroup leftDrives;
 	
-	private SpeedControllerGroup rightDrives;
+	private MotorGroup rightDrives;
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
 	private final double PORPORTIONAL = 1;
@@ -48,7 +50,8 @@ public class Drives extends GenericSubsytem {
 
 	private final double DIFFERENTIAL = 1;
 
-
+	private final double TURN_SPEED = .75;
+	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -60,9 +63,14 @@ public class Drives extends GenericSubsytem {
 
 	private DriveState state;
 
+	private double speedRightOffset;
+	
+	private double speedLeftOffset;
+	
 	private  PIDController rightPID;
 	
 	private PIDController leftPID;
+	
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -82,36 +90,45 @@ public class Drives extends GenericSubsytem {
 		//port1 = new SPI.Port(0);
 		gyro = new AHRS(port1);
 		isMoving = false;
-		speedRight = 1;
-		speedLeft = 1;
-		rightDrives = new SpeedControllerGroup(rightMtr1, rightMtr2, rightMtr3);
-		leftDrives = new SpeedControllerGroup(leftMtr1, leftMtr2, leftMtr3);
+		speedRight = 0.5;
+		speedLeft = 0.5;
+		speedRightOffset = 0;
+		speedLeftOffset = 0;
+		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
+		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
 		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
+		//leftDrives.
+		//.setNeutralMode(NeutralMode.Brake);
+		
 	}
 
 	/**
 	 * contains the possible states of drives
 	 * STANDBY - drives is off
+	 * AUTO - Drives is being run by autonomous code and not by joysticks
 	 * RUNNING - motor speeds are set
 	 */
 	enum DriveState{
 		STANDBY,
+		AUTO,
 		RUNNING;
 	}
 
 
 	/**
-	 * sets motor speeds based on joystick values
+	 * runs drives code based on state
+	 * When standby or auto - do nothing
+	 * When Running - sets motor speeds based on joystick values
 	 */
 	@Override
 	public void execute() {
 		switch(state) {
+		case AUTO:
 		case STANDBY:  break;
 		case RUNNING:
-			setRightMtrs(speedRight);
-			setLeftMtrs(speedLeft);
-
+			rightDrives.set(speedRight - speedRight*speedRightOffset);
+			leftDrives.set(speedLeft - speedLeft*speedLeftOffset);
 			break;
 		}
 	}
@@ -122,14 +139,24 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void changeState(DriveState st) {
 		state = st;
+		if(state == DriveState.RUNNING) {
+			if(speedRight == speedLeft)
+				straighten();
+//			rightPID.enable();
+//			leftPID.enable();
+//		}
+//		else {
+//			rightPID.disable();
+//			leftPID.disable();
+		}
 	}
 
 	/**
-	 * moves robot according to joystick values
+	 * moves robot according to joystick values, -100 to 100
 	 */
 	public void joysticks(double speedR, double speedL) {
 		speedRight = speedR;
-		speedLeft = speedL;		
+		speedLeft = speedL;	
 	}
 
 	/**
@@ -141,14 +168,15 @@ public class Drives extends GenericSubsytem {
 		gyro.zeroYaw();
 		if(degree > 0) {
 			do {
-				setRightMtrs(1);
-				setLeftMtrs(-1);
+				rightDrives.set(TURN_SPEED);
+				leftDrives.set(-TURN_SPEED);
 			}while(degree > gyro.getAngle());
-		}else
+		}else {
 			do {
-				setLeftMtrs(1);
-				setRightMtrs(-1);
+				leftDrives.set(TURN_SPEED);
+				rightDrives.set(-TURN_SPEED);
 			}while(degree < gyro.getAngle());
+		}
 		stop();
 		isMoving = false;
 	}
@@ -170,15 +198,15 @@ public class Drives extends GenericSubsytem {
 			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
 				if(!straightened)
 					straightened = straighten();
-				setRightMtrs(speedRight);
-				setLeftMtrs(speedLeft);
+				rightDrives.set(speedRight);
+				leftDrives.set(speedLeft);
 			}
 		}else {
 			while((leftEnc.getDistance() + rightEnc.getDistance())/2 > dist) {
 				if(!straightened)
 					straightened = straighten();
-				setRightMtrs(-speedRight);
-				setLeftMtrs(-speedLeft);
+				rightDrives.set(-speedRight);
+				leftDrives.set(-speedLeft);
 			}
 		}
 		stop();
@@ -191,12 +219,12 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straighten() {
 		if(gyro.getAngle() > 10) {
-			speedLeft = speedLeft - (speedLeft * 0.1);
-			setLeftMtrs(speedLeft);
+			speedLeftOffset = speedLeft - (speedLeft * 0.1);
+			leftDrives.set(speedLeft);
 			return true;
 		}if(gyro.getAngle() < -10) {
-			speedRight = speedRight - (speedRight *  0.1);
-			setRightMtrs(speedRight);
+			speedRightOffset = .1;
+			rightDrives.set(speedRight);
 			return true;
 		}
 		return false;
@@ -207,8 +235,8 @@ public class Drives extends GenericSubsytem {
 	 * stops all motors
 	 */
 	public void stop() {
-		setRightMtrs(0);
-		setLeftMtrs(0);
+		rightDrives.set(0);
+		leftDrives.set(0);
 	}
 
 	/**
@@ -220,41 +248,21 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * returns if the robot is currently moving
+	 * returns if the robot is currently moving during autonomous
 	 */
 	public boolean getIsMoving() {
 		return isMoving;
 	}
 
-	/**
-	 * sets all right motors to the same speed
-	 * @param val - the specified speed
-	 */
-	private void setRightMtrs(double val) {
-		rightMtr1.set(val);
-		rightMtr2.set(val);
-		rightMtr3.set(val);
-	}
-
-	/**
-	 * sets all  left motors to the same speed
-	 * @param val - the specified speed
-	 */
-	private void setLeftMtrs(double val) {
-		leftMtr1.set(val);
-		leftMtr2.set(val);
-		leftMtr3.set(val);
-	}
-
 	@Override
 	public void logger() {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public DebuggerResult[] debug() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
