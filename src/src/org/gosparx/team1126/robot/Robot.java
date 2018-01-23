@@ -7,7 +7,7 @@ public class Robot extends IterativeRobot{
 
 	
 	public Robot() {
-		
+		System.out.println("Test");
 		}
 
 		
