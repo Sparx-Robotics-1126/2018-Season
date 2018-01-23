@@ -55,7 +55,6 @@ public class Acquisitions extends GenericSubsytem{
 	
 	public enum State{
 		STANDBY,
-		HOME,
 		RAISE,
 		LOWER,
 		SCORE;
@@ -75,11 +74,43 @@ public class Acquisitions extends GenericSubsytem{
 		pincher = new Solenoid(IO.PNU_PINCHER);
 	}
 	
-	
+	/**
+	 * The actual code of the robot. Constantly looping.
+	 */
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
 		
+		switch(AcqState){
+		
+		case STANDBY:
+			break;
+		
+		case LOWER:
+			lower();
+			release();
+			rollerAcq();
+			setStandby();
+			break;
+			
+		case RAISE:
+			pinch();
+			stopRollers();
+			raise();
+			setStandby();
+			break;
+			
+		case SCORE:
+			lower();
+			rollerScore();
+			release();
+			setStandby();
+			break;
+		}
+		
+		rightIntake.set(rightMotorPower);
+		leftIntake.set(leftMotorPower);
+		wrist.set(wristPosition);
+		pincher.set(pinchPosition);
 	}
 
 	
@@ -102,12 +133,6 @@ public class Acquisitions extends GenericSubsytem{
 		AcqState = State.LOWER;
 	}
 	
-	/**
-	 * Sets acquisition state to Home.
-	 */
-	public void setHome() {
-		AcqState = State.HOME;
-	}
 	
 	/**
 	 * Sets acquisition state to raise.
@@ -134,51 +159,51 @@ public class Acquisitions extends GenericSubsytem{
 	 * Sets the wrist to the raised position
 	 */
 	private void raise(){
-		wrist.set(RAISED);
+		wristPosition = RAISED;  
 	}
 	
 	/**
 	 * Sets the wrist to the lowered position
 	 */
 	private void lower(){
-		wrist.set(LOWERED);
+		wristPosition = LOWERED;
 	}
 	
 	/**
 	 * Sets the claw to pinch
 	 */
 	private void pinch(){
-		pincher.set(PINCHED);
+		pinchPosition = PINCHED;
 	}
 	
 	/**
 	 * Sets the claw to released
 	 */
 	private void release(){
-		pincher.set(RELEASED);
+		pinchPosition = RELEASED;
 	}
 	
 	/**
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){
-		rightIntake.set(-MOTOR_ON);
-		leftIntake.set(-MOTOR_ON);
+		rightMotorPower = -MOTOR_ON;
+		leftMotorPower = -MOTOR_ON;
 	}
 	
 	/**
 	 * Turns intake motors on to acquire cube
 	 */
 	private void rollerAcq(){
-		rightIntake.set(MOTOR_ON);
-		leftIntake.set(MOTOR_ON);
+		rightMotorPower = MOTOR_ON;
+		leftMotorPower = MOTOR_ON;
 	}
 	
 	/**
 	 * Sets the intake motors to off
 	 */
 	private void stopRollers(){
-		rightIntake.stopMotor();
-		leftIntake.stopMotor();
+		rightMotorPower = MOTOR_STOP;
+		leftMotorPower = MOTOR_STOP;
 	}
 }
