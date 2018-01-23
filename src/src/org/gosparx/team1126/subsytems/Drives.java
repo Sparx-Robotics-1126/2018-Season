@@ -49,8 +49,6 @@ public class Drives extends GenericSubsytem {
 	private final double INTEGRAL = 1;
 
 	private final double DIFFERENTIAL = 1;
-
-	private final double TURN_SPEED = .75;
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -98,8 +96,8 @@ public class Drives extends GenericSubsytem {
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
 		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
-		//leftDrives.
-		//.setNeutralMode(NeutralMode.Brake);
+		rightDrives.setNeutralMode(NeutralMode.Brake);
+		leftDrives.setNeutralMode(NeutralMode.Brake);
 		
 	}
 
@@ -129,6 +127,8 @@ public class Drives extends GenericSubsytem {
 		case RUNNING:
 			rightDrives.set(speedRight - speedRight*speedRightOffset);
 			leftDrives.set(speedLeft - speedLeft*speedLeftOffset);
+			if(speedRight == speedLeft)
+				straighten();
 			break;
 		}
 	}
@@ -138,10 +138,10 @@ public class Drives extends GenericSubsytem {
 	 * @param st - the state to switch to
 	 */
 	public void changeState(DriveState st) {
+		if(state == DriveState.AUTO && st == DriveState.RUNNING)
+			stop();
 		state = st;
 		if(state == DriveState.RUNNING) {
-			if(speedRight == speedLeft)
-				straighten();
 //			rightPID.enable();
 //			leftPID.enable();
 //		}
@@ -163,18 +163,18 @@ public class Drives extends GenericSubsytem {
 	 * turns the robot the specified degrees
 	 * @param degree - the degree amount 
 	 */
-	public void turn(int degree) {
+	public void turn(int degree, int speed) {
 		isMoving = true;
 		gyro.zeroYaw();
 		if(degree > 0) {
 			do {
-				rightDrives.set(TURN_SPEED);
-				leftDrives.set(-TURN_SPEED);
+				rightDrives.set(((double) speed)/100);
+				leftDrives.set(-((double) speed)/100);
 			}while(degree > gyro.getAngle());
 		}else {
 			do {
-				leftDrives.set(TURN_SPEED);
-				rightDrives.set(-TURN_SPEED);
+				leftDrives.set(((double) speed)/100);
+				rightDrives.set(-((double) speed)/100);
 			}while(degree < gyro.getAngle());
 		}
 		stop();
@@ -184,8 +184,9 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * moves the robot a specified distance
 	 * @param dist - decimal value in feet
+	 * @param speed - the speed wanted to move
 	 */
-	public void move(double dist) {
+	public void move(double dist, int speed) {
 		isMoving = true;
 
 		boolean straightened = false;
@@ -193,7 +194,10 @@ public class Drives extends GenericSubsytem {
 		leftEnc.reset();
 		rightEnc.reset();
 		gyro.zeroYaw();
-
+		
+		speedRight = speed;
+		speedLeft = speed;
+		
 		if(dist > 0) {
 			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
 				if(!straightened)
