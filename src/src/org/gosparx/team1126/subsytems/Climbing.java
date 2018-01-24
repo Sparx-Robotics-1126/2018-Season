@@ -39,5 +39,30 @@ public class Climbing extends GenericSubsytem
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	public enum State
+	{
+	STANDBY,
+	ATTACHING,
+	CLIMBING,
+	HELPINGHANDS;
+		
+		@Override
+		public String toString(){
+			switch(this)
+			{
+			case STANDBY:
+				return "Climbing standby";
+				
+			case ATTACHING:
+				return "Climber attaching";
+				
+			case CLIMBING:
+				return "Climbing";
+				
+			case HELPINGHANDS:
+				return "Deploying helping hands";
+			}
+			return null;
+		}
+	}
 }
