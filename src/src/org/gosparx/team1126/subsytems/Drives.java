@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
 import src.org.gosparx.team1126.util.MotorGroup;
 
@@ -76,12 +77,12 @@ public class Drives extends GenericSubsytem {
 	 * initializes all variables
 	 */
 	public void init() {
-		rightMtr1 = new WPI_TalonSRX(0);
-		rightMtr2 = new WPI_TalonSRX(0);
-		rightMtr3 = new WPI_TalonSRX(0);
+		rightMtr1 = new WPI_TalonSRX(IO.rightDriveCIM1);
+		rightMtr2 = new WPI_TalonSRX(IO.rightDriveCIM2);
+		rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
 		leftMtr1 = new WPI_TalonSRX(0);
-		leftMtr1 = new WPI_TalonSRX(0);
-		leftMtr1 = new WPI_TalonSRX(0);
+		leftMtr2 = new WPI_TalonSRX(0);
+		leftMtr3 = new WPI_TalonSRX(0);
 		rightEnc = new Encoder(0, 0);
 		leftEnc = new Encoder(0, 0);
 		cylinder = new Solenoid(0);
