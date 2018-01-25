@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.util.DebuggerResult;
 import src.org.gosparx.team1126.util.MotorGroup;
 
@@ -38,17 +39,17 @@ public class Drives extends GenericSubsytem {
 	private SPI.Port port1;
 
 	private MotorGroup leftDrives;
-	
+
 	private MotorGroup rightDrives;
-	
+
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-//	private final double PORPORTIONAL = 1;
-//
-//	private final double INTEGRAL = 1;
-//
-//	private final double DIFFERENTIAL = 1;
-	
+	//	private final double PORPORTIONAL = 1;
+	//
+	//	private final double INTEGRAL = 1;
+	//
+	//	private final double DIFFERENTIAL = 1;
+
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -61,13 +62,13 @@ public class Drives extends GenericSubsytem {
 	private DriveState state;
 
 	private double speedRightOffset;
-	
+
 	private double speedLeftOffset;
-	
-//	private  PIDController rightPID;
-//	
-//	private PIDController leftPID;
-	
+
+	//	private  PIDController rightPID;
+	//	
+	//	private PIDController leftPID;
+
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
 	@Override
@@ -93,11 +94,14 @@ public class Drives extends GenericSubsytem {
 		speedLeftOffset = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
-//		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
-//		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
+		//		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
+		//		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
-		
+		addObjectsToShuffleboard();
+
+
+
 	}
 
 	/**
@@ -112,6 +116,18 @@ public class Drives extends GenericSubsytem {
 		RUNNING;
 	}
 
+	/**
+	 * Adds all the sendable objects to shuffleboard
+	 */
+	private void addObjectsToShuffleboard() {
+		SmartDashboard.putData(leftEnc);
+		SmartDashboard.putData(rightEnc);
+		SmartDashboard.putData(gyro);
+		SmartDashboard.putData(rightDrives);
+		SmartDashboard.putData(leftDrives);
+		SmartDashboard.putData(cylinder);	
+		SmartDashboard.updateValues();
+	}
 
 	/**
 	 * runs drives code based on state
@@ -141,12 +157,12 @@ public class Drives extends GenericSubsytem {
 			stop();
 		state = st;
 		if(state == DriveState.RUNNING) {
-//			rightPID.enable();
-//			leftPID.enable();
-//		}
-//		else {
-//			rightPID.disable();
-//			leftPID.disable();
+			//			rightPID.enable();
+			//			leftPID.enable();
+			//		}
+			//		else {
+			//			rightPID.disable();
+			//			leftPID.disable();
 		}
 	}
 
@@ -155,9 +171,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speedR - the right joystick speed
 	 * @param speedL - the left joystick speed
 	 */
-	public void joysticks(double speedR, double speedL) {
-		speedRight = speedR/100;
-		speedLeft = speedL/100;	
+	public void joysticks(int speedR, int speedL) {
+		speedRight = speedR/100.0;
+		speedLeft = speedL/100.0;	
 	}
 
 	/**
@@ -196,10 +212,10 @@ public class Drives extends GenericSubsytem {
 		leftEnc.reset();
 		rightEnc.reset();
 		gyro.zeroYaw();
-		
+
 		speedRight = speed;
 		speedLeft = speed;
-		
+
 		if(dist > 0) {
 			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
 				if(!straightened)
@@ -237,6 +253,8 @@ public class Drives extends GenericSubsytem {
 
 	}
 
+	//	private void add
+
 	/**
 	 * stops all motors
 	 */
@@ -265,17 +283,55 @@ public class Drives extends GenericSubsytem {
 	 * posts all logs
 	 */
 	public void logger() {
-		
 
 	}
 
 	@Override
 	/**
-	 * debuggs the code to make sure motors are spinning correctly
+	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
 	 */
-	public DebuggerResult[] debug() {
-		
-		return null;
+	public DebuggerResult[] debug() {		//one CIM is enough to check the encoders per side, needs to be at least 0.5 power
+		DebuggerResult[] results = new DebuggerResult[6];
+		long time = System.currentTimeMillis();
+		WPI_TalonSRX mtrTesting = null;
+
+		for(int i = 0; i < 6; i++) {
+
+			if(i < 3) { //on first part of loop, reset left encoder and test left motors
+				leftEnc.reset();
+				if(leftDrives.getSpeedController(i) != null)
+					mtrTesting = (WPI_TalonSRX)leftDrives.getSpeedController(i);
+				else
+					break;
+			}else {     //on second part of loop, reset right encoder and test right motors
+				rightEnc.reset();
+				if(rightDrives.getSpeedController(i) != null) 
+					mtrTesting = (WPI_TalonSRX)rightDrives.getSpeedController(i-3);
+				else
+					break;
+			}
+
+			mtrTesting.set(.5);
+			while(System.currentTimeMillis() < time + 5000) {  //After setting speed wait 5 seconds
+			}
+			if(i<3) {
+				if(leftEnc.getDistance() > 0) {
+					results[i] = new DebuggerResult("Drives", true, "Left Encoder worked on left motor " + i);
+				}else {
+					results[i] = new DebuggerResult("Drives", false, "Left Encoder failed on left motor " + i);
+				}
+			}else {
+				if(rightEnc.getDistance() > 0) {
+					results[i] = new DebuggerResult("Drives", true, "Right Encoder worked on right motor " + (i - 3));
+				}else {
+					results[i] = new DebuggerResult("Drives", false, "Right Encoder failed on right motor " + (i - 3));
+				}
+			}
+		}
+
+		if(mtrTesting == null)
+			results[5] = new DebuggerResult("Drives", false, "A motor was null");
+		return results;
 	}
 
 }
