@@ -11,6 +11,10 @@ public class Autonomous extends Controls {
 	
 	private AutoSelected selectedAuto;
 	
+	private int autoStep;
+	
+	private String fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
+	
 	private boolean firstRun;
 	
 	private SendableChooser<AutoSelected> autoChooser;
@@ -22,15 +26,52 @@ public class Autonomous extends Controls {
 	
 	private final int[][] TESTAUTO = {
 		{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+		{stateToInt(AutoState.DRIVES_WAIT)},
 		{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+		{stateToInt(AutoState.DRIVES_WAIT)},
 		{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-		{stateToInt(AutoState.DRIVES_FORWARD), 10, 10}
+		{stateToInt(AutoState.DRIVES_WAIT)},
+		{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+		{stateToInt(AutoState.DRIVES_WAIT)},
 	};
+	
+	private final int[][] TESTAUTO1 = {
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+		};
+	
+	private final int[][] TESTAUTO2 = {
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+		};
+	
+	private final int[][] TESTAUTO3 = {
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+		};
 	
 	public Autonomous() {
 		
 		firstRun = false;
-		
+		autoStep = 0;
 		isRightAllySwitch = false;
 		isRightScale = false;
 		isRightOpponentSwitch = false;
@@ -62,7 +103,6 @@ public class Autonomous extends Controls {
 
 	//check for rules before competition
 	public boolean setFieldConditions() {
-		String fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
 		if(!fieldConditions.equals("")) {
 			if (fieldConditions.charAt(0) == 'r') {
 				isRightAllySwitch = true;
@@ -79,32 +119,99 @@ public class Autonomous extends Controls {
 
 	@Override
 	public void execute() {
+		//kill thread after auto done?
 		if(isAutonomous() && isEnabled()) {
 			if(!firstRun) {
-				firstRun = true;
-				switch(selectedAuto) {
-				case NOTHING:
-				case SCALE:
-				case CROSSBORDER:
-				case SWITCH:
+				if(setFieldConditions()) {
+					firstRun = true;
+					if(isRightAllySwitch) {
+						if(isRightScale) {
+							switch(selectedAuto) {
+							case NOTHING:
+								currentAuto = TESTAUTO;
+							case SCALE:
+								currentAuto = TESTAUTO1;
+							case CROSSBORDER:
+								currentAuto = TESTAUTO2;
+							case SWITCH:
+								currentAuto = TESTAUTO3;
+							}
+						} else {
+							switch(selectedAuto) {
+							case NOTHING:
+								currentAuto = TESTAUTO;
+							case SCALE:
+								currentAuto = TESTAUTO1;
+							case CROSSBORDER:
+								currentAuto = TESTAUTO2;
+							case SWITCH:
+								currentAuto = TESTAUTO3;
+							}
+						}
+					} else {
+						if(isRightScale) {
+							switch(selectedAuto) {
+							case NOTHING:
+								currentAuto = TESTAUTO;
+							case SCALE:
+								currentAuto = TESTAUTO1;
+							case CROSSBORDER:
+								currentAuto = TESTAUTO2;
+							case SWITCH:
+								currentAuto = TESTAUTO3;
+							}
+						} else {
+							switch(selectedAuto) {
+							case NOTHING:
+								currentAuto = TESTAUTO;
+							case SCALE:
+								currentAuto = TESTAUTO1;
+							case CROSSBORDER:
+								currentAuto = TESTAUTO2;
+							case SWITCH:
+								currentAuto = TESTAUTO3;
+							}
+						}
+					}
+				}
+			} else {
+				if(currentAuto.length > autoStep) {
+					switch(currentAuto[autoStep][0]) {
+					case 0: //DRIVES_FORWARD
+						//code
+						autoStep++;
+						break;
+					case 1: //DRIVES_BACKWARD
+						autoStep++;
+						break;
+					case 2: //DRIVES_TURNLEFT
+						autoStep++;
+						break;
+					case 3: //DRIVES_TURNRIGHT
+						autoStep++;
+						break;
+					case 4: //DRIVES_WAIT
+						autoStep++;
+						break;
+					case 5: //DRIVES_STOP
+						autoStep++;
+						break;
+					default:
+						break;
+					}
 				}
 			}
-			
-			
-		} else {
-			
 		}
-		
-		
-	}
-	
+	} 
+
 	public enum AutoState{
 		
 		DRIVES_FORWARD, //@param - distance, speed
 		DRIVES_BACKWARD, //@param - distance, speed
 		DRIVES_TURNLEFT, //@param - degrees to turn, speed
 		DRIVES_TURNRIGHT, //@param - degrees to turn, speed
-		DRIVES_WAIT;
+		DRIVES_WAIT,
+		DRIVES_STOP;
 		
 	}
 	
