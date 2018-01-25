@@ -1,6 +1,7 @@
 package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
@@ -72,6 +73,8 @@ public class Acquisitions extends GenericSubsytem{
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
 		wrist = new Solenoid(IO.PNU_WRIST);
 		pincher = new Solenoid(IO.PNU_PINCHER);
+		wrist.set(wristPosition);
+		pincher.set(pinchPosition);
 	}
 	
 	/**
@@ -120,10 +123,30 @@ public class Acquisitions extends GenericSubsytem{
 		
 	}
 
+	/**
+	 * Tests all objects of the acquisitions class
+	 * @return One debugger result consisting of subsystem name acquisitions, pass, and a message telling user
+	 * to ceck that all objects moved.
+	 */
 	@Override
 	public DebuggerResult[] debug() {
-		// TODO Auto-generated method stub
-		return null;
+		wristPosition = !wristPosition;
+		pinchPosition = !pinchPosition;
+		wrist.set(wristPosition);
+		pincher.set(pinchPosition);
+		double startingTime = Timer.getFPGATimestamp();
+		while(startingTime + 3 > Timer.getFPGATimestamp()){
+			rightMotorPower = MOTOR_ON;
+			leftMotorPower = MOTOR_ON;
+			rightIntake.set(rightMotorPower);
+			leftIntake.set(leftMotorPower);	
+		}
+		rightMotorPower = MOTOR_STOP;
+		leftMotorPower = MOTOR_STOP;
+		rightIntake.set(rightMotorPower);
+		leftIntake.set(leftMotorPower);
+		DebuggerResult[] debuggerOut = new DebuggerResult[]{new DebuggerResult("Acquitions", true, "Check that both motors, the pincher, and claw moved")};
+		return debuggerOut;
 	}
 	
 	/**
