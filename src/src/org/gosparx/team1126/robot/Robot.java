@@ -2,28 +2,31 @@ package src.org.gosparx.team1126.robot;
 
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class Robot extends IterativeRobot{
 
+	Elevations elevator;
 	
-	public Robot() {
+	@Override
+	public void robotInit() {
+		elevator = new Elevations(); //For test	
 		System.out.println("Test");
-		}
-
-		
-	public void autonomous() {
 		
 	}
 
-	
-	public void operatorControl() {
+	/**
+	 * This function is called periodically during teleoperated mode.
+	 */
+	@Override
+	public void teleopInit() {
+		elevator.init();
 	}
 
 	
-	public void test() {
+	@Override
+	public void teleopPeriodic() {
+		elevator.execute(); //For test
 	}
-	
-	
-	public void disabled(){
+
 	}
-}

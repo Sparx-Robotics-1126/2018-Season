@@ -46,17 +46,18 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void execute() {
 		height = encoder.get();
-		System.out.println("Encoder value "+height);
+		System.out.println("Encoder value "+height+"Limit "+limitSwitch.get());
 		switch(state)
 		{
 			case init:
 			{
-				if(limitSwitch.get())
+				if(!limitSwitch.get() && !homed)
 				{
 					motor1.stopMotor();
 					motor2.stopMotor();
-					encoder.reset();
+					//encoder.reset();
 					homed = true;
+					state = State.standBy;
 				}
 				break;
 			}
