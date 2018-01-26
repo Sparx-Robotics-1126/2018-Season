@@ -116,13 +116,6 @@ public class Acquisitions extends GenericSubsytem{
 		pincher.set(pinchPosition);
 	}
 
-	
-	@Override
-	public void logger() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	/**
 	 * Tests all objects of the acquisitions class
 	 * @return One debugger result consisting of subsystem name acquisitions, pass, and a message telling user
