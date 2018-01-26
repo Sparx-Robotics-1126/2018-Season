@@ -7,6 +7,11 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
 
+	public Elevations() {
+		super("Elevations");
+	}
+
+
 	float height; //Height of elevator
 	boolean homed; //Determines if input methods should be allowed
 	int top;
@@ -116,13 +121,6 @@ public class Elevations extends GenericSubsytem {
 		
 	}
 
-
-	@Override
-	public void logger() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public DebuggerResult[] debug() {
 		// TODO Auto-generated method stub
@@ -158,7 +156,7 @@ public class Elevations extends GenericSubsytem {
 	}
 	
 	
-	public boolean stop() //Stops all motors and state to standby 
+	public boolean stopAll() //Stops all motors and state to standby 
 	{
 		if(!homed) //To make sure init is not messed up by inputs
 		{
@@ -167,5 +165,20 @@ public class Elevations extends GenericSubsytem {
 			motor2.stopMotor();
 			return true;
 		}else {return false;}
+	}
+
+	@Override
+	public void forceStandby() {
+		
+	}
+
+	@Override
+	public boolean isDone() {
+		return false;
+	}
+
+	@Override
+	public long sleepTime() {
+		return 20;
 	}
 }
