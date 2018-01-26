@@ -31,13 +31,6 @@ public class Climbing extends GenericSubsytem
 	}
 
 	@Override
-	public void logger() 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public DebuggerResult[] debug() 
 	{
 		// TODO Auto-generated method stub
