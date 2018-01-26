@@ -17,6 +17,10 @@ public class Drives extends GenericSubsytem {
 
 	//-----------------------------------------------------Motors/Sensors--------------------------------------------------------
 
+	public Drives() {
+		super("Drives");
+	}
+
 	private WPI_TalonSRX rightMtr1;
 
 	private WPI_TalonSRX rightMtr2;
@@ -155,7 +159,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void changeState(DriveState st) {
 		if(state == DriveState.AUTO && st == DriveState.RUNNING)
-			stop();
+			stopMotors();
 		state = st;
 		if(state == DriveState.RUNNING) {
 			//			rightPID.enable();
@@ -196,7 +200,7 @@ public class Drives extends GenericSubsytem {
 				rightDrives.set(-((double) speed)/100);
 			}while(degree < gyro.getAngle());
 		}
-		stop();
+		stopMotors();
 		isMoving = false;
 	}
 
@@ -232,7 +236,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(-speedLeft);
 			}
 		}
-		stop();
+		stopMotors();
 		isMoving = false;
 	}
 
@@ -259,7 +263,7 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * stops all motors
 	 */
-	public void stop() {
+	public void stopMotors() {
 		rightDrives.set(0);
 		leftDrives.set(0);
 	}
@@ -333,6 +337,21 @@ public class Drives extends GenericSubsytem {
 		if(mtrTesting == null)
 			results[5] = new DebuggerResult("Drives", false, "A motor was null");
 		return results;
+	}
+
+	@Override
+	public void forceStandby() {
+		
+	}
+
+	@Override
+	public boolean isDone() {
+		return false;
+	}
+
+	@Override
+	public long sleepTime() {
+		return 20;
 	}
 
 }
