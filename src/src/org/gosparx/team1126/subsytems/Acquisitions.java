@@ -50,7 +50,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	
 	public Acquisitions() {
-		// TODO Auto-generated constructor stub
+		super("Acquisitions");
 	}
 	
 	
@@ -228,5 +228,20 @@ public class Acquisitions extends GenericSubsytem{
 	private void stopRollers(){
 		rightMotorPower = MOTOR_STOP;
 		leftMotorPower = MOTOR_STOP;
+	}
+
+	@Override
+	public void forceStandby() {
+		
+	}
+
+	@Override
+	public boolean isDone() {
+		return false;
+	}
+
+	@Override
+	public long sleepTime() {
+		return 20;
 	}
 }
