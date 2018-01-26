@@ -1,2 +1,21 @@
+# Local Properties
+/build.properties
+/.classpath
+
+# Compiled Files
 /bin/
+*.class
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Eclipse Settings
+.settings/
+
+sysProps.xml
+/bin/
