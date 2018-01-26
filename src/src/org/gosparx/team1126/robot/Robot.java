@@ -1,37 +1,26 @@
 package src.org.gosparx.team1126.robot;
 
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 
-public class Robot extends IterativeRobot
-{
+public class Robot extends IterativeRobot{
 
-	
-	public Robot() 
-	{
-		
-	}
-
-		
-	public void autonomous() 
-	{
-		
-	}
-
-	
-	public void operatorControl() 
-	{
-	}
-
-	
-	public void test() 
-	{
+	@Override
+	public void robotInit() {
 		
 	}
 	
+	@Override
+	public void autonomousInit() {
+		
+	}
 	
-	public void disabled()
-	{
+	@Override
+	public void teleopInit() {
+		
+	}
+	
+	@Override
+	public void disabledInit() {
 		
 	}
 }
