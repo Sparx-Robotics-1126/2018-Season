@@ -285,14 +285,6 @@ public class Drives extends GenericSubsytem {
 
 	@Override
 	/**
-	 * posts all logs
-	 */
-	public void logger() {
-
-	}
-
-	@Override
-	/**
 	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
 	 */
 	public DebuggerResult[] debug() {		//one CIM is enough to check the encoders per side, needs to be at least 0.5 power
