@@ -12,6 +12,10 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Climbing extends GenericSubsytem
 {
 
+	public Climbing() {
+		super("Climbing");
+	}
+
 	@Override
 	public void execute() 
 	{
@@ -64,5 +68,19 @@ public class Climbing extends GenericSubsytem
 			}
 			return null;
 		}
+	}
+	@Override
+	public void forceStandby() {
+		
+	}
+
+	@Override
+	public boolean isDone() {
+		return false;
+	}
+
+	@Override
+	public long sleepTime() {
+		return 20;
 	}
 }
