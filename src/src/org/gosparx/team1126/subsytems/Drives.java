@@ -329,8 +329,12 @@ public class Drives extends GenericSubsytem {
 	}
 
 	@Override
+	/**
+	 * sets state to standby and stops all motors
+	 */
 	public void forceStandby() {
-
+		changeState(DriveState.STANDBY);
+		stopMotors();
 	}
 
 	@Override
@@ -344,6 +348,9 @@ public class Drives extends GenericSubsytem {
 	}
 
 	@Override
+	/**
+	 * the time in milliseconds between each call of execute
+	 */
 	public long sleepTime() {
 		return 20;
 	}
