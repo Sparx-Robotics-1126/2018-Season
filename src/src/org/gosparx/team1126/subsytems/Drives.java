@@ -9,16 +9,17 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
+import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
 import src.org.gosparx.team1126.util.MotorGroup;
 
 public class Drives extends GenericSubsytem {
-
-	//-----------------------------------------------------Motors/Sensors--------------------------------------------------------
-
+	
 	public Drives() {
 		super("Drives");
 	}
+
+	//-----------------------------------------------------Motors/Sensors--------------------------------------------------------
 
 	private WPI_TalonSRX rightMtr1;
 
@@ -32,9 +33,13 @@ public class Drives extends GenericSubsytem {
 
 	private WPI_TalonSRX leftMtr3;
 
-	private Encoder rightEnc;
+	private EncoderData rightEnc;
 
-	private Encoder leftEnc;
+	private EncoderData leftEnc;
+	
+	private Encoder rawRightEnc;
+	
+	private Encoder rawLeftEnc;
 
 	private Solenoid ptoSwitch;
 
@@ -50,7 +55,6 @@ public class Drives extends GenericSubsytem {
 
 	private boolean isMoving;
 
-	// speedRight and speedLeft are magnitudes
 	private double speedRight;
 
 	private double speedLeft;
@@ -78,8 +82,10 @@ public class Drives extends GenericSubsytem {
 		leftMtr1 = new WPI_TalonSRX(0);
 		leftMtr2 = new WPI_TalonSRX(0);
 		leftMtr3 = new WPI_TalonSRX(0);
-		rightEnc = new Encoder(0, 0);
-		leftEnc = new Encoder(0, 0);
+		rawRightEnc = new Encoder(0, 0);
+		rawLeftEnc = new Encoder(0, 0);
+		rightEnc = new EncoderData(rawRightEnc, 0);
+		leftEnc = new EncoderData(rawLeftEnc, 0);
 		ptoSwitch = new Solenoid(0);
 		//port1 = new SPI.Port(0);
 		gyro = new AHRS(port1);
@@ -113,8 +119,8 @@ public class Drives extends GenericSubsytem {
 	 * Adds all the sendable objects to shuffleboard
 	 */
 	private void addObjectsToShuffleboard() {
-		SmartDashboard.putData(leftEnc);
-		SmartDashboard.putData(rightEnc);
+		//SmartDashboard.putData(leftEnc);
+		//SmartDashboard.putData(rightEnc);
 		SmartDashboard.putData(gyro);
 		SmartDashboard.putData(rightDrives);
 		SmartDashboard.putData(leftDrives);
@@ -231,23 +237,21 @@ public class Drives extends GenericSubsytem {
 		}
 	}
 
-	/**
-	 * makes sure the robot is straight(within -10 to 10)
-	 * @return a boolean, true if robot was straightened
-	 */
-	private boolean straighten() {
-		if(gyro.getAngle() > 10) {
-			speedLeft = speedLeft - (speedLeft * 0.1);
-			return true;
-		}if(gyro.getAngle() < -10) {
-			speedRight = speedRight - (speedRight * 0.1);
-			return true;
-		}
-		return false;
-
-	}
-
-	//	private void add
+//	/**
+//	 * makes sure the robot is straight(within -10 to 10)
+//	 * @return a boolean, true if robot was straightened
+//	 */
+//	private boolean straighten() {
+//		if(gyro.getAngle() > 10) {
+//			speedLeft = speedLeft - (speedLeft * 0.1);
+//			return true;
+//		}if(gyro.getAngle() < -10) {
+//			speedRight = speedRight - (speedRight * 0.1);
+//			return true;
+//		}
+//		return false;
+//
+//	}
 
 	/**
 	 * stops all motors
@@ -326,7 +330,12 @@ public class Drives extends GenericSubsytem {
 	}
 
 	@Override
+	/**
+	 * if in standby
+	 */
 	public boolean isDone() {
+		if(!isMoving)
+			return true;
 		return false;
 	}
 
