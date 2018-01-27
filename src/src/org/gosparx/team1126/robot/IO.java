@@ -13,12 +13,14 @@ public class IO {
 	
 //----------------------------------------------------Sensors----------------------------------------------------------------------
 	
-	public static final int leftDriveEncoder																			= 0;
-	public static final int rightDriveEncoder																			= 0;
+	public static final int leftDriveEncoderChannel1																	= 0;
+	public static final int leftDriveEncoderChannel2																	= 0;
+	public static final int rightDriveEncoderChannel1																	= 0;
+	public static final int rightDriveEncoderChannel2																	= 0;
 	public static final int gyro																						= 0;
 	
 //--------------------------------------------------Miscellaneous------------------------------------------------------------------
-	
+	public static final int ptoSwitch																					= 0;
 	
 	
 }
