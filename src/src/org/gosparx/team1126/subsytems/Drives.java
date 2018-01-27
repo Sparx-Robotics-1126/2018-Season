@@ -191,6 +191,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void changeState(DriveState st) {
 		state = st;
+		if(state == DriveState.TELEOP) {
+			leftDrives.setNeutralMode(NeutralMode.Coast);
+			rightDrives.setNeutralMode(NeutralMode.Coast);
+		}
 	}
 
 	/**
