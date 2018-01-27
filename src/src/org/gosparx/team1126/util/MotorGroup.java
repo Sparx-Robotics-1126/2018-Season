@@ -15,9 +15,10 @@ public class MotorGroup extends SpeedControllerGroup{
 	 * @param arg1 - the second motor in this group
 	 * @param arg2 - the third motor in this group
 	 */
-	public MotorGroup(SpeedController arg0, SpeedController arg1, SpeedController arg2) {
+	public MotorGroup(SpeedController arg0, SpeedController arg1) {
 		super(arg0, arg1);
-		speedControllers = new SpeedController[]{arg0, arg1, arg2};
+		//speedControllers = new SpeedController[]{arg0, arg1, arg2};
+		speedControllers = new SpeedController[]{arg0, arg1};
 	}
 
 	/**

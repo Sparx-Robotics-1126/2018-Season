@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
@@ -14,12 +15,12 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 import src.org.gosparx.team1126.util.MotorGroup;
 
 public class Drives extends GenericSubsytem {
-	
+
 	public Drives() {
 		super("Drives");
 	}
 
-	//-----------------------------------------------------Motors/Sensors--------------------------------------------------------
+	//-----------------------------------------------------Motors/Sensors---------------------------------------------------------
 
 	private WPI_TalonSRX rightMtr1;
 
@@ -36,9 +37,9 @@ public class Drives extends GenericSubsytem {
 	private EncoderData rightEnc;
 
 	private EncoderData leftEnc;
-	
+
 	private Encoder rawRightEnc;
-	
+
 	private Encoder rawLeftEnc;
 
 	private Solenoid ptoSwitch;
@@ -65,11 +66,11 @@ public class Drives extends GenericSubsytem {
 
 	private int turnAngle;
 
-	private double moveSpeed;
-
 	private double moveDist;
 
-	//---------------------------------------------------------Code--------------------------------------------------------------
+	private double moveSpeed;
+
+	//---------------------------------------------------------Code---------------------------------------------------------------
 
 	@Override
 	/**
@@ -78,25 +79,27 @@ public class Drives extends GenericSubsytem {
 	public void init() {
 		rightMtr1 = new WPI_TalonSRX(IO.rightDriveCIM1);
 		rightMtr2 = new WPI_TalonSRX(IO.rightDriveCIM2);
-		rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
+		//rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
 		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
 		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
-		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
+		//leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
-		rightEnc = new EncoderData(rawRightEnc, 0);
-		leftEnc = new EncoderData(rawLeftEnc, 0);
-		ptoSwitch = new Solenoid(IO.ptoSwitch);
+		rightEnc = new EncoderData(rawRightEnc, 0.032);
+		leftEnc = new EncoderData(rawLeftEnc, -0.032);
+		//ptoSwitch = new Solenoid(IO.ptoSwitch);
 		//port1 = new SPI.Port(0);
-		gyro = new AHRS(port1);
+		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
-		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
-		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
+		moveSpeed = 0;
+		rightDrives = new MotorGroup(rightMtr1, rightMtr2);
+		leftDrives = new MotorGroup(leftMtr1, leftMtr2);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
+		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
-		addObjectsToShuffleboard();
+		//addObjectsToShuffleboard();
 	}
 
 	/**
@@ -106,7 +109,7 @@ public class Drives extends GenericSubsytem {
 	 * TURN_STATES - turns robot by specified angle and speed
 	 * MOVE_STATES - move the robot by specified dist and speed
 	 */
-	enum DriveState{
+	public enum DriveState{
 		STANDBY,
 		TURN_R,
 		TURN_L,
@@ -141,15 +144,22 @@ public class Drives extends GenericSubsytem {
 		case TELEOP:
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
 			break;
 		case TURN_R:
 			if(gyro.getAngle() > turnAngle) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
+			}else if(gyro.getAngle() > turnAngle * 0.8){
+				turnSpeed = 0.2;
+				leftDrives.set(-turnSpeed);
+				rightDrives.set(turnSpeed);
 			}else {
-				leftDrives.set(turnSpeed);
-				rightDrives.set(-turnSpeed);
+				print("angle: " + gyro.getAngle());
+				leftDrives.set(-turnSpeed);
+				rightDrives.set(turnSpeed);
 			}
 			break;
 		case TURN_L:
@@ -157,30 +167,57 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
+			}else if(gyro.getAngle() < turnAngle * 0.8) {
+				turnSpeed = 0.2;
+				leftDrives.set(turnSpeed);
+				rightDrives.set(-turnSpeed);
 			}else {
-				leftDrives.set(-turnSpeed);
-				rightDrives.set(turnSpeed);
+				print("angle: " + gyro.getAngle());
+				leftDrives.set(turnSpeed);
+				rightDrives.set(-turnSpeed);
 			}
 			break;
 		case MOVE_FWRD:
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
 			if(moveDist < (rightEnc.getDistance() + leftEnc.getDistance())/2) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
+			}else if((moveDist*.8)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+				moveSpeed = .3;
+				speedRight = moveSpeed;
+				speedLeft = moveSpeed;
+				straightenForward();
+				rightDrives.set(speedRight);
+				leftDrives.set(speedLeft);
 			}else {
-				leftDrives.set(moveSpeed);
-				rightDrives.set(moveSpeed);
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
 			}
+			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
+			}else if((moveDist*.8)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+				moveSpeed = .3;
+				speedRight = moveSpeed;
+				speedLeft = moveSpeed;
+				straightenBackward();
+				rightDrives.set(-speedRight);
+				leftDrives.set(-speedLeft);
 			}else {
-				leftDrives.set(-moveSpeed);
-				rightDrives.set(-moveSpeed);
+				straightenBackward();
+				leftDrives.set(-speedLeft);
+				rightDrives.set(-speedRight);
+				leftEnc.calculateSpeed();
+				rightEnc.calculateSpeed();
 			}
+			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -190,6 +227,7 @@ public class Drives extends GenericSubsytem {
 	 * @param st - the state to switch to
 	 */
 	public void changeState(DriveState st) {
+		print("change state");
 		state = st;
 		if(state == DriveState.TELEOP) {
 			leftDrives.setNeutralMode(NeutralMode.Coast);
@@ -225,37 +263,63 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * sets the variables and changes the state for moving
-	 * @param dist - decimal value in feet
+	 * @param dist - decimal value in inches
 	 * @param speed - the speed wanted to move
 	 */
 	public void move(double dist, int speed) {
+		gyro.zeroYaw();
 		rightEnc.reset();
 		leftEnc.reset();
 		moveDist = dist;
 		moveSpeed = speed/100.;
+		speedLeft = moveSpeed;
+		speedRight = moveSpeed;
 		isMoving = true;
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
+			print("moving frwd");
 		}else {
 			changeState(DriveState.MOVE_BKWD);
+			print("moving bkwd");
 		}
 	}
 
-//	/**
-//	 * makes sure the robot is straight(within -10 to 10)
-//	 * @return a boolean, true if robot was straightened
-//	 */
-//	private boolean straighten() {
-//		if(gyro.getAngle() > 10) {
-//			speedLeft = speedLeft - (speedLeft * 0.1);
-//			return true;
-//		}if(gyro.getAngle() < -10) {
-//			speedRight = speedRight - (speedRight * 0.1);
-//			return true;
-//		}
-//		return false;
-//
-//	}
+	/**
+	 * makes sure the robot is straight
+	 * @return a boolean, true if robot was straightened
+	 */
+	private boolean straightenForward() {
+		if(gyro.getAngle() > 2) {
+			speedRight = moveSpeed * 0.2;
+			return true;
+		}else if(gyro.getAngle() < -2) {
+			speedLeft = moveSpeed * 0.2;
+			return true;
+		}else {
+			speedLeft = moveSpeed;
+			speedRight = moveSpeed;
+		}
+		return false;
+
+	}
+
+	/**
+	 * makes sure the robot is straight
+	 * @return a boolean, true if robot was straightened
+	 */
+	private boolean straightenBackward() {
+		if(gyro.getAngle() > 2) {
+			speedLeft = moveSpeed * 0.2;
+			return true;
+		}else if(gyro.getAngle() < -2) {
+			speedRight = moveSpeed * 0.2;
+			return true;
+		}else {
+			speedLeft = moveSpeed;
+			speedRight = moveSpeed;
+		}
+		return false;
+	}
 
 	/**
 	 * stops all motors
