@@ -86,7 +86,7 @@ public class Acquisitions extends GenericSubsytem{
 		switch(AcqState){
 		
 		case STANDBY:
-			break;
+			return;
 		
 		case LOWER:
 			lower();
@@ -111,7 +111,7 @@ public class Acquisitions extends GenericSubsytem{
 		}
 		
 		rightIntake.set(rightMotorPower);
-		leftIntake.set(leftMotorPower);
+		leftIntake.set(-leftMotorPower);
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
 	}
@@ -132,7 +132,7 @@ public class Acquisitions extends GenericSubsytem{
 			rightMotorPower = MOTOR_ON;
 			leftMotorPower = MOTOR_ON;
 			rightIntake.set(rightMotorPower);
-			leftIntake.set(leftMotorPower);	
+			leftIntake.set(-leftMotorPower);	
 		}
 		rightMotorPower = MOTOR_STOP;
 		leftMotorPower = MOTOR_STOP;
@@ -204,7 +204,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	private void rollerScore(){
 		rightMotorPower = -MOTOR_ON;
-		leftMotorPower = -MOTOR_ON;
+		leftMotorPower = MOTOR_ON;
 	}
 	
 	/**
