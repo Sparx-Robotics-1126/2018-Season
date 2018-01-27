@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +36,7 @@ public class Drives extends GenericSubsytem {
 
 	private Encoder leftEnc;
 
-	private Solenoid cylinder;
+	private Solenoid ptoSwitch;
 
 	private AHRS gyro;
 
@@ -46,14 +45,6 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup leftDrives;
 
 	private MotorGroup rightDrives;
-
-	//-------------------------------------------------------Constants------------------------------------------------------------
-
-	//	private final double PORPORTIONAL = 1;
-	//
-	//	private final double INTEGRAL = 1;
-	//
-	//	private final double DIFFERENTIAL = 1;
 
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -66,13 +57,13 @@ public class Drives extends GenericSubsytem {
 
 	private DriveState state;
 
-	private double speedRightOffset;
+	private double turnSpeed;
 
-	private double speedLeftOffset;
+	private int turnAngle;
 
-	//	private  PIDController rightPID;
-	//	
-	//	private PIDController leftPID;
+	private double moveSpeed;
+
+	private double moveDist;
 
 	//---------------------------------------------------------Code--------------------------------------------------------------
 
@@ -89,36 +80,33 @@ public class Drives extends GenericSubsytem {
 		leftMtr3 = new WPI_TalonSRX(0);
 		rightEnc = new Encoder(0, 0);
 		leftEnc = new Encoder(0, 0);
-		cylinder = new Solenoid(0);
+		ptoSwitch = new Solenoid(0);
 		//port1 = new SPI.Port(0);
 		gyro = new AHRS(port1);
 		isMoving = false;
-		speedRight = 0.5;
-		speedLeft = 0.5;
-		speedRightOffset = 0;
-		speedLeftOffset = 0;
+		speedRight = 0;
+		speedLeft = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
-		//		rightPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, rightEnc, rightDrives);
-		//		leftPID = new PIDController(PORPORTIONAL, INTEGRAL, DIFFERENTIAL, leftEnc, leftDrives);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		addObjectsToShuffleboard();
-
-
-
 	}
 
 	/**
 	 * contains the possible states of drives
 	 * STANDBY - drives is off
-	 * AUTO - Drives is being run by autonomous code and not by joysticks
-	 * RUNNING - motor speeds are set
+	 * TELEOP - motors are set by user input
+	 * TURN_STATES - turns robot by specified angle and speed
+	 * MOVE_STATES - move the robot by specified dist and speed
 	 */
 	enum DriveState{
 		STANDBY,
-		AUTO,
-		RUNNING;
+		TURN_R,
+		TURN_L,
+		MOVE_FWRD,
+		MOVE_BKWD,
+		TELEOP;
 	}
 
 	/**
@@ -130,7 +118,7 @@ public class Drives extends GenericSubsytem {
 		SmartDashboard.putData(gyro);
 		SmartDashboard.putData(rightDrives);
 		SmartDashboard.putData(leftDrives);
-		SmartDashboard.putData(cylinder);	
+		SmartDashboard.putData(ptoSwitch);	
 		SmartDashboard.updateValues();
 	}
 
@@ -142,13 +130,51 @@ public class Drives extends GenericSubsytem {
 	@Override
 	public void execute() {
 		switch(state) {
-		case AUTO:
-		case STANDBY:  break;
-		case RUNNING:
-			rightDrives.set(speedRight - speedRight*speedRightOffset);
-			leftDrives.set(speedLeft - speedLeft*speedLeftOffset);
-			if(speedRight == speedLeft)
-				straighten();
+		case STANDBY:  
+			break;
+		case TELEOP:
+			rightDrives.set(speedRight);
+			leftDrives.set(speedLeft);
+			break;
+		case TURN_R:
+			if(gyro.getAngle() > turnAngle) {
+				stopMotors();
+				changeState(DriveState.STANDBY);
+				isMoving = false;
+			}else {
+				leftDrives.set(turnSpeed);
+				rightDrives.set(-turnSpeed);
+			}
+			break;
+		case TURN_L:
+			if(gyro.getAngle() < turnAngle) {
+				stopMotors();
+				changeState(DriveState.STANDBY);
+				isMoving = false;
+			}else {
+				leftDrives.set(-turnSpeed);
+				rightDrives.set(turnSpeed);
+			}
+			break;
+		case MOVE_FWRD:
+			if(moveDist < (rightEnc.getDistance() + leftEnc.getDistance())/2) {
+				stopMotors();
+				changeState(DriveState.STANDBY);
+				isMoving = false;
+			}else {
+				leftDrives.set(moveSpeed);
+				rightDrives.set(moveSpeed);
+			}
+			break;
+		case MOVE_BKWD:
+			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
+				stopMotors();
+				changeState(DriveState.STANDBY);
+				isMoving = false;
+			}else {
+				leftDrives.set(-moveSpeed);
+				rightDrives.set(-moveSpeed);
+			}
 			break;
 		}
 	}
@@ -158,17 +184,7 @@ public class Drives extends GenericSubsytem {
 	 * @param st - the state to switch to
 	 */
 	public void changeState(DriveState st) {
-		if(state == DriveState.AUTO && st == DriveState.RUNNING)
-			stopMotors();
 		state = st;
-		if(state == DriveState.RUNNING) {
-			//			rightPID.enable();
-			//			leftPID.enable();
-			//		}
-			//		else {
-			//			rightPID.disable();
-			//			leftPID.disable();
-		}
 	}
 
 	/**
@@ -182,62 +198,37 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * turns the robot the specified degrees
+	 * sets the variables and changes the state for turning
 	 * @param degree - the degree amount 
 	 * @param speed - the speed amount
 	 */
 	public void turn(int degree, int speed) {
-		isMoving = true;
 		gyro.zeroYaw();
-		if(degree > 0) {
-			do {
-				rightDrives.set(((double) speed)/100);
-				leftDrives.set(-((double) speed)/100);
-			}while(degree > gyro.getAngle());
-		}else {
-			do {
-				leftDrives.set(((double) speed)/100);
-				rightDrives.set(-((double) speed)/100);
-			}while(degree < gyro.getAngle());
-		}
-		stopMotors();
-		isMoving = false;
+		turnAngle = degree;
+		turnSpeed = speed/100.;
+		isMoving = true;
+		if(degree < 0) {
+			changeState(DriveState.TURN_L);
+		}else
+			changeState(DriveState.TURN_R);
 	}
 
 	/**
-	 * moves the robot a specified distance
+	 * sets the variables and changes the state for moving
 	 * @param dist - decimal value in feet
 	 * @param speed - the speed wanted to move
 	 */
 	public void move(double dist, int speed) {
-		isMoving = true;
-
-		boolean straightened = false;
-
-		leftEnc.reset();
 		rightEnc.reset();
-		gyro.zeroYaw();
-
-		speedRight = speed;
-		speedLeft = speed;
-
+		leftEnc.reset();
+		moveDist = dist;
+		moveSpeed = speed/100.;
+		isMoving = true;
 		if(dist > 0) {
-			while((leftEnc.getDistance() + rightEnc.getDistance())/2.0 < dist) {
-				if(!straightened)
-					straightened = straighten();
-				rightDrives.set(speedRight);
-				leftDrives.set(speedLeft);
-			}
+			changeState(DriveState.MOVE_FWRD);
 		}else {
-			while((leftEnc.getDistance() + rightEnc.getDistance())/2 > dist) {
-				if(!straightened)
-					straightened = straighten();
-				rightDrives.set(-speedRight);
-				leftDrives.set(-speedLeft);
-			}
+			changeState(DriveState.MOVE_BKWD);
 		}
-		stopMotors();
-		isMoving = false;
 	}
 
 	/**
@@ -246,12 +237,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straighten() {
 		if(gyro.getAngle() > 10) {
-			speedLeftOffset = speedLeft - (speedLeft * 0.1);
-			leftDrives.set(speedLeft);
+			speedLeft = speedLeft - (speedLeft * 0.1);
 			return true;
 		}if(gyro.getAngle() < -10) {
-			speedRightOffset = .1;
-			rightDrives.set(speedRight);
+			speedRight = speedRight - (speedRight * 0.1);
 			return true;
 		}
 		return false;
@@ -273,7 +262,7 @@ public class Drives extends GenericSubsytem {
 	 * @param switchingToClimb - true if driving, false if climbing
 	 */
 	public void PTOSwitch(boolean switchingToClimb) {
-		cylinder.set(switchingToClimb);
+		ptoSwitch.set(switchingToClimb);
 	}
 
 	/**
@@ -302,7 +291,7 @@ public class Drives extends GenericSubsytem {
 					break;
 			}else {     //on second part of loop, reset right encoder and test right motors
 				rightEnc.reset();
-				if(rightDrives.getSpeedController(i) != null) 
+				if(rightDrives.getSpeedController(i-3) != null) 
 					mtrTesting = (WPI_TalonSRX)rightDrives.getSpeedController(i-3);
 				else
 					break;
@@ -333,7 +322,7 @@ public class Drives extends GenericSubsytem {
 
 	@Override
 	public void forceStandby() {
-		
+
 	}
 
 	@Override
