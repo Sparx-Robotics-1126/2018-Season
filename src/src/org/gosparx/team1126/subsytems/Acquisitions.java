@@ -233,9 +233,20 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 	}
 
+	/**
+	 * Sets motors and actuators to default positions
+	 */
 	@Override
 	public void forceStandby() {
-		
+		rightMotorPower = MOTOR_STOP;
+		leftMotorPower = MOTOR_STOP;
+		wristPosition = RAISED;
+		pinchPosition = RELEASED;
+		setStandby();
+		rightIntake.set(rightMotorPower);
+		leftIntake.set(leftMotorPower);
+		wrist.set(wristPosition);
+		pincher.set(pinchPosition);
 	}
 
 	@Override
