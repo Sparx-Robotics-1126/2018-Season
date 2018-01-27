@@ -57,7 +57,7 @@ public class Acquisitions extends GenericSubsytem{
 	public enum State{
 		STANDBY,
 		RAISE,
-		LOWER,
+		ACQUIRE,
 		SCORE;
 	}
 	
@@ -75,6 +75,7 @@ public class Acquisitions extends GenericSubsytem{
 		pincher = new Solenoid(IO.PNU_PINCHER);
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
+		log("Successfully INITIALIZED");
 	}
 	
 	/**
@@ -88,7 +89,7 @@ public class Acquisitions extends GenericSubsytem{
 		case STANDBY:
 			return;
 		
-		case LOWER:
+		case ACQUIRE:
 			lower();
 			release();
 			rollerAcq();
@@ -108,6 +109,10 @@ public class Acquisitions extends GenericSubsytem{
 			release();
 			setStandby();
 			break;
+		
+		default:
+			log("STATE ERROR");
+			break;
 		}
 		
 		rightIntake.set(rightMotorPower);
@@ -123,6 +128,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	@Override
 	public DebuggerResult[] debug() {
+		log("Entered DEBUG");
 		wristPosition = !wristPosition;
 		pinchPosition = !pinchPosition;
 		wrist.set(wristPosition);
@@ -145,8 +151,9 @@ public class Acquisitions extends GenericSubsytem{
 	/**
 	 * Sets acquisition state to lower.
 	 */
-	public void setLower() {
-		AcqState = State.LOWER;
+	public void setAcquire() {
+		AcqState = State.ACQUIRE;
+		log("State set to ACQUIRE");
 	}
 	
 	
@@ -155,6 +162,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setRaise() {
 		AcqState = State.RAISE;
+		log("State set to RAISE");
 	}
 	
 	/**
@@ -162,6 +170,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setScore() {
 		AcqState = State.SCORE;
+		log("State set to SCORE");
 	}
 	
 	/**
@@ -169,6 +178,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setStandby() {
 		AcqState = State.STANDBY;
+		log("State set to STANDBY");
 	}
 	
 	/**
