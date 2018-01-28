@@ -3,6 +3,7 @@ package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
@@ -12,7 +13,7 @@ public class Elevations extends GenericSubsytem {
 	}
 
 
-	float height; //Height of elevator
+	double height; //Height of elevator
 	boolean homed; //Determines if input methods should be allowed
 	int top;
 	int middle;
@@ -21,7 +22,7 @@ public class Elevations extends GenericSubsytem {
 	WPI_TalonSRX motor1; 
 	WPI_TalonSRX motor2;
 	DigitalInput limitSwitch; //Limit switch at the bottom of winch
-	Encoder encoder; 
+	EncoderData encoder; 
 
 	enum State { //Execute decides what to do based on state
 		init,
@@ -41,25 +42,27 @@ public class Elevations extends GenericSubsytem {
 		floor = 0;
 		state = State.init;
 		height = 0; //height is not actually 0 yet, it will be at end of init
-		motor1 = new WPI_TalonSRX(0); //TODO: get actual motor ID
-		motor2 = new WPI_TalonSRX(0);
+		motor1 = new WPI_TalonSRX(1); //TODO: get actual motor ID
+		motor2 = new WPI_TalonSRX(2);
+		for(int i = 0; i>10; i++) {new WPI_TalonSRX(i);}
 		limitSwitch = new DigitalInput(2); //TODO: get actual channel  
-		encoder = new Encoder(0, 1); //TODO: find correct channels
+		encoder = new EncoderData(new Encoder(0, 1),0.1); //TODO: find correct channels
 		homed = false;
 	}
 
 	@Override
 	public void execute() {
-		height = encoder.get();
-		System.out.println("Encoder value "+height+"Limit "+limitSwitch.get());
+		encoder.calculateSpeed();
+		height = encoder.getDistance();
+		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 			case init:
 			{
+				setMotor(-.2);
 				if(!limitSwitch.get() && !homed)
 				{
-					motor1.stopMotor();
-					motor2.stopMotor();
+					stopAll();
 					//encoder.reset();
 					homed = true;
 					state = State.standBy;
@@ -72,16 +75,14 @@ public class Elevations extends GenericSubsytem {
 			}
 			case moveUp: //while in moveUp, elevator goes up to the top
 			{
-				if(top+deadBand>height 
-				&& top-deadBand<height)
+				if(top>height )
 				{
 					state = State.standBy;
 					break;
 				} 
 				else 
 				{
-					motor1.set(10);
-					motor2.set(10);
+					setMotor(.8);
 				}
 				break;
 			}
@@ -94,26 +95,22 @@ public class Elevations extends GenericSubsytem {
 				} 
 				else if(height>middle) //If below go up
 				{
-					motor1.set(10);
-					motor2.set(10);
+					setMotor(.8);
 				}
 				else //If above goes down
 				{
-					motor1.set(-10);
-					motor2.set(-10);
+					setMotor(-.8);
 				}
 				break;
 			case moveDown: //while in moveDown, elevator goes down
 			{
-				if(floor+deadBand>height 
-				&& floor-deadBand<height)
+				if(floor+deadBand>height)
 				{
 					state = State.standBy;
 					break;
 				}
 				else {
-					motor1.set(-10);
-					motor2.set(-10);
+					setMotor(-.8);
 				}
 				break;
 			}
@@ -163,14 +160,24 @@ public class Elevations extends GenericSubsytem {
 			state = State.standBy;
 			motor1.stopMotor();
 			motor2.stopMotor();
+			System.out.println("stoped");
 			return true;
 		}else {return false;}
 	}
 
 	@Override
 	public void forceStandby() {
-		
+		motor1.stopMotor();
+		motor2.stopMotor();
 	}
+	
+	public void setMotor(double speed)
+	{
+		System.out.println("Set motors with "+speed);
+		motor1.set(-speed);
+		motor2.set(speed);
+	}
+	
 
 	@Override
 	public boolean isDone() {
