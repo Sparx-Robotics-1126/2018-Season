@@ -13,12 +13,21 @@ public class MotorGroup extends SpeedControllerGroup{
 	 * MotorGroup extends speedControllerGroup, so it implements sendable and can control multiple motors at once
 	 * @param arg0 - the first motor in this group
 	 * @param arg1 - the second motor in this group
-	 * @param arg2 - the third motor in this group
 	 */
 	public MotorGroup(SpeedController arg0, SpeedController arg1) {
 		super(arg0, arg1);
-		//speedControllers = new SpeedController[]{arg0, arg1, arg2};
 		speedControllers = new SpeedController[]{arg0, arg1};
+	}
+	
+	/**
+	 * MotorGroup extends speedControllerGroup, so it implements sendable and can control multiple motors at once
+	 * @param arg0 - the first motor in this group
+	 * @param arg1 - the second motor in this group
+	 * @param arg2 - the third motor in this group
+	 */
+	public MotorGroup(SpeedController arg0, SpeedController arg1, SpeedController arg2) {
+		super(arg0, arg1, arg2);
+		speedControllers = new SpeedController[]{arg0, arg1, arg2};	
 	}
 
 	/**

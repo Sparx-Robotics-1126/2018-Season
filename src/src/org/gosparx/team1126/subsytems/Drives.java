@@ -46,7 +46,7 @@ public class Drives extends GenericSubsytem {
 
 	private AHRS gyro;
 
-	private SPI.Port port1;
+//	private SPI.Port port1;
 
 	private MotorGroup leftDrives;
 
@@ -99,7 +99,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
-		//addObjectsToShuffleboard();
+//		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -122,8 +122,8 @@ public class Drives extends GenericSubsytem {
 	 * Adds all the sendable objects to shuffleboard
 	 */
 	private void addObjectsToShuffleboard() {
-		//SmartDashboard.putData(leftEnc);
-		//SmartDashboard.putData(rightEnc);
+		SmartDashboard.putData(rawLeftEnc);
+		SmartDashboard.putData(rawRightEnc);
 		SmartDashboard.putData(gyro);
 		SmartDashboard.putData(rightDrives);
 		SmartDashboard.putData(leftDrives);
@@ -349,13 +349,13 @@ public class Drives extends GenericSubsytem {
 	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
 	 */
 	public DebuggerResult[] debug() {		//one CIM is enough to check the encoders per side, needs to be at least 0.5 power
-		DebuggerResult[] results = new DebuggerResult[6];
+		DebuggerResult[] results = new DebuggerResult[4];
 		long time = System.currentTimeMillis();
 		WPI_TalonSRX mtrTesting = null;
 
-		for(int i = 0; i < 6; i++) {
+		for(int i = 0; i < results.length; i++) {
 
-			if(i < 3) { //on first part of loop, reset left encoder and test left motors
+			if(i < results.length/2) { //on first part of loop, reset left encoder and test left motors
 				leftEnc.reset();
 				if(leftDrives.getSpeedController(i) != null)
 					mtrTesting = (WPI_TalonSRX)leftDrives.getSpeedController(i);
@@ -363,8 +363,8 @@ public class Drives extends GenericSubsytem {
 					break;
 			}else {     //on second part of loop, reset right encoder and test right motors
 				rightEnc.reset();
-				if(rightDrives.getSpeedController(i-3) != null) 
-					mtrTesting = (WPI_TalonSRX)rightDrives.getSpeedController(i-3);
+				if(rightDrives.getSpeedController(i - (results.length/2)) != null) 
+					mtrTesting = (WPI_TalonSRX)rightDrives.getSpeedController(i - (results.length/2));
 				else
 					break;
 			}
@@ -372,7 +372,7 @@ public class Drives extends GenericSubsytem {
 			mtrTesting.set(.5);
 			while(System.currentTimeMillis() < time + 5000) {  //After setting speed wait 5 seconds
 			}
-			if(i<3) {
+			if(i<results.length/2) {
 				if(leftEnc.getDistance() > 0) {
 					results[i] = new DebuggerResult("Drives", true, "Left Encoder worked on left motor " + i);
 				}else {
@@ -380,9 +380,9 @@ public class Drives extends GenericSubsytem {
 				}
 			}else {
 				if(rightEnc.getDistance() > 0) {
-					results[i] = new DebuggerResult("Drives", true, "Right Encoder worked on right motor " + (i - 3));
+					results[i] = new DebuggerResult("Drives", true, "Right Encoder worked on right motor " + (i - results.length/2));
 				}else {
-					results[i] = new DebuggerResult("Drives", false, "Right Encoder failed on right motor " + (i - 3));
+					results[i] = new DebuggerResult("Drives", false, "Right Encoder failed on right motor " + (i - results.length/2));
 				}
 			}
 		}
