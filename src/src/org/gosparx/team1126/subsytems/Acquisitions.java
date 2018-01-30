@@ -44,10 +44,14 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static double leftMotorPower;
 	
+	private static double pinchTime;
+	
+	private static double scoreTime;
+		
 	private static boolean pinchPosition;  //true = pinched 
 	
 	private static boolean wristPosition;  //true = lowered
-	
+		
 	
 	public Acquisitions() {
 		super("Acquisitions");
@@ -98,16 +102,20 @@ public class Acquisitions extends GenericSubsytem{
 			
 		case RAISE:
 			pinch();
-			stopRollers();
-			raise();
-			setStandby();
+			if (Timer.getFPGATimestamp() > pinchTime + 2){ //TODO get actual time
+				stopRollers();
+				raise();
+				setStandby();
+			}
 			break;
 			
 		case SCORE:
 			lower();
-			rollerScore();
-			release();
-			setStandby();
+			if (Timer.getFPGATimestamp() > scoreTime + 2){ //TODO get actual time
+				rollerScore();
+				release();
+				setStandby();
+			}
 			break;
 		
 		default:
@@ -152,8 +160,10 @@ public class Acquisitions extends GenericSubsytem{
 	 * Sets acquisition state to lower.
 	 */
 	public void setAcquire() {
-		AcqState = State.ACQUIRE;
-		log("State set to ACQUIRE");
+		if (AcqState != State.ACQUIRE){
+			AcqState = State.ACQUIRE;
+			log("State set to ACQUIRE");
+		}
 	}
 	
 	
@@ -161,24 +171,32 @@ public class Acquisitions extends GenericSubsytem{
 	 * Sets acquisition state to raise.
 	 */
 	public void setRaise() {
-		AcqState = State.RAISE;
-		log("State set to RAISE");
+		if (AcqState != State.RAISE){
+			AcqState = State.RAISE;
+			pinchTime = Timer.getFPGATimestamp();
+			log("State set to RAISE");
+		}
 	}
 	
 	/**
 	 * Sets acquisition state to score.
 	 */
 	public void setScore() {
-		AcqState = State.SCORE;
-		log("State set to SCORE");
+		if (AcqState != State.SCORE){
+			AcqState = State.SCORE;
+			scoreTime = Timer.getFPGATimestamp();
+			log("State set to SCORE");
+		}
 	}
 	
 	/**
 	 * Sets acquisition state to standby.
 	 */
 	public void setStandby() {
-		AcqState = State.STANDBY;
-		log("State set to STANDBY");
+		if (AcqState != State.STANDBY){
+			AcqState = State.STANDBY;
+			log("State set to STANDBY");
+		}
 	}
 	
 	/**
@@ -249,9 +267,18 @@ public class Acquisitions extends GenericSubsytem{
 		pincher.set(pinchPosition);
 	}
 
+	/**
+	 * Checks to see if Acquisitions is in Standby
+	 */
 	@Override
 	public boolean isDone() {
-		return false;
+		if (AcqState == State.STANDBY){
+			return true;
+		}
+		else{
+			
+			return false;
+		}
 	}
 
 	@Override
