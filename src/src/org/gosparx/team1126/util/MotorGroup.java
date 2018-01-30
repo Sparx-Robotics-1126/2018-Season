@@ -43,6 +43,14 @@ public class MotorGroup extends SpeedControllerGroup{
 	}
 	
 	/**
+	 * Get the size of this motor group
+	 * @return - the number of motors in this group
+	 */
+	public int getMtrCount() {
+		return speedControllers.length;
+	}
+	
+	/**
 	 * Sets the mode of operation during neutral throttle output for each speedController that is a WPI_TalonSRX 
 	 * @param neutralMode - The desired mode of operation when the Controller output throttle is neutral (ie brake/coast)
 	 */

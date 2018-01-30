@@ -349,47 +349,50 @@ public class Drives extends GenericSubsytem {
 	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
 	 */
 	public DebuggerResult[] debug() {		//one CIM is enough to check the encoders per side, needs to be at least 0.5 power
-		DebuggerResult[] results = new DebuggerResult[4];
-		long time = System.currentTimeMillis();
-		WPI_TalonSRX mtrTesting = null;
-
-		for(int i = 0; i < results.length; i++) {
-
-			if(i < results.length/2) { //on first part of loop, reset left encoder and test left motors
-				leftEnc.reset();
-				if(leftDrives.getSpeedController(i) != null)
-					mtrTesting = (WPI_TalonSRX)leftDrives.getSpeedController(i);
-				else
-					break;
-			}else {     //on second part of loop, reset right encoder and test right motors
-				rightEnc.reset();
-				if(rightDrives.getSpeedController(i - (results.length/2)) != null) 
-					mtrTesting = (WPI_TalonSRX)rightDrives.getSpeedController(i - (results.length/2));
-				else
-					break;
-			}
-
-			mtrTesting.set(.5);
-			while(System.currentTimeMillis() < time + 5000) {  //After setting speed wait 5 seconds
-			}
-			if(i<results.length/2) {
-				if(leftEnc.getDistance() > 0) {
-					results[i] = new DebuggerResult("Drives", true, "Left Encoder worked on left motor " + i);
-				}else {
-					results[i] = new DebuggerResult("Drives", false, "Left Encoder failed on left motor " + i);
-				}
-			}else {
-				if(rightEnc.getDistance() > 0) {
-					results[i] = new DebuggerResult("Drives", true, "Right Encoder worked on right motor " + (i - results.length/2));
-				}else {
-					results[i] = new DebuggerResult("Drives", false, "Right Encoder failed on right motor " + (i - results.length/2));
-				}
-			}
+		DebuggerResult[] results = new DebuggerResult[leftDrives.getMtrCount()+rightDrives.getMtrCount()];
+		
+		for(int i = 0; i < leftDrives.getMtrCount(); i++) {
+			results[i] = testMotor((WPI_TalonSRX)leftDrives.getSpeedController(i), leftEnc, i);		
 		}
-
-		if(mtrTesting == null)
-			results[5] = new DebuggerResult("Drives", false, "A motor was null");
+		for(int i = 0; i < rightDrives.getMtrCount(); i++) {
+			results[i+results.length/2] = testMotor((WPI_TalonSRX)rightDrives.getSpeedController(i), rightEnc, i);		
+		}
+		
+		for(int i = 0; i < results.length; i++) {
+			print("results "  + i + ": " + results[i].getMessage());
+		}
 		return results;
+	}
+	
+	/**
+	 * Tests a motor with a controller
+	 * @param mtrTesting - motor to test
+	 * @param encoder - encoder on the same side as the motors
+	 * @return- a debug result for the motor
+	 */
+	private DebuggerResult testMotor(WPI_TalonSRX mtrTesting, EncoderData encoder, int i) {
+		EncoderData enc = encoder;
+		WPI_TalonSRX mtr = mtrTesting;
+		long time = System.currentTimeMillis();
+		
+		if(mtrTesting == null) {
+			return new DebuggerResult("Drives", false, "The motor " + i + " was null");
+		}
+		mtr.set(.5);
+		
+		while(System.currentTimeMillis() < time + 5000) {  //After setting speed wait 5 seconds
+//			print("left encoder: " + leftEnc.getDistance());
+//			print("right encoder: " + rightEnc.getDistance());
+		}
+		
+		mtr.set(0);
+		print("Encoder: " + enc.getDistance());
+		if(enc.getDistance() > 0) {
+			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
+		}else {
+			return new DebuggerResult("Drives", false, "Encoder failed on motor " + i);
+		}
+		
 	}
 
 	@Override

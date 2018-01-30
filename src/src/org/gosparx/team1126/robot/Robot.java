@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot{
 	@Override
 	public void autonomousInit() {
 		drives.start();
-		drives.move(120, 60);
+		drives.move(1200, 60);
 		while(!drives.isDone()) {
 			try {
 				Thread.sleep(100);
@@ -32,16 +32,17 @@ public class Robot extends IterativeRobot{
 				e.printStackTrace();
 			}
 		}
-		drives.turn(165, 40);
-		while(!drives.isDone()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		drives.move(120, 60);
+//		drives.turn(165, 40);
+//		while(!drives.isDone()) {
+//			try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		drives.move(120, 60);
+		//drives.debug();
 	}
 	
 	@Override
