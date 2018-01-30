@@ -371,23 +371,29 @@ public class Drives extends GenericSubsytem {
 	 * @return- a debug result for the motor
 	 */
 	private DebuggerResult testMotor(WPI_TalonSRX mtrTesting, EncoderData encoder, int i) {
-		EncoderData enc = encoder;
 		WPI_TalonSRX mtr = mtrTesting;
 		long time = System.currentTimeMillis();
-		
+		encoder.reset();
 		if(mtrTesting == null) {
 			return new DebuggerResult("Drives", false, "The motor " + i + " was null");
 		}
 		mtr.set(.5);
 		
-		while(System.currentTimeMillis() < time + 5000) {  //After setting speed wait 5 seconds
-//			print("left encoder: " + leftEnc.getDistance());
+		while(System.currentTimeMillis() < time + 1500) {  //After setting speed wait 5 seconds
+			encoder.calculateSpeed();
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			print("encoder: " + encoder.getDistance());
 //			print("right encoder: " + rightEnc.getDistance());
 		}
 		
 		mtr.set(0);
-		print("Encoder: " + enc.getDistance());
-		if(enc.getDistance() > 0) {
+		print("Encoder: " + encoder.getDistance());
+		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {
 			return new DebuggerResult("Drives", false, "Encoder failed on motor " + i);
