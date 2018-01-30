@@ -1,6 +1,7 @@
 package src.org.gosparx.team1126.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class Robot extends IterativeRobot{
@@ -10,6 +11,7 @@ public class Robot extends IterativeRobot{
 	public void robotInit() {
 		elevator = new Elevations();
 		elevator.init();
+		elevator.start();
 	}
 	
 	@Override
@@ -20,8 +22,17 @@ public class Robot extends IterativeRobot{
 
 	@Override
 	public void teleopPeriodic() {
+		Joystick joy = new Joystick(1);
 		while(true) {
-			elevator.execute();
+			if(joy.getRawButton(1)) {
+				elevator.goSwitch();
+			}
+			else if(joy.getRawButton(2)) {
+				elevator.goScale();
+			}
+			else if(joy.getRawButton(3)) {
+				elevator.goFloor();
+			}
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
