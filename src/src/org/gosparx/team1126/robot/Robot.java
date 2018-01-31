@@ -11,6 +11,10 @@ public class Robot extends IterativeRobot{
 	public void robotInit() {
 		elevator = new Elevations();
 		elevator.init();
+		System.out.println("goFloor returns "+elevator.goFloor());
+		System.out.println("goScale returns "+elevator.goScale());
+		System.out.println("goSwitch reuturns "+elevator.goSwitch());
+		System.out.println("All should be false");
 		elevator.start();
 	}
 	

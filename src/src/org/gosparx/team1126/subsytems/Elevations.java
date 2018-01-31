@@ -167,7 +167,7 @@ public class Elevations extends GenericSubsytem {
 	}
 
 	@Override
-	public void forceStandby() {
+	public void forceStandby() { //Use sparingly, might break init
 		motor1.stopMotor();
 		motor2.stopMotor();
 	}
