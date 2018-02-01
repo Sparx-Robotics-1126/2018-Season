@@ -46,12 +46,18 @@ public class Drives extends GenericSubsytem {
 
 	private AHRS gyro;
 
-//	private SPI.Port port1;
-
 	private MotorGroup leftDrives;
 
 	private MotorGroup rightDrives;
 
+	//-------------------------------------------------------Constants------------------------------------------------------------
+	
+	private final double DECIMAL_TO_SLOW = .8;		//What part of the way to destination in auto we start moving at a slow speed
+	
+	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy
+	
+	private final double KEVIN = .2;                //The variable which changes the speed till the angle is adjusted
+	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -79,27 +85,26 @@ public class Drives extends GenericSubsytem {
 	public void init() {
 		rightMtr1 = new WPI_TalonSRX(IO.rightDriveCIM1);
 		rightMtr2 = new WPI_TalonSRX(IO.rightDriveCIM2);
-		//rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
+		rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
 		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
 		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
-		//leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
+		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
-		rightEnc = new EncoderData(rawRightEnc, 0.032);
-		leftEnc = new EncoderData(rawLeftEnc, -0.032);
-		//ptoSwitch = new Solenoid(IO.ptoSwitch);
-		//port1 = new SPI.Port(0);
+		rightEnc = new EncoderData(rawRightEnc, 0);
+		leftEnc = new EncoderData(rawLeftEnc, 0);
+		ptoSwitch = new Solenoid(IO.ptoSwitch);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
 		moveSpeed = 0;
-		rightDrives = new MotorGroup(rightMtr1, rightMtr2);
-		leftDrives = new MotorGroup(leftMtr1, leftMtr2);
+		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
+		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
-//		addObjectsToShuffleboard();
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -111,11 +116,11 @@ public class Drives extends GenericSubsytem {
 	 */
 	public enum DriveState{
 		STANDBY,
-		TURN_R,
-		TURN_L,
+		TELEOP,
 		MOVE_FWRD,
 		MOVE_BKWD,
-		TELEOP;
+		TURN_R,
+		TURN_L;
 	}
 
 	/**
@@ -133,9 +138,10 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * runs drives code based on state
-	 * When standby or auto - do nothing
-	 * When Running - sets motor speeds based on joystick values
-	 */
+	 * When standby - do nothing
+	 * When teleop - sets motor speeds based on joystick values
+	 * when in any auto method - waits till task is complete and switches to standby
+ 	 */
 	@Override
 	public void execute() {
 		switch(state) {
@@ -152,12 +158,12 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() > turnAngle * 0.8){
-				turnSpeed = 0.2;
+			}else if(gyro.getAngle() > turnAngle * DECIMAL_TO_SLOW){
+				turnSpeed = SLOW_SPEED;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
-				print("angle: " + gyro.getAngle());
+				//print("angle: " + gyro.getAngle());
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}
@@ -167,12 +173,12 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() < turnAngle * 0.8) {
-				turnSpeed = 0.2;
+			}else if(gyro.getAngle() < turnAngle * DECIMAL_TO_SLOW) {
+				turnSpeed = SLOW_SPEED;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}else {
-				print("angle: " + gyro.getAngle());
+				//print("angle: " + gyro.getAngle());
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}
@@ -184,8 +190,8 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*.8)<rightEnc.getDistance() + leftEnc.getDistance()/2){
-				moveSpeed = .3;
+			}else if((moveDist*DECIMAL_TO_SLOW)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+				moveSpeed = SLOW_SPEED;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
@@ -196,15 +202,15 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*.8)<rightEnc.getDistance() + leftEnc.getDistance()/2){
-				moveSpeed = .3;
+			}else if((moveDist*DECIMAL_TO_SLOW)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+				moveSpeed = SLOW_SPEED;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
@@ -217,7 +223,7 @@ public class Drives extends GenericSubsytem {
 				leftEnc.calculateSpeed();
 				rightEnc.calculateSpeed();
 			}
-			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -227,7 +233,6 @@ public class Drives extends GenericSubsytem {
 	 * @param st - the state to switch to
 	 */
 	public void changeState(DriveState st) {
-		print("change state");
 		state = st;
 		if(state == DriveState.TELEOP) {
 			leftDrives.setNeutralMode(NeutralMode.Coast);
@@ -248,7 +253,7 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * sets the variables and changes the state for turning
 	 * @param degree - the degree amount 
-	 * @param speed - the speed amount
+	 * @param speed - the speed amount, -100 to 100
 	 */
 	public void turn(int degree, int speed) {
 		gyro.zeroYaw();
@@ -262,9 +267,9 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * sets the variables and changes the state for moving
+	 * sets the parameters to variables and changes the state for moving
 	 * @param dist - decimal value in inches
-	 * @param speed - the speed wanted to move
+	 * @param speed - the speed amount, -100 to 100
 	 */
 	public void move(double dist, int speed) {
 		gyro.zeroYaw();
@@ -277,10 +282,8 @@ public class Drives extends GenericSubsytem {
 		isMoving = true;
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
-			print("moving frwd");
 		}else {
 			changeState(DriveState.MOVE_BKWD);
-			print("moving bkwd");
 		}
 	}
 
@@ -290,10 +293,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straightenForward() {
 		if(gyro.getAngle() > 2) {
-			speedRight = moveSpeed * 0.2;
+			speedRight = moveSpeed * KEVIN;
 			return true;
 		}else if(gyro.getAngle() < -2) {
-			speedLeft = moveSpeed * 0.2;
+			speedLeft = moveSpeed * KEVIN;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -309,10 +312,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straightenBackward() {
 		if(gyro.getAngle() > 2) {
-			speedLeft = moveSpeed * 0.2;
+			speedLeft = moveSpeed * KEVIN;
 			return true;
 		}else if(gyro.getAngle() < -2) {
-			speedRight = moveSpeed * 0.2;
+			speedRight = moveSpeed * KEVIN;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -348,7 +351,7 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
 	 */
-	public DebuggerResult[] debug() {		//one CIM is enough to check the encoders per side, needs to be at least 0.5 power
+	public DebuggerResult[] debug() {	
 		DebuggerResult[] results = new DebuggerResult[leftDrives.getMtrCount()+rightDrives.getMtrCount()];
 		
 		for(int i = 0; i < leftDrives.getMtrCount(); i++) {
@@ -358,9 +361,6 @@ public class Drives extends GenericSubsytem {
 			results[i+results.length/2] = testMotor((WPI_TalonSRX)rightDrives.getSpeedController(i), rightEnc, i);		
 		}
 		
-		for(int i = 0; i < results.length; i++) {
-			print("results "  + i + ": " + results[i].getMessage());
-		}
 		return results;
 	}
 	
@@ -379,20 +379,11 @@ public class Drives extends GenericSubsytem {
 		}
 		mtr.set(.5);
 		
-		while(System.currentTimeMillis() < time + 1500) {  //After setting speed wait 5 seconds
-			encoder.calculateSpeed();
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			print("encoder: " + encoder.getDistance());
-//			print("right encoder: " + rightEnc.getDistance());
+		while(System.currentTimeMillis() < time + 1500) { 
 		}
 		
 		mtr.set(0);
-		print("Encoder: " + encoder.getDistance());
+		//print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {

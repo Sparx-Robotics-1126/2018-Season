@@ -13,8 +13,8 @@ public class IO {
 	
 //----------------------------------------------------Sensors----------------------------------------------------------------------
 	
-	public static final int leftDriveEncoderChannel1																	= 10;
-	public static final int leftDriveEncoderChannel2																	= 11;
+	public static final int leftDriveEncoderChannel1																	= 22;
+	public static final int leftDriveEncoderChannel2																	= 23;
 	public static final int rightDriveEncoderChannel1																	= 12;
 	public static final int rightDriveEncoderChannel2																	= 13;
 	//public static final int gyro																						= 0;

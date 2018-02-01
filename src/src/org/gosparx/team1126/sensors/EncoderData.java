@@ -69,8 +69,10 @@ public class EncoderData {
         else
         	reverseCount += deltaCount;
         
-        if (elapsedTime < 18000)
+        if (elapsedTime < 18000) {
+        	System.out.print("elapsed time: " + elapsedTime);
             return;
+        }
         
         tempCount = encoderCount - lastSpeedCount;
         lastSpeedCount = encoderCount;
@@ -79,6 +81,7 @@ public class EncoderData {
         speed = ((tempCount > 0 ? distPerTickForward : 
         	distPerTickReverse) * tempCount) /
         	(elapsedTime / 1000000.0);
+        System.out.print("encoder count: " + encoderCount);
     }
     
     /**
