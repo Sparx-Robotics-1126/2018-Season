@@ -83,17 +83,17 @@ public class Drives extends GenericSubsytem {
 	 * initializes all variables
 	 */
 	public void init() {
-		rightMtr1 = new WPI_TalonSRX(IO.rightDriveCIM1);
-		rightMtr2 = new WPI_TalonSRX(IO.rightDriveCIM2);
-		rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
-		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
-		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
-		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
-		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
-		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
+		rightMtr1 = new WPI_TalonSRX(0);
+		rightMtr2 = new WPI_TalonSRX(0);
+		rightMtr3 = new WPI_TalonSRX(0);
+		leftMtr1 = new WPI_TalonSRX(0);
+		leftMtr2 = new WPI_TalonSRX(0);
+		leftMtr3 = new WPI_TalonSRX(0);
+		rawRightEnc = new Encoder(0, 0);
+		rawLeftEnc = new Encoder(0, 0);
 		rightEnc = new EncoderData(rawRightEnc, 0);
 		leftEnc = new EncoderData(rawLeftEnc, 0);
-		ptoSwitch = new Solenoid(IO.ptoSwitch);
+		ptoSwitch = new Solenoid(0);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
@@ -420,3 +420,31 @@ public class Drives extends GenericSubsytem {
 	}
 
 }
+
+
+
+
+//public class IO {
+//
+////----------------------------------------------------Motors-----------------------------------------------------------------------
+//
+//public static final int leftDriveCIM1																				= 10;	//motor 0	
+//public static final int leftDriveCIM2																				= 11;	//motor 1
+//public static final int leftDriveCIM3																				= 0;	//motor 2
+//public static final int rightDriveCIM1																				= 4;	//motor 3
+//public static final int rightDriveCIM2																				= 5;	//motor 4
+//public static final int rightDriveCIM3																				= 0;	//motor 5
+//
+////----------------------------------------------------Sensors----------------------------------------------------------------------
+//
+//public static final int leftDriveEncoderChannel1																	= 22;
+//public static final int leftDriveEncoderChannel2																	= 23;
+//public static final int rightDriveEncoderChannel1																	= 12;
+//public static final int rightDriveEncoderChannel2																	= 13;
+////public static final int gyro																						= 0;
+//
+////--------------------------------------------------Miscellaneous------------------------------------------------------------------
+//public static final int ptoSwitch																					= 0;
+//
+//
+//}
