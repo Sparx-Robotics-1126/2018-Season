@@ -3,6 +3,7 @@ package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Solenoid;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
@@ -19,6 +20,7 @@ public class Elevations extends GenericSubsytem {
 	int floor; 
 	WPI_TalonSRX motor1; 
 	WPI_TalonSRX motor2;
+	Solenoid breaker;
 	DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	EncoderData encoder; 
 	
