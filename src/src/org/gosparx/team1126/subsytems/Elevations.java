@@ -44,6 +44,7 @@ public class Elevations extends GenericSubsytem {
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(6); //TODO: get actual motor ID
 		motor2 = new WPI_TalonSRX(9);
+		breaker = new Solenoid(4);
 		limitSwitch = new DigitalInput(20); //TODO: get actual channel  
 		encoder = new EncoderData(new Encoder(23, 22),0.1); //TODO: find correct channels
 	}
@@ -163,6 +164,7 @@ public class Elevations extends GenericSubsytem {
 			state = State.standBy;
 			motor1.stopMotor();
 			motor2.stopMotor();
+			setSolenoid(false);
 			System.out.println("stoped");
 			return true;
 		}else {return false;}
@@ -172,13 +174,18 @@ public class Elevations extends GenericSubsytem {
 	public void forceStandby() { //Use sparingly, might break init
 		motor1.stopMotor();
 		motor2.stopMotor();
+		setSolenoid(false);
 	}
 	
-	public void setMotor(double speed)
+	private void setMotor(double speed)
 	{
 		System.out.println("Set motors with "+speed);
 		motor1.set(speed);
 		motor2.set(-speed);
+	}
+	
+	private void setSolenoid(boolean power) {
+		breaker.set(power);
 	}
 	
 
