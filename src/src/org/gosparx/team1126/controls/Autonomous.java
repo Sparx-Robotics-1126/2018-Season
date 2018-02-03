@@ -44,7 +44,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 70, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 76, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -52,6 +52,19 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 
+	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 262, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 70, 40},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)}
+	};
+	
 	public Autonomous(Drives drives) {
 		autoStep = 0;
 		isRightAllySwitch = false;
@@ -66,6 +79,7 @@ public class Autonomous implements Controls {
 		autoChooser.addObject("Cross The Border", AutoSelected.CROSSBORDER);
 		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
 		autoChooser.addObject("Score The Switch", AutoSelected.SWITCH);
+		autoChooser.addObject("Score The Switch + Acquire", AutoSelected.SWITCHACQ);
 		autoChooser.addObject("Score The Switch + Scale", AutoSelected.SWITCHSCALE);
 
 		SmartDashboard.putData(autoChooser);
@@ -159,6 +173,9 @@ public class Autonomous implements Controls {
 				case SWITCHSCALE:
 					currentAuto = DEFAULT_AUTO;
 					break;
+				case SWITCHACQ:
+					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
@@ -176,6 +193,9 @@ public class Autonomous implements Controls {
 					break;
 				case SWITCHSCALE:
 					currentAuto = DEFAULT_AUTO;
+					break;
+				case SWITCHACQ:
+					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE;
 					break;
 				}
 			}
@@ -197,6 +217,9 @@ public class Autonomous implements Controls {
 				case SWITCHSCALE:
 					currentAuto = DEFAULT_AUTO;
 					break;
+				case SWITCHACQ:
+					currentAuto = DEFAULT_AUTO;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
@@ -213,6 +236,9 @@ public class Autonomous implements Controls {
 					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT;
 					break;
 				case SWITCHSCALE:
+					currentAuto = DEFAULT_AUTO;
+					break;
+				case SWITCHACQ:
 					currentAuto = DEFAULT_AUTO;
 					break;
 				}
@@ -256,7 +282,8 @@ public class Autonomous implements Controls {
 		SCALE,
 		CROSSBORDER,
 		SWITCH,
-		SWITCHSCALE;
+		SWITCHSCALE,
+		SWITCHACQ;
 
 	}
 
