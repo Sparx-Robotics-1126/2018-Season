@@ -54,9 +54,9 @@ public class Drives extends GenericSubsytem {
 
 	private final double DECIMAL_TO_SLOW = .7;		//What part of the way to destination in auto we start moving at a slow speed
 
-	private final double SLOW_SPEED = .15;			//The speed we move at in auto when almost at destination to achieve higher accuracy
+	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy
 
-	private final int DEADBAND_TELL_NO_TALES = 2;	//The deadband inside which a turn will stop, so robot doesn't over-turn
+	private final int DEADBAND_TELL_NO_TALES = 20;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 	
 	private final double KEVIN = .7;                //The variable which changes the speed till the angle is adjusted
 
@@ -164,7 +164,7 @@ public class Drives extends GenericSubsytem {
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			}else if(gyro.getAngle() > turnAngle * .2){
-				turnSpeed = .05;
+				turnSpeed = .2;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
