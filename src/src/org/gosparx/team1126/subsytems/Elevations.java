@@ -45,6 +45,7 @@ public class Elevations extends GenericSubsytem {
 		motor1 = new WPI_TalonSRX(6); //TODO: get actual motor ID
 		motor2 = new WPI_TalonSRX(9);
 		breaker = new Solenoid(4);
+		setSolenoid(true);
 		limitSwitch = new DigitalInput(20); //TODO: get actual channel  
 		encoder = new EncoderData(new Encoder(23, 22),0.1); //TODO: find correct channels
 	}
