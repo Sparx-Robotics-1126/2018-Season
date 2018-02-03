@@ -54,7 +54,7 @@ public class Drives extends GenericSubsytem {
 
 	private final double DECIMAL_TO_SLOW = .8;		//What part of the way to destination in auto we start moving at a slow speed
 
-	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy
+	private final double SLOW_SPEED = .3;			//The speed we move at in auto when almost at destination to achieve higher accuracy
 
 	private final double KEVIN = .2;                //The variable which changes the speed till the angle is adjusted
 
@@ -92,6 +92,8 @@ public class Drives extends GenericSubsytem {
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
 		//ptoSwitch = new Solenoid(0);
+		leftEnc = new EncoderData(rawLeftEnc, 0.032);
+		rightEnc = new EncoderData(rawRightEnc, -0.032);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
@@ -188,7 +190,7 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*DECIMAL_TO_SLOW)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+			}else if((moveDist*DECIMAL_TO_SLOW) < (rightEnc.getDistance() + leftEnc.getDistance())/2){
 				moveSpeed = SLOW_SPEED;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
@@ -200,7 +202,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
@@ -221,7 +223,7 @@ public class Drives extends GenericSubsytem {
 				leftEnc.calculateSpeed();
 				rightEnc.calculateSpeed();
 			}
-			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -278,6 +280,7 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
+		print("MOVING");
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
 		}else {

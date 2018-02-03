@@ -13,10 +13,10 @@ public static final int rightDriveCIM3																				= 0;	//motor 5
 
 //----------------------------------------------------Sensors----------------------------------------------------------------------
 
-public static final int leftDriveEncoderChannel1																	= 22;
-public static final int leftDriveEncoderChannel2																	= 23;
-public static final int rightDriveEncoderChannel1																	= 12;
-public static final int rightDriveEncoderChannel2																	= 13;
+public static final int leftDriveEncoderChannel1																	= 12;
+public static final int leftDriveEncoderChannel2																	= 13;
+public static final int rightDriveEncoderChannel1																	= 10;
+public static final int rightDriveEncoderChannel2																	= 11;
 //public static final int gyro																						= 0;
 
 //--------------------------------------------------Miscellaneous------------------------------------------------------------------
