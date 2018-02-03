@@ -21,7 +21,7 @@ public class RobotSystem extends Thread{
 		drives = new Drives();
 		drives.init();
 		currentState = RobotState.STANDBY;
-		autoControl = new Autonomous();
+		autoControl = new Autonomous(drives);
 		teleopControl = new TeleOP(drives);
 		currentControl = null;
 	}
