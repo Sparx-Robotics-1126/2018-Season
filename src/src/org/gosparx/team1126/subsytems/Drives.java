@@ -51,13 +51,13 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup rightDrives;
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
-	
+
 	private final double DECIMAL_TO_SLOW = .8;		//What part of the way to destination in auto we start moving at a slow speed
-	
+
 	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy
-	
+
 	private final double KEVIN = .2;                //The variable which changes the speed till the angle is adjusted
-	
+
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -83,28 +83,26 @@ public class Drives extends GenericSubsytem {
 	 * initializes all variables
 	 */
 	public void init() {
-		rightMtr1 = new WPI_TalonSRX(0);
-		rightMtr2 = new WPI_TalonSRX(0);
-		rightMtr3 = new WPI_TalonSRX(0);
-		leftMtr1 = new WPI_TalonSRX(0);
-		leftMtr2 = new WPI_TalonSRX(0);
-		leftMtr3 = new WPI_TalonSRX(0);
-		rawRightEnc = new Encoder(0, 0);
-		rawLeftEnc = new Encoder(0, 0);
-		rightEnc = new EncoderData(rawRightEnc, 0);
-		leftEnc = new EncoderData(rawLeftEnc, 0);
-		ptoSwitch = new Solenoid(0);
+		rightMtr1 = new WPI_TalonSRX(IO.rightDriveCIM1);
+		rightMtr2 = new WPI_TalonSRX(IO.rightDriveCIM2);
+		rightMtr3 = new WPI_TalonSRX(IO.rightDriveCIM3);
+		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
+		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
+		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
+		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
+		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
+		//ptoSwitch = new Solenoid(0);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
 		moveSpeed = 0;
-		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
-		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
+		rightDrives = new MotorGroup(rightMtr1, rightMtr2);
+		leftDrives = new MotorGroup(leftMtr1, leftMtr2);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
-		addObjectsToShuffleboard();
+		//addObjectsToShuffleboard();
 	}
 
 	/**
@@ -141,7 +139,7 @@ public class Drives extends GenericSubsytem {
 	 * When standby - do nothing
 	 * When teleop - sets motor speeds based on joystick values
 	 * when in any auto method - waits till task is complete and switches to standby
- 	 */
+	 */
 	@Override
 	public void execute() {
 		switch(state) {
@@ -353,17 +351,17 @@ public class Drives extends GenericSubsytem {
 	 */
 	public DebuggerResult[] debug() {	
 		DebuggerResult[] results = new DebuggerResult[leftDrives.getMtrCount()+rightDrives.getMtrCount()];
-		
+
 		for(int i = 0; i < leftDrives.getMtrCount(); i++) {
 			results[i] = testMotor((WPI_TalonSRX)leftDrives.getSpeedController(i), leftEnc, i);		
 		}
 		for(int i = 0; i < rightDrives.getMtrCount(); i++) {
 			results[i+results.length/2] = testMotor((WPI_TalonSRX)rightDrives.getSpeedController(i), rightEnc, i);		
 		}
-		
+
 		return results;
 	}
-	
+
 	/**
 	 * Tests a motor with a controller
 	 * @param mtrTesting - motor to test
@@ -378,10 +376,10 @@ public class Drives extends GenericSubsytem {
 			return new DebuggerResult("Drives", false, "The motor " + i + " was null");
 		}
 		mtr.set(.5);
-		
+
 		while(System.currentTimeMillis() < time + 1500) { 
 		}
-		
+
 		mtr.set(0);
 		//print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
@@ -389,7 +387,7 @@ public class Drives extends GenericSubsytem {
 		}else {
 			return new DebuggerResult("Drives", false, "Encoder failed on motor " + i);
 		}
-		
+
 	}
 
 	@Override
