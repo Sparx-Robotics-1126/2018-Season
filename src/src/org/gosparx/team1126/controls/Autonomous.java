@@ -2,6 +2,7 @@ package src.org.gosparx.team1126.controls;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous extends Controls {
 
@@ -13,14 +14,11 @@ public class Autonomous extends Controls {
 	
 	private int autoStep;
 	
-	private String fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
+	private String fieldConditions;
 	
 	private boolean firstRun;
 	
 	private SendableChooser<AutoSelected> autoChooser;
-	
-	//private int selectedAuto;
-	//used to hold a reference to a sendableChooser Object
 	
 	private int[][] currentAuto;
 	
@@ -77,29 +75,17 @@ public class Autonomous extends Controls {
 		isRightOpponentSwitch = false;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
-		//test
+		
+		fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
 		autoChooser.addDefault("Do Nothing", selectedAuto = AutoSelected.NOTHING);
 		autoChooser.addObject("Cross The Border", selectedAuto = AutoSelected.CROSSBORDER);
 		autoChooser.addObject("Score The Scale", selectedAuto = AutoSelected.SCALE);
 		autoChooser.addObject("Score The Switch", selectedAuto = AutoSelected.SWITCH);
-		//Use these to create the default and buttons that are to be selected
 		
-		
-
-		//DriverStation.getInstance().getGameSpecificMessage(); //-> 3 character string
+		SmartDashboard.putData(autoChooser);
 	}
 	
-	public enum Locations {
-		//location on the board where the robot can go, NOT where it is
-		
-		STARTINGPOSITIONLEFT, STARTINGPOSITIONMIDDLE, STARTINGPOSITIONRIGHT,
-		NULLLEFT, NULLRIGHT,
-		PASTLINELEFTCLOSE, PASTLINELEFTFAR,
-		PASTLINERIGHTCLOSE, PASTLINERIGHTFAR,
-		PLATFORMZONEOFFRAMP, PLATFORMZONEONRAMP
-		
-		
-	}
+
 
 	//check for rules before competition
 	public boolean setFieldConditions() {
@@ -117,92 +103,101 @@ public class Autonomous extends Controls {
 
 	}
 
+	
 	@Override
 	public void execute() {
 		//kill thread after auto done?
 		if(isAutonomous() && isEnabled()) {
 			if(!firstRun) {
 				if(setFieldConditions()) {
-					firstRun = true;
-					if(isRightAllySwitch) {
-						if(isRightScale) {
-							switch(selectedAuto) {
-							case NOTHING:
-								currentAuto = TESTAUTO;
-							case SCALE:
-								currentAuto = TESTAUTO1;
-							case CROSSBORDER:
-								currentAuto = TESTAUTO2;
-							case SWITCH:
-								currentAuto = TESTAUTO3;
-							}
-						} else {
-							switch(selectedAuto) {
-							case NOTHING:
-								currentAuto = TESTAUTO;
-							case SCALE:
-								currentAuto = TESTAUTO1;
-							case CROSSBORDER:
-								currentAuto = TESTAUTO2;
-							case SWITCH:
-								currentAuto = TESTAUTO3;
-							}
-						}
-					} else {
-						if(isRightScale) {
-							switch(selectedAuto) {
-							case NOTHING:
-								currentAuto = TESTAUTO;
-							case SCALE:
-								currentAuto = TESTAUTO1;
-							case CROSSBORDER:
-								currentAuto = TESTAUTO2;
-							case SWITCH:
-								currentAuto = TESTAUTO3;
-							}
-						} else {
-							switch(selectedAuto) {
-							case NOTHING:
-								currentAuto = TESTAUTO;
-							case SCALE:
-								currentAuto = TESTAUTO1;
-							case CROSSBORDER:
-								currentAuto = TESTAUTO2;
-							case SWITCH:
-								currentAuto = TESTAUTO3;
-							}
-						}
-					}
+					setAuto();
 				}
 			} else {
-				if(currentAuto.length > autoStep) {
-					switch(currentAuto[autoStep][0]) {
-					case 0: //DRIVES_FORWARD
-						//code
-						autoStep++;
-						break;
-					case 1: //DRIVES_BACKWARD
-						autoStep++;
-						break;
-					case 2: //DRIVES_TURNLEFT
-						autoStep++;
-						break;
-					case 3: //DRIVES_TURNRIGHT
-						autoStep++;
-						break;
-					case 4: //DRIVES_WAIT
-						autoStep++;
-						break;
-					case 5: //DRIVES_STOP
-						autoStep++;
-						break;
-					default:
-						break;
-					}
-				}
+				runAuto();
 			}
 		}
 	} 
+	
+	private void runAuto() {
+		if(currentAuto.length > autoStep) {
+			switch(currentAuto[autoStep][0]) {
+			case 0: //DRIVES_FORWARD
+				//code
+				autoStep++;
+				break;
+			case 1: //DRIVES_BACKWARD
+				autoStep++;
+				break;
+			case 2: //DRIVES_TURNLEFT
+				autoStep++;
+				break;
+			case 3: //DRIVES_TURNRIGHT
+				autoStep++;
+				break;
+			case 4: //DRIVES_WAIT
+				autoStep++;
+				break;
+			case 5: //DRIVES_STOP
+				autoStep++;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	private void setAuto() {
+		firstRun = true;
+		if(isRightAllySwitch) {
+			if(isRightScale) {
+				switch(selectedAuto) {
+				case NOTHING:
+					currentAuto = TESTAUTO;
+				case SCALE:
+					currentAuto = TESTAUTO1;
+				case CROSSBORDER:
+					currentAuto = TESTAUTO2;
+				case SWITCH:
+					currentAuto = TESTAUTO3;
+				}
+			} else {
+				switch(selectedAuto) {
+				case NOTHING:
+					currentAuto = TESTAUTO;
+				case SCALE:
+					currentAuto = TESTAUTO1;
+				case CROSSBORDER:
+					currentAuto = TESTAUTO2;
+				case SWITCH:
+					currentAuto = TESTAUTO3;
+				}
+			}
+		} else {
+			if(isRightScale) {
+				switch(selectedAuto) {
+				case NOTHING:
+					currentAuto = TESTAUTO;
+				case SCALE:
+					currentAuto = TESTAUTO1;
+				case CROSSBORDER:
+					currentAuto = TESTAUTO2;
+				case SWITCH:
+					currentAuto = TESTAUTO3;
+				}
+			} else {
+				switch(selectedAuto) {
+				case NOTHING:
+					currentAuto = TESTAUTO;
+				case SCALE:
+					currentAuto = TESTAUTO1;
+				case CROSSBORDER:
+					currentAuto = TESTAUTO2;
+				case SWITCH:
+					currentAuto = TESTAUTO3;
+				}
+			}
+		}
+	}
 
 	public enum AutoState{
 		
@@ -240,6 +235,18 @@ public class Autonomous extends Controls {
 		SWITCH;
 		
 	}
+	
+//	public enum Locations {
+//	//location on the board where the robot can go, NOT where it is
+//	
+//	STARTINGPOSITIONLEFT, STARTINGPOSITIONMIDDLE, STARTINGPOSITIONRIGHT,
+//	NULLLEFT, NULLRIGHT,
+//	PASTLINELEFTCLOSE, PASTLINELEFTFAR,
+//	PASTLINERIGHTCLOSE, PASTLINERIGHTFAR,
+//	PLATFORMZONEOFFRAMP, PLATFORMZONEONRAMP
+//	
+//	
+//}
 	
 	
 }

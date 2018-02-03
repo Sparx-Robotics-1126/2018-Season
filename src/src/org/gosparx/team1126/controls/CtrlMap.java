@@ -35,7 +35,7 @@ public class CtrlMap {
 	public static final int RIGHTJOYSTICK = 1;
 	public static final int XBOXCONTROLLER = 2;
 	
-	public static final double DEADBAND = 0.05;
+	public static final double DEADBAND = 0.075;
 	
 	public static final int POV_UP = 0;
 	public static final int POV_RIGHT = 1;
