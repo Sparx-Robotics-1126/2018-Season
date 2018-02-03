@@ -241,13 +241,19 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * moves robot according to joystick values, -100 to 100
+	 * moves right motors to joystick value, -1 to 1
 	 * @param speedR - the right joystick speed
+	 */
+	public void joystickRight(double speedR) {
+		speedRight = speedR;
+	}
+	
+	/**
+	 * moves left motors to joystick value, -1 to 1
 	 * @param speedL - the left joystick speed
 	 */
-	public void joysticks(int speedR, int speedL) {
-		speedRight = speedR/100.0;
-		speedLeft = speedL/100.0;	
+	public void joystickLeft(double speedL) {
+		speedLeft = speedL;
 	}
 
 	/**
@@ -268,10 +274,10 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * sets the parameters to variables and changes the state for moving
-	 * @param dist - decimal value in inches
+	 * @param dist - value in inches
 	 * @param speed - the speed amount, -100 to 100
 	 */
-	public void move(double dist, int speed) {
+	public void move(int dist, int speed) {
 		gyro.zeroYaw();
 		rightEnc.reset();
 		leftEnc.reset();
