@@ -44,7 +44,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 76, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 88, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -62,6 +62,15 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)}
+	};
+	
+	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 368, 80},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 40},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 35, 31},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	
@@ -227,7 +236,7 @@ public class Autonomous implements Controls {
 					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = DEFAULT_AUTO;
+					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT;
 					break;
 				case CROSSBORDER:
 					currentAuto = CROSS_AUTO_LINE;
