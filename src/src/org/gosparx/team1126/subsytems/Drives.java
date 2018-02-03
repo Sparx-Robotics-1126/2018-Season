@@ -104,6 +104,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
+		changeState(DriveState.STANDBY);
 		//addObjectsToShuffleboard();
 	}
 
