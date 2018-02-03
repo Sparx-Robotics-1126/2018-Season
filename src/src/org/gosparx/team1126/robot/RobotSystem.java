@@ -37,11 +37,8 @@ public class RobotSystem extends Thread{
 				case STANDBY:
 					break;
 				case AUTO:
-					break;
 				case TELE:
-				
 					currentControl.execute();
-					
 			}
 			
 			try {
