@@ -21,52 +21,30 @@ public class Autonomous implements Controls {
 
 	private int[][] currentAuto;
 
-	private final int[][] TESTAUTO = {
-			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},*/
+	private final int[][] DEFAULT_AUTO = {
+			
 	};
-
-	private final int[][] TESTAUTO1 = {
-			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},*/
-	};
-
-	private final int[][] TESTAUTO2 = {
-			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},*/
-	};
-
-	private final int[][] TESTAUTO3 = {
-			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},*/
-	};
-
-	private final int[][] TESTAUTO4 = {
+	
+	private final int[][] CROSS_AUTO_LINE = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 140, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)}
+	};
+	
+	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 160, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 12, 40},
+			{stateToInt(AutoState.DRIVES_WAIT)}
+	};
+	
+	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 240, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 40},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 
@@ -163,38 +141,37 @@ public class Autonomous implements Controls {
 			if(isRightScale) {
 				switch(selectedAuto) {
 				case NOTHING:
-					//currentAuto = TESTAUTO;
-					currentAuto = TESTAUTO;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = TESTAUTO4;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case CROSSBORDER:
-					currentAuto = TESTAUTO2;
+					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SWITCHSCALE:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				}
 			} else {
 				switch(selectedAuto) {
 				case NOTHING:
-					currentAuto = TESTAUTO;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = TESTAUTO1;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case CROSSBORDER:
-					currentAuto = TESTAUTO2;
+					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SWITCHSCALE:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				}
 			}
@@ -202,37 +179,37 @@ public class Autonomous implements Controls {
 			if(isRightScale) {
 				switch(selectedAuto) {
 				case NOTHING:
-					currentAuto = TESTAUTO;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = TESTAUTO1;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case CROSSBORDER:
-					currentAuto = TESTAUTO2;
+					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = TESTAUTO3;
+					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT;
 					break;
 				case SWITCHSCALE:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				}
 			} else {
 				switch(selectedAuto) {
 				case NOTHING:
-					currentAuto = TESTAUTO;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = TESTAUTO1;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				case CROSSBORDER:
-					currentAuto = TESTAUTO2;
+					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = TESTAUTO3;
+					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT;
 					break;
 				case SWITCHSCALE:
-					currentAuto = TESTAUTO3;
+					currentAuto = DEFAULT_AUTO;
 					break;
 				}
 			}
