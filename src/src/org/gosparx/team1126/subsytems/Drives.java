@@ -203,7 +203,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
@@ -224,7 +224,7 @@ public class Drives extends GenericSubsytem {
 				leftEnc.calculateSpeed();
 				rightEnc.calculateSpeed();
 			}
-			print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
