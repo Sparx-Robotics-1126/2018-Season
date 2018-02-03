@@ -4,6 +4,7 @@ import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.subsytems.Drives;
+import src.org.gosparx.team1126.subsytems.Drives.DriveState;
 
 public class RobotSystem extends Thread{
 
@@ -36,8 +37,11 @@ public class RobotSystem extends Thread{
 				case STANDBY:
 					break;
 				case AUTO:
+					break;
 				case TELE:
+				
 					currentControl.execute();
+					
 			}
 			
 			try {
@@ -54,6 +58,7 @@ public class RobotSystem extends Thread{
 	}
 
 	public void teleStart(){
+		drives.changeState(DriveState.TELEOP);
 		currentControl = teleopControl;
 		currentState = RobotState.TELE;
 	}
