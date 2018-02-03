@@ -52,13 +52,13 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double DECIMAL_TO_SLOW = .8;		//What part of the way to destination in auto we start moving at a slow speed
+	private final double DECIMAL_TO_SLOW = .7;		//What part of the way to destination in auto we start moving at a slow speed
 
-	private final double SLOW_SPEED = .3;			//The speed we move at in auto when almost at destination to achieve higher accuracy
+	private final double SLOW_SPEED = .15;			//The speed we move at in auto when almost at destination to achieve higher accuracy
 
-	private final int DEADBAND_TELL_NO_TALES = 8;	//The deadband inside which a turn will stop, so robot doesn't over-turn
+	private final int DEADBAND_TELL_NO_TALES = 2;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 	
-	private final double KEVIN = .2;                //The variable which changes the speed till the angle is adjusted
+	private final double KEVIN = .7;                //The variable which changes the speed till the angle is adjusted
 
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -94,15 +94,15 @@ public class Drives extends GenericSubsytem {
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
 		//ptoSwitch = new Solenoid(0);
-		leftEnc = new EncoderData(rawLeftEnc, 0.032);
-		rightEnc = new EncoderData(rawRightEnc, -0.032);
+		leftEnc = new EncoderData(rawLeftEnc, -0.032);
+		rightEnc = new EncoderData(rawRightEnc, 0.032);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
 		moveSpeed = 0;
-		rightDrives = new MotorGroup(rightMtr1, rightMtr2);
-		leftDrives = new MotorGroup(leftMtr1, leftMtr2);
+		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
+		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
@@ -155,14 +155,16 @@ public class Drives extends GenericSubsytem {
 			leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
+			print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() > turnAngle * DECIMAL_TO_SLOW){
-				turnSpeed = SLOW_SPEED;
+			}else if(gyro.getAngle() > turnAngle * .2){
+				turnSpeed = .05;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
@@ -205,7 +207,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
@@ -289,7 +291,7 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
-		print("MOVING");
+//		print("MOVING");
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
 		}else {
@@ -377,16 +379,18 @@ public class Drives extends GenericSubsytem {
 		WPI_TalonSRX mtr = mtrTesting;
 		long time = System.currentTimeMillis();
 		encoder.reset();
+		encoder.calculateSpeed();
 		if(mtrTesting == null) {
 			return new DebuggerResult("Drives", false, "The motor " + i + " was null");
 		}
-		mtr.set(.5);
+		mtr.set(.8);
 
-		while(System.currentTimeMillis() < time + 1500) { 
+		while(System.currentTimeMillis() < time + 2000) { 
 		}
 
 		mtr.set(0);
-		//print("Encoder: " + encoder.getDistance());
+		encoder.calculateSpeed();
+		print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {

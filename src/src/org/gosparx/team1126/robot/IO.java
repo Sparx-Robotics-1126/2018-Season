@@ -4,12 +4,12 @@ public class IO {
 
 //----------------------------------------------------Motors-----------------------------------------------------------------------
 
-public static final int leftDriveCIM1																				= 10;	//motor 0	
-public static final int leftDriveCIM2																				= 11;	//motor 1
-public static final int leftDriveCIM3																				= 0;	//motor 2
-public static final int rightDriveCIM1																				= 4;	//motor 3
-public static final int rightDriveCIM2																				= 5;	//motor 4
-public static final int rightDriveCIM3																				= 0;	//motor 5
+public static final int leftDriveCIM1																				= 10;	//motor 0 top	
+public static final int leftDriveCIM2																				= 11;	//motor 1 back
+public static final int leftDriveCIM3																				= 12;	//motor 2 front
+public static final int rightDriveCIM1																				= 1;	//motor 3 top
+public static final int rightDriveCIM2																				= 2;	//motor 4 back
+public static final int rightDriveCIM3																				= 3;	//motor 5 front
 
 //----------------------------------------------------Sensors----------------------------------------------------------------------
 
