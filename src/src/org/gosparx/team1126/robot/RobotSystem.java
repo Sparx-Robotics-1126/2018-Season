@@ -3,25 +3,30 @@ package src.org.gosparx.team1126.robot;
 import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
+import src.org.gosparx.team1126.subsytems.Drives;
 
 public class RobotSystem extends Thread{
 
 	private RobotState currentState;
 
+	private Drives drives;
+	
 	private Controls currentControl;
 	private TeleOP teleopControl;
 	private Autonomous autoControl;
 
 	public RobotSystem(){
 		//ALL THE SUBSYSTEMS
+		drives = new Drives();
+		drives.init();
 		currentState = RobotState.STANDBY;
 		autoControl = new Autonomous();
-		teleopControl = new TeleOP();
+		teleopControl = new TeleOP(drives);
 		currentControl = null;
 	}
 
 	public void init(){
-
+		drives.start();
 	}
 
 	@Override
