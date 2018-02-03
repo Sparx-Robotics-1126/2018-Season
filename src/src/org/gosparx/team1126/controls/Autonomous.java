@@ -4,35 +4,31 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Autonomous extends Controls {
+public class Autonomous implements Controls {
 
 	private boolean isRightAllySwitch;
 	private boolean isRightScale;
 	private boolean isRightOpponentSwitch;
-	
+
 	private AutoSelected selectedAuto;
-	
+
 	private int autoStep;
-	
-	private String fieldConditions;
-	
-	private boolean firstRun;
-	
+
 	private SendableChooser<AutoSelected> autoChooser;
-	
+
 	private int[][] currentAuto;
-	
+
 	private final int[][] TESTAUTO = {
-		{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-		{stateToInt(AutoState.DRIVES_WAIT)},
-		{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-		{stateToInt(AutoState.DRIVES_WAIT)},
-		{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-		{stateToInt(AutoState.DRIVES_WAIT)},
-		{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-		{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_WAIT)},
 	};
-	
+
 	private final int[][] TESTAUTO1 = {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -42,8 +38,8 @@ public class Autonomous extends Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-		};
-	
+	};
+
 	private final int[][] TESTAUTO2 = {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -53,8 +49,8 @@ public class Autonomous extends Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-		};
-	
+	};
+
 	private final int[][] TESTAUTO3 = {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -64,38 +60,47 @@ public class Autonomous extends Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-		};
-	
+	};
+
 	private final int[][] TESTAUTO4 = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
-		};
-	
+	};
+
 	public Autonomous() {
-		
-		firstRun = false;
 		autoStep = 0;
 		isRightAllySwitch = false;
 		isRightScale = false;
 		isRightOpponentSwitch = false;
-		
+
 		autoChooser = new SendableChooser<AutoSelected>();
-		
-		fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
+
 		autoChooser.addDefault("Do Nothing", AutoSelected.NOTHING);
 		autoChooser.addObject("Cross The Border", AutoSelected.CROSSBORDER);
 		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
 		autoChooser.addObject("Score The Switch", AutoSelected.SWITCH);
-		
+		autoChooser.addObject("Score The Switch + Scale", AutoSelected.SWITCHSCALE);
+
 		SmartDashboard.putData(autoChooser);
 	}
-	
+
+
+	public boolean initAuto(){
+		if(setFieldConditions()) {
+			setAuto();
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 
 	//check for rules before competition
 	public boolean setFieldConditions() {
-		if(!fieldConditions.equals("") && fieldConditions.length() == 3) {
+		String fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
+		SmartDashboard.putString("Game Message", fieldConditions);
+		if(!fieldConditions.equals("")) {
 			if (fieldConditions.charAt(0) == 'r' || fieldConditions.charAt(0) == 'R') {
 				isRightAllySwitch = true;
 				isRightOpponentSwitch = true;
@@ -109,38 +114,25 @@ public class Autonomous extends Controls {
 
 	}
 
-	
 	@Override
 	public void execute() {
-		//kill thread after auto done?
-		if(isAutonomous() && isEnabled()) {
-			if(!firstRun) {
-				if(setFieldConditions()) {
-					setAuto();
-				}
-			} else {
-				runAuto();
-			}
-		}
+		runAuto();
 	} 
-	
+
 	private void runAuto() {
 		if(currentAuto.length > autoStep) {
 			switch(currentAuto[autoStep][0]) {
 			case 0: //DRIVES_FORWARD
 				//code
-				System.out.println("t");
 				autoStep++;
 				break;
 			case 1: //DRIVES_BACKWARD
 				autoStep++;
 				break;
 			case 2: //DRIVES_TURNLEFT
-				System.out.println("s");
 				autoStep++;
 				break;
 			case 3: //DRIVES_TURNRIGHT
-				System.out.println("a");
 				autoStep++;
 				break;
 			case 4: //DRIVES_WAIT
@@ -154,14 +146,9 @@ public class Autonomous extends Controls {
 			}
 		}
 	}
-	
+
 	private void setAuto() {
-		firstRun = true;
 		selectedAuto = autoChooser.getSelected();
-		System.out.println(selectedAuto);
-		System.out.println(autoChooser.getSelected());
-		System.out.println(isRightAllySwitch);
-		System.out.println(isRightScale);
 		if(isRightAllySwitch) {
 			if(isRightScale) {
 				switch(selectedAuto) {
@@ -231,16 +218,16 @@ public class Autonomous extends Controls {
 	}
 
 	public enum AutoState{
-		
+
 		DRIVES_FORWARD, //@param - distance, speed
 		DRIVES_BACKWARD, //@param - distance, speed
 		DRIVES_TURNLEFT, //@param - degrees to turn, speed
 		DRIVES_TURNRIGHT, //@param - degrees to turn, speed
 		DRIVES_WAIT,
 		DRIVES_STOP;
-		
+
 	}
-	
+
 	public int stateToInt(AutoState auto) {
 		switch(auto) {
 		case DRIVES_FORWARD:
@@ -259,28 +246,15 @@ public class Autonomous extends Controls {
 			return -999;
 		}
 	}
-	
+
 	public enum AutoSelected{
-		
+
 		NOTHING,
 		SCALE,
 		CROSSBORDER,
-		SWITCH;
-		
+		SWITCH,
+		SWITCHSCALE;
+
 	}
-	
-	
-//	public enum Locations {
-//	//location on the board where the robot can go, NOT where it is
-//	
-//	STARTINGPOSITIONLEFT, STARTINGPOSITIONMIDDLE, STARTINGPOSITIONRIGHT,
-//	NULLLEFT, NULLRIGHT,
-//	PASTLINELEFTCLOSE, PASTLINELEFTFAR,
-//	PASTLINERIGHTCLOSE, PASTLINERIGHTFAR,
-//	PLATFORMZONEOFFRAMP, PLATFORMZONEONRAMP
-//	
-//	
-//}
-	
-	
+
 }

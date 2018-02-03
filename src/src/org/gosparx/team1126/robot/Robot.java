@@ -1,38 +1,34 @@
 package src.org.gosparx.team1126.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import src.org.gosparx.team1126.controls.Autonomous;
-import src.org.gosparx.team1126.controls.TeleOP;
 
 public class Robot extends IterativeRobot{
 
-	private Autonomous tele;
+	private RobotSystem system;
 	
 	@Override
 	public void robotInit() {
-		
+		system = new RobotSystem();
+		system.init();
+		system.start();
+		System.out.println("***INIT ROBOT COMPLETE***");
 	}
 	
 	@Override
 	public void autonomousInit() {
-		tele = new Autonomous();
-	}
-	
-	@Override
-	public void autonomousPeriodic() {
-		tele.execute();
+		System.out.println("Auto Started");
+		system.autoStart();
 	}
 	
 	@Override
 	public void teleopInit() {
-	}
-	
-	@Override
-	public void teleopPeriodic() {
+		System.out.println("Tele Started");
+		system.teleStart();
 	}
 	
 	@Override
 	public void disabledInit() {
-		
+		System.out.println("Disabled Started");
+		system.disable();
 	}
 }
