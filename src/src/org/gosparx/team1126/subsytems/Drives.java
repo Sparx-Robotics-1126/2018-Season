@@ -267,10 +267,10 @@ public class Drives extends GenericSubsytem {
 		turnAngle = degree;
 		turnSpeed = speed/100.;
 		isMoving = true;
-		if(degree < 0) {
-			changeState(DriveState.TURN_L);
-		}else
+		if(degree > 0) {
 			changeState(DriveState.TURN_R);
+		}else
+			changeState(DriveState.TURN_L);
 	}
 
 	/**
