@@ -3,9 +3,12 @@ package src.org.gosparx.team1126.controls;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import src.org.gosparx.team1126.subsytems.Drives;
 
 public class Autonomous implements Controls {
 
+	private Drives drives;
+	
 	private boolean isRightAllySwitch;
 	private boolean isRightScale;
 	private boolean isRightOpponentSwitch;
@@ -19,61 +22,62 @@ public class Autonomous implements Controls {
 	private int[][] currentAuto;
 
 	private final int[][] TESTAUTO = {
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_WAIT)},*/
 	};
 
 	private final int[][] TESTAUTO1 = {
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_WAIT)},*/
 	};
 
 	private final int[][] TESTAUTO2 = {
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_WAIT)},*/
 	};
 
 	private final int[][] TESTAUTO3 = {
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			/*{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_WAIT)},*/
 	};
 
 	private final int[][] TESTAUTO4 = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+			{stateToInt(AutoState.DRIVES_FORWARD), 140, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 
-	public Autonomous() {
+	public Autonomous(Drives drives) {
 		autoStep = 0;
 		isRightAllySwitch = false;
 		isRightScale = false;
 		isRightOpponentSwitch = false;
 
+		this.drives = drives;
+		
 		autoChooser = new SendableChooser<AutoSelected>();
 
 		autoChooser.addDefault("Do Nothing", AutoSelected.NOTHING);
@@ -123,22 +127,28 @@ public class Autonomous implements Controls {
 		if(currentAuto.length > autoStep) {
 			switch(currentAuto[autoStep][0]) {
 			case 0: //DRIVES_FORWARD
-				//code
+				drives.move(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
 			case 1: //DRIVES_BACKWARD
+				drives.move(currentAuto[autoStep][1], -currentAuto[autoStep][2]);
 				autoStep++;
 				break;
 			case 2: //DRIVES_TURNLEFT
+				drives.turn(-currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
 			case 3: //DRIVES_TURNRIGHT
+				drives.turn(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
 			case 4: //DRIVES_WAIT
-				autoStep++;
+				if(drives.isDone()) {
+					autoStep++;
+				}
 				break;
 			case 5: //DRIVES_STOP
+				drives.stopMotors();
 				autoStep++;
 				break;
 			default:
@@ -165,6 +175,9 @@ public class Autonomous implements Controls {
 				case SWITCH:
 					currentAuto = TESTAUTO3;
 					break;
+				case SWITCHSCALE:
+					currentAuto = TESTAUTO3;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
@@ -178,6 +191,9 @@ public class Autonomous implements Controls {
 					currentAuto = TESTAUTO2;
 					break;
 				case SWITCH:
+					currentAuto = TESTAUTO3;
+					break;
+				case SWITCHSCALE:
 					currentAuto = TESTAUTO3;
 					break;
 				}
@@ -197,6 +213,9 @@ public class Autonomous implements Controls {
 				case SWITCH:
 					currentAuto = TESTAUTO3;
 					break;
+				case SWITCHSCALE:
+					currentAuto = TESTAUTO3;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
@@ -210,6 +229,9 @@ public class Autonomous implements Controls {
 					currentAuto = TESTAUTO2;
 					break;
 				case SWITCH:
+					currentAuto = TESTAUTO3;
+					break;
+				case SWITCHSCALE:
 					currentAuto = TESTAUTO3;
 					break;
 				}

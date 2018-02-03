@@ -72,7 +72,7 @@ public class TeleOP implements Controls{
 			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		}*/
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-			drives.joystickLeft(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		}/*
 		//POV Left
 		if(isRisingEdgePOV(0)) { //left joystick pov up
@@ -105,7 +105,7 @@ public class TeleOP implements Controls{
 			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		}*/
 		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-			drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		}/*
 		//POV Right
 		if(isRisingEdgePOV(4)) { //right joystick pov up
