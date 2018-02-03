@@ -2,8 +2,9 @@ package src.org.gosparx.team1126.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 
-public class Robot extends IterativeRobot{
 
+public class Robot extends IterativeRobot{
+	
 	private RobotSystem system;
 	
 	@Override
