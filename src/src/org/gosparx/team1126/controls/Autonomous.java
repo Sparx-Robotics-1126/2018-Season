@@ -66,7 +66,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 368, 80},
+			{stateToInt(AutoState.DRIVES_FORWARD), 392, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
