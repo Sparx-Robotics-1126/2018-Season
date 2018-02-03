@@ -348,13 +348,6 @@ public class Drives extends GenericSubsytem {
 		ptoSwitch.set(switchingToClimb);
 	}
 
-	/**
-	 * returns if the robot is currently moving during autonomous
-	 */
-	public boolean getIsMoving() {
-		return isMoving;
-	}
-
 	@Override
 	/**
 	 * debugs the code to make sure motors are spinning correctly and encoders are reading correctly 
@@ -414,9 +407,7 @@ public class Drives extends GenericSubsytem {
 	 * if in standby
 	 */
 	public boolean isDone() {
-		if(!isMoving)
-			return true;
-		return false;
+		return !isMoving;
 	}
 
 	@Override
