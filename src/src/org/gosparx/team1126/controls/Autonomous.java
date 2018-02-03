@@ -31,7 +31,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 160, 70},
+			{stateToInt(AutoState.DRIVES_FORWARD), 172, 70},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -40,11 +40,15 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 240, 70},
+			{stateToInt(AutoState.DRIVES_FORWARD), 262, 70},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 76, 40},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 
@@ -150,7 +154,7 @@ public class Autonomous implements Controls {
 					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = DEFAULT_AUTO;
+					currentAuto = CUBE_ON_RIGHT_SWITCH_FROM_LEFT;
 					break;
 				case SWITCHSCALE:
 					currentAuto = DEFAULT_AUTO;
@@ -168,7 +172,7 @@ public class Autonomous implements Controls {
 					currentAuto = CROSS_AUTO_LINE;
 					break;
 				case SWITCH:
-					currentAuto = DEFAULT_AUTO;
+					currentAuto = CUBE_ON_RIGHT_SWITCH_FROM_LEFT;
 					break;
 				case SWITCHSCALE:
 					currentAuto = DEFAULT_AUTO;
