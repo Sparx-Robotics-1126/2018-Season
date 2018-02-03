@@ -66,6 +66,12 @@ public class Autonomous extends Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 		};
 	
+	private final int[][] TESTAUTO4 = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 10, 10},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 45, 10},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 45, 10},
+		};
+	
 	public Autonomous() {
 		
 		firstRun = false;
@@ -77,10 +83,10 @@ public class Autonomous extends Controls {
 		autoChooser = new SendableChooser<AutoSelected>();
 		
 		fieldConditions = DriverStation.getInstance().getGameSpecificMessage();
-		autoChooser.addDefault("Do Nothing", selectedAuto = AutoSelected.NOTHING);
-		autoChooser.addObject("Cross The Border", selectedAuto = AutoSelected.CROSSBORDER);
-		autoChooser.addObject("Score The Scale", selectedAuto = AutoSelected.SCALE);
-		autoChooser.addObject("Score The Switch", selectedAuto = AutoSelected.SWITCH);
+		autoChooser.addDefault("Do Nothing", AutoSelected.NOTHING);
+		autoChooser.addObject("Cross The Border", AutoSelected.CROSSBORDER);
+		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
+		autoChooser.addObject("Score The Switch", AutoSelected.SWITCH);
 		
 		SmartDashboard.putData(autoChooser);
 	}
@@ -89,12 +95,12 @@ public class Autonomous extends Controls {
 
 	//check for rules before competition
 	public boolean setFieldConditions() {
-		if(!fieldConditions.equals("")) {
-			if (fieldConditions.charAt(0) == 'r') {
+		if(!fieldConditions.equals("") && fieldConditions.length() == 3) {
+			if (fieldConditions.charAt(0) == 'r' || fieldConditions.charAt(0) == 'R') {
 				isRightAllySwitch = true;
 				isRightOpponentSwitch = true;
 			}
-			if (fieldConditions.charAt(1) == 'r') {
+			if (fieldConditions.charAt(1) == 'r' || fieldConditions.charAt(1) == 'R') {
 				isRightScale = true;
 			}
 			return true;
@@ -123,15 +129,18 @@ public class Autonomous extends Controls {
 			switch(currentAuto[autoStep][0]) {
 			case 0: //DRIVES_FORWARD
 				//code
+				System.out.println("t");
 				autoStep++;
 				break;
 			case 1: //DRIVES_BACKWARD
 				autoStep++;
 				break;
 			case 2: //DRIVES_TURNLEFT
+				System.out.println("s");
 				autoStep++;
 				break;
 			case 3: //DRIVES_TURNRIGHT
+				System.out.println("a");
 				autoStep++;
 				break;
 			case 4: //DRIVES_WAIT
@@ -148,28 +157,42 @@ public class Autonomous extends Controls {
 	
 	private void setAuto() {
 		firstRun = true;
+		selectedAuto = autoChooser.getSelected();
+		System.out.println(selectedAuto);
+		System.out.println(autoChooser.getSelected());
+		System.out.println(isRightAllySwitch);
+		System.out.println(isRightScale);
 		if(isRightAllySwitch) {
 			if(isRightScale) {
 				switch(selectedAuto) {
 				case NOTHING:
+					//currentAuto = TESTAUTO;
 					currentAuto = TESTAUTO;
+					break;
 				case SCALE:
-					currentAuto = TESTAUTO1;
+					currentAuto = TESTAUTO4;
+					break;
 				case CROSSBORDER:
 					currentAuto = TESTAUTO2;
+					break;
 				case SWITCH:
 					currentAuto = TESTAUTO3;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
 				case NOTHING:
 					currentAuto = TESTAUTO;
+					break;
 				case SCALE:
 					currentAuto = TESTAUTO1;
+					break;
 				case CROSSBORDER:
 					currentAuto = TESTAUTO2;
+					break;
 				case SWITCH:
 					currentAuto = TESTAUTO3;
+					break;
 				}
 			}
 		} else {
@@ -177,23 +200,31 @@ public class Autonomous extends Controls {
 				switch(selectedAuto) {
 				case NOTHING:
 					currentAuto = TESTAUTO;
+					break;
 				case SCALE:
 					currentAuto = TESTAUTO1;
+					break;
 				case CROSSBORDER:
 					currentAuto = TESTAUTO2;
+					break;
 				case SWITCH:
 					currentAuto = TESTAUTO3;
+					break;
 				}
 			} else {
 				switch(selectedAuto) {
 				case NOTHING:
 					currentAuto = TESTAUTO;
+					break;
 				case SCALE:
 					currentAuto = TESTAUTO1;
+					break;
 				case CROSSBORDER:
 					currentAuto = TESTAUTO2;
+					break;
 				case SWITCH:
 					currentAuto = TESTAUTO3;
+					break;
 				}
 			}
 		}
@@ -213,14 +244,16 @@ public class Autonomous extends Controls {
 	public int stateToInt(AutoState auto) {
 		switch(auto) {
 		case DRIVES_FORWARD:
-			return 1;
+			return 0;
 		case DRIVES_BACKWARD:
-			return 2;
+			return 1;
 		case DRIVES_TURNLEFT:
-			return 3;
+			return 2;
 		case DRIVES_TURNRIGHT:
-			return 4;
+			return 3;
 		case DRIVES_WAIT:
+			return 4;
+		case DRIVES_STOP:
 			return 5;
 		default:
 			return -999;
@@ -235,6 +268,7 @@ public class Autonomous extends Controls {
 		SWITCH;
 		
 	}
+	
 	
 //	public enum Locations {
 //	//location on the board where the robot can go, NOT where it is

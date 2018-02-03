@@ -56,16 +56,16 @@ public class TeleOP extends Controls{
 			//Joystick Buttons Left
 			setJoystickStates();
 			if(isRisingEdgeButton(0)) { //left joystick left button
-				
+				System.out.println("left joystick left button");
 			}
 			if(isRisingEdgeButton(1)) { //left joystick middle button
-				
+				System.out.println("left joystick middle button");
 			}
 			if(isRisingEdgeButton(2)) { //left joystick right button
-				
+				System.out.println("left joystick right button");
 			}
 			if(isRisingEdgeButton(3)) { //left joystick trigger
-
+				System.out.println("left joystick trigger button");
 			}
 			//Axis Left
 			if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
@@ -76,29 +76,29 @@ public class TeleOP extends Controls{
 			}
 			//POV Left
 			if(isRisingEdgePOV(0)) { //left joystick pov up
-				
+				System.out.println("left joystick pov up");
 			}
 			if(isRisingEdgePOV(1)) { //left joystick pov right
-				
+				System.out.println("left joystick pov right");
 			}
 			if(isRisingEdgePOV(2)) { //left joystick pov down
-				
+				System.out.println("left joystick pov down");
 			}
 			if(isRisingEdgePOV(3)) { //left joystick pov left
-				
+				System.out.println("left joystick pov left");
 			}
 			//Joystick Buttons Right
 			if(isRisingEdgeButton(4)) { //right joystick left button
-				
+				System.out.println("right joystick left button");
 			}
 			if(isRisingEdgeButton(5)) { //right joystick middle button
-				
+				System.out.println("right joystick middle button");
 			}
 			if(isRisingEdgeButton(6)) { //right joystick right button
-				
+				System.out.println("right joystick right button");
 			}
 			if(isRisingEdgeButton(7)) { //right joystick trigger
-
+				System.out.println("right joystick trigger button");
 			}
 			//Axis Right
 			if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
@@ -109,47 +109,47 @@ public class TeleOP extends Controls{
 			}
 			//POV Right
 			if(isRisingEdgePOV(4)) { //right joystick pov up
-				
+				System.out.println("right joystick pov up");
 			}
 			if(isRisingEdgePOV(5)) { //right joystick pov right
-				
+				System.out.println("right joystick pov right");
 			}
 			if(isRisingEdgePOV(6)) { //right joystick pov down
-			
+				System.out.println("right joystick pov down");
 			}
 			if(isRisingEdgePOV(7)) { //right joystick pov left
-				
+				System.out.println("right joystick pov left");
 			}
 			//xBox Buttons
 			if(isRisingEdgeButton(8)) { //xbox a button
-				
+				System.out.println("xbox a button");
 			}
 			if(isRisingEdgeButton(9)) { //xbox b button
-				
+				System.out.println("xbox b button");
 			}
 			if(isRisingEdgeButton(10)) { //xbox x button
-				
+				System.out.println("xbox x button");
 			}
 			if(isRisingEdgeButton(11)) { //xbox y button
-				
+				System.out.println("xbox y button");
 			}
 			if(isRisingEdgeButton(12)) { //xbox L1 button
-				
+				System.out.println("xbox L1 button");
 			}
 			if(isRisingEdgeButton(13)) { //xbox R1 button
-				
+				System.out.println("xbox R1 button");
 			}
 			if(isRisingEdgeButton(14)) { //xbox back button
-				
+				System.out.println("xbox back button");
 			}
 			if(isRisingEdgeButton(15)) { //xbox start button
-				
+				System.out.println("xbox start button");
 			}
 			if(isRisingEdgeButton(16)) { //xbox L3 button
-				
+				System.out.println("xbox L3 button");
 			}
 			if(isRisingEdgeButton(17)) { //xbox R3 button
-				
+				System.out.println("xbox R3 button");
 			}
 			//xBox Axis
 			if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_X)) {
@@ -172,16 +172,16 @@ public class TeleOP extends Controls{
 			}
 			//xbox POV
 			if(isRisingEdgePOV(8)) { //xbox pov up
-				
+				System.out.println("xbox pov up");
 			}
 			if(isRisingEdgePOV(9)) { //xbox pov right
-				
+				System.out.println("xbox pov right");
 			}
 			if(isRisingEdgePOV(10)) { //xbox pov down
-				
+				System.out.println("xbox pov down");
 			}
-			if(isRisingEdgePOV(11)) { //xbox pov right
-				
+			if(isRisingEdgePOV(11)) { //xbox pov left
+				System.out.println("xbox pov left");
 			}
 			break;
 		default:
