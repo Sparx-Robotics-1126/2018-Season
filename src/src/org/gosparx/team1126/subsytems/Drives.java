@@ -52,14 +52,18 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double DECIMAL_TO_SLOW = .7;		//What part of the way to destination in auto we start moving at a slow speed
+	private final double DECIMAL_TO_SLOW = .7;		//What part of the way to destination in auto we start moving at a slow speed (move)
 
-	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy
+	private final double DECIMAL_ANGLE_TO_SLOW = .2;//What decimal part of the way through a turn we start moving at slow speed (turn)
+	
+	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 
 	private final int DEADBAND_TELL_NO_TALES = 20;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 	
-	private final double KEVIN = .7;                //The variable which changes the speed till the angle is adjusted
+	private final double motorCorrection = .7;		//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
+	private final double ALLOWABLE_ERROR = 2;		//Degrees robot can be off in move auto before straightening
+	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -93,7 +97,7 @@ public class Drives extends GenericSubsytem {
 		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
-		//ptoSwitch = new Solenoid(0);
+//		ptoSwitch = new Solenoid(0);
 		leftEnc = new EncoderData(rawLeftEnc, -0.032);
 		rightEnc = new EncoderData(rawRightEnc, 0.032);
 		gyro = new AHRS(SerialPort.Port.kUSB);
@@ -107,7 +111,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
-		//addObjectsToShuffleboard();
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -155,20 +159,20 @@ public class Drives extends GenericSubsytem {
 			leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
-			print("Gyro Angle: " + gyro.getAngle());
+//			print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() > turnAngle * .2){
-				turnSpeed = .2;
+			}else if(gyro.getAngle() > turnAngle * DECIMAL_ANGLE_TO_SLOW){
+				turnSpeed = SLOW_SPEED;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
-				//print("angle: " + gyro.getAngle());
+//				print("angle: " + gyro.getAngle());
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}
@@ -178,12 +182,12 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() < turnAngle * DECIMAL_TO_SLOW) {
+			}else if(gyro.getAngle() < turnAngle * DECIMAL_ANGLE_TO_SLOW) {
 				turnSpeed = SLOW_SPEED;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}else {
-				//print("angle: " + gyro.getAngle());
+//				print("angle: " + gyro.getAngle());
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}
@@ -207,7 +211,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
@@ -228,7 +232,7 @@ public class Drives extends GenericSubsytem {
 				leftEnc.calculateSpeed();
 				rightEnc.calculateSpeed();
 			}
-			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+//				print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -304,11 +308,11 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenForward() {
-		if(gyro.getAngle() > 2) {
-			speedRight = moveSpeed * KEVIN;
+		if(gyro.getAngle() > ALLOWABLE_ERROR) {
+			speedRight = moveSpeed * motorCorrection;
 			return true;
-		}else if(gyro.getAngle() < -2) {
-			speedLeft = moveSpeed * KEVIN;
+		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
+			speedLeft = moveSpeed * motorCorrection;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -323,11 +327,11 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenBackward() {
-		if(gyro.getAngle() > 2) {
-			speedLeft = moveSpeed * KEVIN;
+		if(gyro.getAngle() > ALLOWABLE_ERROR) {
+			speedLeft = moveSpeed * motorCorrection;
 			return true;
-		}else if(gyro.getAngle() < -2) {
-			speedRight = moveSpeed * KEVIN;
+		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
+			speedRight = moveSpeed * motorCorrection;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -390,7 +394,7 @@ public class Drives extends GenericSubsytem {
 
 		mtr.set(0);
 		encoder.calculateSpeed();
-		print("Encoder: " + encoder.getDistance());
+//		print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {
@@ -429,7 +433,7 @@ public class Drives extends GenericSubsytem {
 
 
 
-//public class IO {
+//public class IO {	//2017 Robot
 //
 ////----------------------------------------------------Motors-----------------------------------------------------------------------
 //
