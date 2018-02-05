@@ -26,11 +26,13 @@ public class PrettyColors extends GenericSubsytem
 	public void execute() 
 	{
 		// TODO Auto-generated method stub
-		if (colorState) {
-		colorController.set(0.95);
+		if (colorState) 
+		{
+			colorController.set(0.95);
 		}
-		else {
-		colorController.set(0.61);
+		else 
+		{
+			colorController.set(0.61);
 		}
 		colorState = !colorState;
 	}
@@ -62,10 +64,5 @@ public class PrettyColors extends GenericSubsytem
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	
-		}
-
 	}
 }
