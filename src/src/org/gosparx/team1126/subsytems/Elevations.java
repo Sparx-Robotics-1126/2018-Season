@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.subsytems;
 
+import java.sql.Time;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -126,7 +128,30 @@ public class Elevations extends GenericSubsytem {
 
 	@Override
 	public DebuggerResult[] debug() {
-		return null;
+		DebuggerResult[] result = new DebuggerResult[2]; 
+		setMotor(-.1);
+		while(!limitSwitch.get()) //If this does not work then you have to force stop
+		{
+			stopAll(); 
+			result[0] = new DebuggerResult("Limit switch and motors work",true,"Elevations limit switch hit");;
+			encoder.reset();
+		}
+		setMotor(.3);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		if(encoder.getDistance()>1) 
+		{
+			result[1] = new DebuggerResult("Encoder works",true,"Motors moved and encoder value greater than 0");
+		}
+		else
+		{
+			new DebuggerResult("Encoder not working",false,"Encoder did not change when motors were set");
+		}
+		return result;
 	}
 	
 	//Methods called to control elevator movement
