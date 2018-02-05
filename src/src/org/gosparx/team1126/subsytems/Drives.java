@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -97,7 +96,7 @@ public class Drives extends GenericSubsytem {
 		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
-//		ptoSwitch = new Solenoid(0);
+		//ptoSwitch = new Solenoid(0);
 		leftEnc = new EncoderData(rawLeftEnc, -0.032);
 		rightEnc = new EncoderData(rawRightEnc, 0.032);
 		gyro = new AHRS(SerialPort.Port.kUSB);
@@ -159,10 +158,10 @@ public class Drives extends GenericSubsytem {
 			leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
-//			print("Gyro Angle: " + gyro.getAngle());
+			//print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
@@ -172,7 +171,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
-//				print("angle: " + gyro.getAngle());
+				//print("angle: " + gyro.getAngle());
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}
@@ -187,7 +186,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}else {
-//				print("angle: " + gyro.getAngle());
+				//print("angle: " + gyro.getAngle());
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}
@@ -211,7 +210,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
@@ -232,7 +231,7 @@ public class Drives extends GenericSubsytem {
 				leftEnc.calculateSpeed();
 				rightEnc.calculateSpeed();
 			}
-//				print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+				//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -295,7 +294,7 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
-//		print("MOVING");
+		//print("MOVING");
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
 		}else {
@@ -394,7 +393,7 @@ public class Drives extends GenericSubsytem {
 
 		mtr.set(0);
 		encoder.calculateSpeed();
-//		print("Encoder: " + encoder.getDistance());
+		//print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {
@@ -429,31 +428,3 @@ public class Drives extends GenericSubsytem {
 	}
 
 }
-
-
-
-
-//public class IO {	//2017 Robot
-//
-////----------------------------------------------------Motors-----------------------------------------------------------------------
-//
-//public static final int leftDriveCIM1																				= 10;	//motor 0	
-//public static final int leftDriveCIM2																				= 11;	//motor 1
-//public static final int leftDriveCIM3																				= 0;	//motor 2
-//public static final int rightDriveCIM1																				= 4;	//motor 3
-//public static final int rightDriveCIM2																				= 5;	//motor 4
-//public static final int rightDriveCIM3																				= 0;	//motor 5
-//
-////----------------------------------------------------Sensors----------------------------------------------------------------------
-//
-//public static final int leftDriveEncoderChannel1																	= 22;
-//public static final int leftDriveEncoderChannel2																	= 23;
-//public static final int rightDriveEncoderChannel1																	= 12;
-//public static final int rightDriveEncoderChannel2																	= 13;
-////public static final int gyro																						= 0;
-//
-////--------------------------------------------------Miscellaneous------------------------------------------------------------------
-//public static final int ptoSwitch																					= 0;
-//
-//
-//}
