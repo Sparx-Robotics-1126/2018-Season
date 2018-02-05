@@ -52,17 +52,17 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double DECIMAL_TO_SLOW = .7;		//What part of the way to destination in auto we start moving at a slow speed (move)
+	private final double DECIMAL_TO_SLOW = .7;			//What part of the way to destination in auto we start moving at a slow speed (move)
 
-	private final double DECIMAL_ANGLE_TO_SLOW = .2;//What decimal part of the way through a turn we start moving at slow speed (turn)
+	private final double DECIMAL_ANGLE_TO_SLOW = .2;	//What decimal part of the way through a turn we start moving at slow speed (turn)
 	
-	private final double SLOW_SPEED = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	private final double SLOW_SPEED = .2;				//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 
-	private final int DEADBAND_TELL_NO_TALES = 20;	//The deadband inside which a turn will stop, so robot doesn't over-turn
-	
-	private final double motorCorrection = .7;		//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
+	private final int DEADBAND_TELL_NO_TALES = 20;		//The deadband inside which a turn will stop, so robot doesn't over-turn
+		
+	private final double KEVIN = .7;					//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double ALLOWABLE_ERROR = 2;		//Degrees robot can be off in move auto before straightening
+	private final double ALLOWABLE_ERROR = 2;			//Degrees robot can be off in move auto before straightening
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -309,10 +309,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straightenForward() {
 		if(gyro.getAngle() > ALLOWABLE_ERROR) {
-			speedRight = moveSpeed * motorCorrection;
+			speedRight = moveSpeed * KEVIN;
 			return true;
 		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
-			speedLeft = moveSpeed * motorCorrection;
+			speedLeft = moveSpeed * KEVIN;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -328,10 +328,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straightenBackward() {
 		if(gyro.getAngle() > ALLOWABLE_ERROR) {
-			speedLeft = moveSpeed * motorCorrection;
+			speedLeft = moveSpeed * KEVIN;
 			return true;
 		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
-			speedRight = moveSpeed * motorCorrection;
+			speedRight = moveSpeed * KEVIN;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
