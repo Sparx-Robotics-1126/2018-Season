@@ -26,9 +26,14 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CROSS_AUTO_LINE = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 140, 70},
+			{stateToInt(AutoState.DRIVES_FORWARD), 24, 30},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
+	
+//	private final int[][] CROSS_AUTO_LINE = {
+//			{stateToInt(AutoState.DRIVES_FORWARD), 140, 70},
+//			{stateToInt(AutoState.DRIVES_WAIT)}
+//	};
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 172, 70},

@@ -97,8 +97,8 @@ public class Drives extends GenericSubsytem {
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
 		//ptoSwitch = new Solenoid(0);
-		leftEnc = new EncoderData(rawLeftEnc, -0.032);
-		rightEnc = new EncoderData(rawRightEnc, 0.032);
+		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
+		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		isMoving = false;
 		speedRight = 0;
@@ -110,7 +110,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
-		addObjectsToShuffleboard();
+		//addObjectsToShuffleboard();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class Drives extends GenericSubsytem {
 			leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
 			//print("Gyro Angle: " + gyro.getAngle());
@@ -196,6 +196,7 @@ public class Drives extends GenericSubsytem {
 			rightEnc.calculateSpeed();
 			if(moveDist < (rightEnc.getDistance() + leftEnc.getDistance())/2) {
 				stopMotors();
+				print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			}else if((moveDist*DECIMAL_TO_SLOW) < (rightEnc.getDistance() + leftEnc.getDistance())/2){
@@ -210,14 +211,16 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
 			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*DECIMAL_TO_SLOW)<rightEnc.getDistance() + leftEnc.getDistance()/2){
+			}else if((moveDist*DECIMAL_TO_SLOW) > (rightEnc.getDistance() + leftEnc.getDistance())/2){
 				moveSpeed = SLOW_SPEED;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
@@ -228,10 +231,9 @@ public class Drives extends GenericSubsytem {
 				straightenBackward();
 				leftDrives.set(-speedLeft);
 				rightDrives.set(-speedRight);
-				leftEnc.calculateSpeed();
-				rightEnc.calculateSpeed();
 			}
-				//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}
 	}
@@ -389,11 +391,12 @@ public class Drives extends GenericSubsytem {
 		mtr.set(.8);
 
 		while(System.currentTimeMillis() < time + 2000) { 
+			print("Encoder: " + encoder.getDistance());
 		}
 
 		mtr.set(0);
 		encoder.calculateSpeed();
-		//print("Encoder: " + encoder.getDistance());
+		print("Encoder: " + encoder.getDistance());
 		if(encoder.getDistance() > 0) {
 			return new DebuggerResult("Drives", true, "Encoder worked on motor " + i);
 		}else {
