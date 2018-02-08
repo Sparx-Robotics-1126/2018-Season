@@ -51,17 +51,17 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double DECIMAL_TO_SLOW = .7;			//What part of the way to destination in auto we start moving at a slow speed (move)
+	private final double EVERYTHING = .7;			//What part of the way to destination in auto we start moving at a slow speed (move)
 
-	private final double DECIMAL_ANGLE_TO_SLOW = .2;	//What decimal part of the way through a turn we start moving at slow speed (turn)
+	private final double DIZZY_SPINNER = .2;		//What decimal part of the way through a turn we start moving at slow speed (turn)
 	
-	private final double SLOW_SPEED = .2;				//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	private final double SCHOOL_WIFI = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 
-	private final int DEADBAND_TELL_NO_TALES = 20;		//The deadband inside which a turn will stop, so robot doesn't over-turn
+	private final int DEADBAND_TELL_NO_TALES = 20;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
-	private final double KEVIN = .7;					//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
+	private final double KEVIN = .7;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double ALLOWABLE_ERROR = 2;			//Degrees robot can be off in move auto before straightening
+	private final double UNFORTUNATE_FEW = 2;		//Degrees robot can be off in move auto before straightening
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -166,8 +166,8 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() > turnAngle * DECIMAL_ANGLE_TO_SLOW){
-				turnSpeed = SLOW_SPEED;
+			}else if(gyro.getAngle() > turnAngle * DIZZY_SPINNER){
+				turnSpeed = SCHOOL_WIFI;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
@@ -181,8 +181,8 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() < turnAngle * DECIMAL_ANGLE_TO_SLOW) {
-				turnSpeed = SLOW_SPEED;
+			}else if(gyro.getAngle() < turnAngle * DIZZY_SPINNER) {
+				turnSpeed = SCHOOL_WIFI;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}else {
@@ -199,8 +199,8 @@ public class Drives extends GenericSubsytem {
 				print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*DECIMAL_TO_SLOW) < (rightEnc.getDistance() + leftEnc.getDistance())/2){
-				moveSpeed = SLOW_SPEED;
+			}else if((moveDist*EVERYTHING) < (rightEnc.getDistance() + leftEnc.getDistance())/2){
+				moveSpeed = SCHOOL_WIFI;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
@@ -220,8 +220,8 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*DECIMAL_TO_SLOW) > (rightEnc.getDistance() + leftEnc.getDistance())/2){
-				moveSpeed = SLOW_SPEED;
+			}else if((moveDist*EVERYTHING) > (rightEnc.getDistance() + leftEnc.getDistance())/2){
+				moveSpeed = SCHOOL_WIFI;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
@@ -309,10 +309,10 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenForward() {
-		if(gyro.getAngle() > ALLOWABLE_ERROR) {
+		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedRight = moveSpeed * KEVIN;
 			return true;
-		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
+		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft = moveSpeed * KEVIN;
 			return true;
 		}else {
@@ -328,10 +328,10 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenBackward() {
-		if(gyro.getAngle() > ALLOWABLE_ERROR) {
+		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedLeft = moveSpeed * KEVIN;
 			return true;
-		}else if(gyro.getAngle() < -ALLOWABLE_ERROR) {
+		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedRight = moveSpeed * KEVIN;
 			return true;
 		}else {
