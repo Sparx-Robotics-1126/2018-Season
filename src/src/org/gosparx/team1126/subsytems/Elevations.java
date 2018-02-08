@@ -49,7 +49,7 @@ public class Elevations extends GenericSubsytem {
 		breaker = new Solenoid(4);
 		setSolenoid(true);
 		limitSwitch = new DigitalInput(20); //TODO: get actual channel  
-		encoder = new EncoderData(new Encoder(23, 22),0.1); //TODO: find correct channels
+		encoder = new EncoderData(new Encoder(23, 22),0.0310354993); //TODO: find correct channels
 	}
 
 	@Override
