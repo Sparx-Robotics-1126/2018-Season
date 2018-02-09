@@ -78,7 +78,7 @@ public class MotorGroup extends SpeedControllerGroup{
 	 */
 	public void setInverted(boolean arg0) {
 		for(int i = 0; i < speedControllers.length; i++) {
-			speedControllers[i].setInverted(true);
+			speedControllers[i].setInverted(arg0);
 		}
 	}
 	
