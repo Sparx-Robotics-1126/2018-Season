@@ -75,6 +75,7 @@ public class MotorGroup extends SpeedControllerGroup{
 	
 	/**
 	 * inverts each individual motor when called
+	 * @param arg0 - the desired state of the motor group
 	 */
 	public void setInverted(boolean arg0) {
 		for(int i = 0; i < speedControllers.length; i++) {
