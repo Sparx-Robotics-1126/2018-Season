@@ -1,7 +1,5 @@
 package src.org.gosparx.team1126.subsytems;
 
-import java.sql.Time;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -46,8 +44,8 @@ public class Elevations extends GenericSubsytem {
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(6); //TODO: get actual motor ID
 		motor2 = new WPI_TalonSRX(9);
-		breaker = new Solenoid(4);
-		setSolenoid(true);
+		//breaker = new Solenoid(4);
+		//setSolenoid(true);
 		limitSwitch = new DigitalInput(20); //TODO: get actual channel  
 		encoder = new EncoderData(new Encoder(23, 22),0.0310354993); //TODO: find correct channels
 	}
@@ -56,7 +54,7 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = encoder.getDistance();
-		System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 			case init:
@@ -67,7 +65,7 @@ public class Elevations extends GenericSubsytem {
 					motor1.stopMotor();
 					motor2.stopMotor();
 					stopAll();
-					encoder.reset();
+					//encoder.reset();
 					state = State.standBy;
 				}
 				break;
@@ -129,13 +127,14 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public DebuggerResult[] debug() {
 		DebuggerResult[] result = new DebuggerResult[2]; 
-		setMotor(-.1);
+		setMotor(-.2);
 		while(!limitSwitch.get()) //If this does not work then you have to force stop
 		{
 			stopAll(); 
 			result[0] = new DebuggerResult("Limit switch and motors work",true,"Elevations limit switch hit");;
 			encoder.reset();
 		}
+		encoder.calculateSpeed();
 		setMotor(.3);
 		try {
 			Thread.sleep(2000);
@@ -143,14 +142,16 @@ public class Elevations extends GenericSubsytem {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		};
+		encoder.calculateSpeed();
 		if(encoder.getDistance()>1) 
 		{
 			result[1] = new DebuggerResult("Encoder works",true,"Motors moved and encoder value greater than 0");
 		}
 		else
 		{
-			new DebuggerResult("Encoder not working",false,"Encoder did not change when motors were set");
+			result[1] = new DebuggerResult("Encoder not working",false,"Encoder did not change when motors were set");
 		}
+		forceStandby();
 		return result;
 	}
 	
@@ -190,7 +191,7 @@ public class Elevations extends GenericSubsytem {
 			state = State.standBy;
 			motor1.stopMotor();
 			motor2.stopMotor();
-			setSolenoid(false);
+			//setSolenoid(false);
 			System.out.println("stoped");
 			return true;
 		}else {return false;}
@@ -200,7 +201,7 @@ public class Elevations extends GenericSubsytem {
 	public void forceStandby() { //Use sparingly, might break init
 		motor1.stopMotor();
 		motor2.stopMotor();
-		setSolenoid(false);
+		//setSolenoid(false);
 	}
 	
 	private void setMotor(double speed)

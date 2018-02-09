@@ -15,7 +15,7 @@ public class Robot extends IterativeRobot{
 		System.out.println("goScale returns "+elevator.goScale());
 		System.out.println("goSwitch reuturns "+elevator.goSwitch());
 		System.out.println("All should be false");
-		elevator.start();
+		//elevator.start();
 	}
 	
 	@Override
@@ -36,6 +36,10 @@ public class Robot extends IterativeRobot{
 			}
 			else if(joy.getRawButton(3)) {
 				elevator.goFloor();
+			}
+			else if(joy.getRawButton(4)) {
+				System.out.println("Debug joy");
+				System.out.println(elevator.debug());
 			}
 			try {
 				Thread.sleep(20);
