@@ -13,7 +13,7 @@ public class Elevations extends GenericSubsytem {
 		super("Elevations");
 	}
 
-
+ 
 	double height; //Height of elevator
 	int top;
 	int middle;

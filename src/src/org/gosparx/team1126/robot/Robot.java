@@ -17,7 +17,7 @@ public class Robot extends IterativeRobot{
 		System.out.println("All should be false");
 		//elevator.start();
 	}
-	
+	 
 	@Override
 	public void autonomousInit() {
 		
