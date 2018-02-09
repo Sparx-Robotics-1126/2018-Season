@@ -61,5 +61,26 @@ public class MotorGroup extends SpeedControllerGroup{
 		}
 	}
 	
+	/**
+	 * gets the specific motor
+	 * @param motorNum - the motor number
+	 * @return - the motor
+	 */
+	public SpeedController getMotor(int motorNum) {
+		if(motorNum >= speedControllers.length) {
+			return null;
+		}
+		return speedControllers[motorNum];
+	}
+	
+	/**
+	 * inverts each individual motor when called
+	 */
+	public void setInverted(boolean arg0) {
+		for(int i = 0; i < speedControllers.length; i++) {
+			speedControllers[i].setInverted(true);
+		}
+	}
+	
 
 }
