@@ -32,4 +32,9 @@ public class Robot extends IterativeRobot{
 		System.out.println("Disabled Started");
 		system.disable();
 	}
+	
+	@Override
+	public void testInit() {
+		system.test();
+	}
 }
