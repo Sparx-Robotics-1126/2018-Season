@@ -24,7 +24,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	
 	//Constants
-	private static final boolean PINCHED = true;
+	private static final boolean PINCHED = false;
 	
 	private static final boolean RELEASED = !PINCHED;
 	
