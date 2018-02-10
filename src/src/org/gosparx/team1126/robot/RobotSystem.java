@@ -2,6 +2,7 @@ package src.org.gosparx.team1126.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.wpilibj.Compressor;
 import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
@@ -27,6 +28,8 @@ public class RobotSystem extends Thread{
 		autoControl = new Autonomous(drives);
 		teleopControl = new TeleOP(drives);
 		currentControl = null;
+		Compressor compress = new Compressor(0);
+		compress.setClosedLoopControl(true);
 	}
 
 	public void init(){
