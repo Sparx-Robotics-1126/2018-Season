@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
+import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Drives.DriveState;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -15,6 +16,7 @@ public class RobotSystem extends Thread{
 	private RobotState currentState;
 
 	private Drives drives;
+	private Acquisitions acq;
 	
 	private Controls currentControl;
 	private TeleOP teleopControl;
@@ -23,10 +25,12 @@ public class RobotSystem extends Thread{
 	public RobotSystem(){
 		//ALL THE SUBSYSTEMS
 		drives = new Drives();
+		acq = new Acquisitions();
 		drives.init();
+		acq.init();
 		currentState = RobotState.STANDBY;
-		autoControl = new Autonomous(drives);
-		teleopControl = new TeleOP(drives);
+		autoControl = new Autonomous(drives, acq);
+		teleopControl = new TeleOP(drives, acq);
 		currentControl = null;
 		Compressor compress = new Compressor(0);
 		compress.setClosedLoopControl(true);
@@ -34,6 +38,7 @@ public class RobotSystem extends Thread{
 
 	public void init(){
 		drives.start();
+		acq.start();
 	}
 
 	@Override

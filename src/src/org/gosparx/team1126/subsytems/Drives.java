@@ -158,7 +158,7 @@ public class Drives extends GenericSubsytem {
 			leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
 			//print("Gyro Angle: " + gyro.getAngle());
@@ -211,7 +211,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -232,7 +232,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(-speedLeft);
 				rightDrives.set(-speedRight);
 			}
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
 			break;
 		}

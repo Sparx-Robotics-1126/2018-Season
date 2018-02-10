@@ -3,11 +3,13 @@ package src.org.gosparx.team1126.controls;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Drives;
 
 public class Autonomous implements Controls {
 
 	private Drives drives;
+	private Acquisitions acq;
 	
 	private boolean isRightAllySwitch;
 	private boolean isRightScale;
@@ -79,13 +81,14 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	
-	public Autonomous(Drives drives) {
+	public Autonomous(Drives drives, Acquisitions acq) {
 		autoStep = 0;
 		isRightAllySwitch = false;
 		isRightScale = false;
 		isRightOpponentSwitch = false;
 
 		this.drives = drives;
+		this.acq = acq;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
 
@@ -159,6 +162,18 @@ public class Autonomous implements Controls {
 				break;
 			case 5: //DRIVES_STOP
 				drives.stopMotors();
+				autoStep++;
+				break;
+			case 6: //ACQ_ACQUIRE
+				acq.setAcquire();
+				autoStep++;
+				break;
+			case 7: //ACQ_RAISE
+				acq.setRaise();
+				autoStep++;
+				break;
+			case 8: //ACQ_SCORE
+				acq.setScore();
 				autoStep++;
 				break;
 			default:
@@ -267,7 +282,10 @@ public class Autonomous implements Controls {
 		DRIVES_TURNLEFT, //@param - degrees to turn, speed
 		DRIVES_TURNRIGHT, //@param - degrees to turn, speed
 		DRIVES_WAIT,
-		DRIVES_STOP;
+		DRIVES_STOP,
+		ACQ_ACQUIRE,
+		ACQ_RAISE,
+		ACQ_SCORE;
 
 	}
 
@@ -285,6 +303,12 @@ public class Autonomous implements Controls {
 			return 4;
 		case DRIVES_STOP:
 			return 5;
+		case ACQ_ACQUIRE:
+			return 6;
+		case ACQ_RAISE:
+			return 7;
+		case ACQ_SCORE:
+			return 8;
 		default:
 			return -999;
 		}
