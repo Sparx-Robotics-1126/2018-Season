@@ -354,7 +354,7 @@ public class Drives extends GenericSubsytem {
 	 * @param switchingToClimb - true if driving, false if climbing
 	 */
 	public void PTOSwitch(boolean switchingToClimb) {
-		ptoSwitch.set(switchingToClimb);
+		//ptoSwitch.set(switchingToClimb);
 	}
 
 	@Override
