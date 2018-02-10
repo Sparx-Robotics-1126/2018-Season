@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.robot;
 
+import java.util.Arrays;
+
 import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
@@ -69,6 +71,12 @@ public class RobotSystem extends Thread{
 		STANDBY,
 		AUTO,
 		TELE;
+	}
+	
+	public void test() {
+		drives.forceStandby();
+		System.out.println(Arrays.toString(drives.debug()));
+		
 	}
 
 }

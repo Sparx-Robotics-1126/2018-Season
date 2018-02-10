@@ -13,16 +13,6 @@ public class MotorGroup extends SpeedControllerGroup{
 	 * MotorGroup extends speedControllerGroup, so it implements sendable and can control multiple motors at once
 	 * @param arg0 - the first motor in this group
 	 * @param arg1 - the second motor in this group
-	 */
-	public MotorGroup(SpeedController arg0, SpeedController arg1) {
-		super(arg0, arg1);
-		speedControllers = new SpeedController[]{arg0, arg1};
-	}
-	
-	/**
-	 * MotorGroup extends speedControllerGroup, so it implements sendable and can control multiple motors at once
-	 * @param arg0 - the first motor in this group
-	 * @param arg1 - the second motor in this group
 	 * @param arg2 - the third motor in this group
 	 */
 	public MotorGroup(SpeedController arg0, SpeedController arg1, SpeedController arg2) {
@@ -55,10 +45,9 @@ public class MotorGroup extends SpeedControllerGroup{
 	 * @param neutralMode - The desired mode of operation when the Controller output throttle is neutral (ie brake/coast)
 	 */
 	public void setNeutralMode(NeutralMode neutralMode) {
-		for(int i = 0; i < speedControllers.length; i++) {
-			if(speedControllers[i].getClass().equals(WPI_TalonSRX.class))
-				((WPI_TalonSRX)speedControllers[i]).setNeutralMode(neutralMode);
-		}
+		((WPI_TalonSRX)speedControllers[0]).setNeutralMode(neutralMode);
+		((WPI_TalonSRX)speedControllers[1]).setNeutralMode(neutralMode);
+		((WPI_TalonSRX)speedControllers[2]).setNeutralMode(neutralMode);
 	}
 	
 	/**
@@ -78,9 +67,20 @@ public class MotorGroup extends SpeedControllerGroup{
 	 * @param arg0 - the desired state of the motor group
 	 */
 	public void setInverted(boolean arg0) {
-		for(int i = 0; i < speedControllers.length; i++) {
-			speedControllers[i].setInverted(arg0);
-		}
+		super.setInverted(arg0);
+		speedControllers[0].setInverted(arg0);
+		speedControllers[1].setInverted(arg0);
+		speedControllers[2].setInverted(arg0);
+	}
+	
+	/**
+	 * sets the motor speeds
+	 * @param arg0 - the speed we want to set the motor to
+	 */
+	public void set(double arg0) {
+		speedControllers[0].set(arg0);
+		speedControllers[1].set(arg0);
+		speedControllers[2].set(arg0);
 	}
 	
 

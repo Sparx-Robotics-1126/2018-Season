@@ -370,7 +370,7 @@ public class Drives extends GenericSubsytem {
 		for(int i = 0; i < rightDrives.getMtrCount(); i++) {
 			results[i+results.length/2] = testMotor((WPI_TalonSRX)rightDrives.getSpeedController(i), rightEnc, i);		
 		}
-
+		
 		return results;
 	}
 
@@ -391,7 +391,6 @@ public class Drives extends GenericSubsytem {
 		mtr.set(.8);
 
 		while(System.currentTimeMillis() < time + 2000) { 
-			print("Encoder: " + encoder.getDistance());
 		}
 
 		mtr.set(0);
