@@ -75,10 +75,10 @@ public class Acquisitions extends GenericSubsytem{
 		wristPosition = RAISED;
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
-		wrist = new Solenoid(IO.PNU_WRIST);
-		pincher = new Solenoid(IO.PNU_PINCHER);
-		wrist.set(wristPosition);
-		pincher.set(pinchPosition);
+		//wrist = new Solenoid(IO.PNU_WRIST);
+		//pincher = new Solenoid(IO.PNU_PINCHER);
+		//wrist.set(wristPosition);
+		//pincher.set(pinchPosition);
 		log("Successfully INITIALIZED");
 	}
 	
@@ -125,8 +125,8 @@ public class Acquisitions extends GenericSubsytem{
 		
 		rightIntake.set(rightMotorPower);
 		leftIntake.set(-leftMotorPower);
-		wrist.set(wristPosition);
-		pincher.set(pinchPosition);
+		//wrist.set(wristPosition);
+		//pincher.set(pinchPosition);
 	}
 
 	/**

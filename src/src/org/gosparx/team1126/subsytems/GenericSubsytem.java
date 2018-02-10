@@ -33,7 +33,7 @@ public abstract class GenericSubsytem extends Thread{
 	@Override
 	public void run(){
 		log("Initializing " + name + "...");
-		init();
+		//init();
 		long timeWait = sleepTime();
 		log("Starting " + name + "...");
 		while(true){
