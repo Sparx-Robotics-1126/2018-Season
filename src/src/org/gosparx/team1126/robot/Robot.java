@@ -1,72 +1,40 @@
 package src.org.gosparx.team1126.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import src.org.gosparx.team1126.subsytems.Elevations;
+
 
 public class Robot extends IterativeRobot{
-
-	private Elevations elevator; 
+	
+	private RobotSystem system;
+	
 	@Override
 	public void robotInit() {
-		elevator = new Elevations();
-		elevator.init();
-		System.out.println("goFloor returns "+elevator.goFloor());
-		System.out.println("goScale returns "+elevator.goScale());
-		System.out.println("goSwitch reuturns "+elevator.goSwitch());
-		System.out.println("All should be false");
-		elevator.start();
+		system = new RobotSystem();
+		system.init();
+		system.start();
+		System.out.println("***INIT ROBOT COMPLETE***");
 	}
-	 
+	
 	@Override
 	public void autonomousInit() {
-		
-	}
-	
-
-	@Override
-	public void teleopPeriodic() {
-		Joystick joy = new Joystick(1);
-		while(true) {
-			if(joy.getRawButton(1)) {
-				elevator.goSwitch();
-			}
-			else if(joy.getRawButton(2)) {
-				elevator.goScale();
-			}
-			else if(joy.getRawButton(3)) {
-				elevator.goFloor();
-			}
-			else if(joy.getRawButton(4)) {
-				System.out.println("Debug joy");
-				System.out.println(elevator.debug());
-			}
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	@Override
-	public void autonomousPeriodic() {
-		while(true) {
-			elevator.execute();
-		}
+		System.out.println("Auto Started");
+		system.autoStart();
 	}
 	
 	@Override
 	public void teleopInit() {
-		
-		
+		System.out.println("Tele Started");
+		system.teleStart();
 	}
 	
 	@Override
 	public void disabledInit() {
-		
+		System.out.println("Disabled Started");
+		system.disable();
 	}
 	
-
+	@Override
+	public void testInit() {
+		system.test();
+	}
 }
