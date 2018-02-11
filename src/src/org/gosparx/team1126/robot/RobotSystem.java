@@ -33,7 +33,7 @@ public class RobotSystem extends Thread{
 		acq.init();
 		ele.init();
 		currentState = RobotState.STANDBY;
-		autoControl = new Autonomous(drives, acq);
+		autoControl = new Autonomous(drives, acq, ele);
 		teleopControl = new TeleOP(drives, acq, ele);
 		currentControl = null;
 		Compressor compress = new Compressor(0);

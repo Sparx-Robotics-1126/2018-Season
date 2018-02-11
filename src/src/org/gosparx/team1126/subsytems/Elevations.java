@@ -40,9 +40,9 @@ public class Elevations extends GenericSubsytem {
 	
 	@Override
 	public void init() {
-		top = 90; //TODO: Change these 
+		top = 95; //TODO: Change these 
 		middle = 50;
-		floor = 5;
+		floor = 3;
 		state = State.standBy;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.elevationsRight); //TODO: get actual motor ID
@@ -224,7 +224,7 @@ public class Elevations extends GenericSubsytem {
 		if(power){
 			setRawMotor(0.4);
 			try {
-				Thread.sleep(500);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -235,7 +235,10 @@ public class Elevations extends GenericSubsytem {
 
 	@Override
 	public boolean isDone() {
-		return false;
+		if(isMoving){
+			return false;
+		}
+		return true;
 	}
 
 	@Override

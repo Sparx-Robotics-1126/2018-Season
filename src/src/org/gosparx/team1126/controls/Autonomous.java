@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Drives;
+import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class Autonomous implements Controls {
 
 	private Drives drives;
 	private Acquisitions acq;
+	private Elevations ele;
 	
 	private boolean isRightAllySwitch;
 	private boolean isRightScale;
@@ -73,15 +75,21 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 392, 50},
+			{stateToInt(AutoState.ACQ_ACQUIRE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 332, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 35, 31},
-			{stateToInt(AutoState.DRIVES_WAIT)}
+			{stateToInt(AutoState.DRIVES_FORWARD), 12, 31},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_SCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
-	public Autonomous(Drives drives, Acquisitions acq) {
+	public Autonomous(Drives drives, Acquisitions acq, Elevations ele) {
 		autoStep = 0;
 		isRightAllySwitch = false;
 		isRightScale = false;
@@ -89,6 +97,7 @@ public class Autonomous implements Controls {
 
 		this.drives = drives;
 		this.acq = acq;
+		this.ele = ele;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
 
@@ -175,6 +184,32 @@ public class Autonomous implements Controls {
 			case 8: //ACQ_SCORE
 				acq.setScore();
 				autoStep++;
+				break;
+			case 9: //ELE_SWITCH
+				ele.goSwitch();
+				autoStep++;
+				break;
+			case 10: //ELE_SCALE
+				ele.goScale();
+				autoStep++;
+				break;
+			case 11: //ELE_FLOOR
+				ele.goFloor();
+				autoStep++;
+				break;
+			case 12: //ELE_DONE
+				if(ele.isDone()){
+					autoStep++;
+				}
+				break;
+			case 13: //ACQ_HOME
+				acq.setHome();
+				autoStep++;
+				break;
+			case 14: //ACQ_DONE
+				if(acq.isDone()){
+					autoStep++;
+				}
 				break;
 			default:
 				break;
@@ -285,7 +320,13 @@ public class Autonomous implements Controls {
 		DRIVES_STOP,
 		ACQ_ACQUIRE,
 		ACQ_RAISE,
-		ACQ_SCORE;
+		ACQ_SCORE,
+		ELE_SWITCH,
+		ELE_SCALE,
+		ELE_FLOOR,
+		ELE_DONE,
+		ACQ_HOME,
+		ACQ_DONE;
 
 	}
 
@@ -309,6 +350,18 @@ public class Autonomous implements Controls {
 			return 7;
 		case ACQ_SCORE:
 			return 8;
+		case ELE_SWITCH:
+			return 9;
+		case ELE_SCALE:
+			return 10;
+		case ELE_FLOOR:
+			return 11;
+		case ELE_DONE:
+			return 12;
+		case ACQ_HOME:
+			return 13;
+		case ACQ_DONE:
+			return 14;
 		default:
 			return -999;
 		}

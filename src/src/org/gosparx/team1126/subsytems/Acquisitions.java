@@ -62,7 +62,8 @@ public class Acquisitions extends GenericSubsytem{
 		STANDBY,
 		RAISE,
 		ACQUIRE,
-		SCORE;
+		SCORE,
+		HOME;
 	}
 	
 	
@@ -113,12 +114,18 @@ public class Acquisitions extends GenericSubsytem{
 		case SCORE:
 			lower();
 			rollerScore();
-			if (Timer.getFPGATimestamp() > scoreTime + 2){ //TODO get actual time
+			if (Timer.getFPGATimestamp() > scoreTime + 1){ //TODO get actual time
 				release();
 				setStandby();
 			}
 			break;
 		
+		case HOME:
+			raise();
+			release();
+			stopRollers();
+			break;
+			
 		default:
 			log("STATE ERROR");
 			break;
@@ -187,6 +194,15 @@ public class Acquisitions extends GenericSubsytem{
 			AcqState = State.SCORE;
 			scoreTime = Timer.getFPGATimestamp();
 			log("State set to SCORE");
+		}
+	}
+	
+	/**
+	 * Sets the acquisitions to home
+	 */
+	public void setHome(){
+		if (AcqState != State.HOME){
+			AcqState = State.HOME;
 		}
 	}
 	
