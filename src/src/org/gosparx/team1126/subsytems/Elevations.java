@@ -45,11 +45,11 @@ public class Elevations extends GenericSubsytem {
 		floor = 3;
 		state = State.standBy;
 		height = 0; //height is not actually 0 yet, it will be at end of init
-		motor1 = new WPI_TalonSRX(IO.elevationsRight); //TODO: get actual motor ID
+		motor1 = new WPI_TalonSRX(IO.elevationsRight); 
 		motor2 = new WPI_TalonSRX(IO.elevationsLeft);
 		breaker = new Solenoid(IO.elevationsPneumatic);
-		limitSwitch = new DigitalInput(IO.magneticSensor); //TODO: get actual channel  
-		encoder = new EncoderData(new Encoder(IO.elevationsEncoder1, IO.elevationsEncoder2),0.0310354993); //TODO: find correct channels
+		limitSwitch = new DigitalInput(IO.magneticSensor); 
+		encoder = new EncoderData(new Encoder(IO.elevationsEncoder1, IO.elevationsEncoder2),0.0310354993); 
 	}
 
 	@Override
