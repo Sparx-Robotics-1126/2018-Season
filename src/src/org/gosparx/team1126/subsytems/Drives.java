@@ -96,6 +96,10 @@ public class Drives extends GenericSubsytem {
 	private double moveSpeed;
 	
 	private boolean slow;
+	
+	private double currentRight;
+	
+	private double currentLeft;
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -119,7 +123,9 @@ public class Drives extends GenericSubsytem {
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
+		currentRight = 0;
 		moveSpeed = 0;
+		currentLeft = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
@@ -171,8 +177,24 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
-			rightDrives.set(speedRight);
-			leftDrives.set(speedLeft);
+			if (speedRight > currentRight) {
+				rightDrives.set(currentRight + .05);
+				currentRight +=.05;
+			}
+			if (speedRight < currentRight) {
+				rightDrives.set(currentRight - .05);
+				currentRight -= .05;
+			}
+			if (speedLeft > currentLeft) {
+				leftDrives.set(currentLeft + .05);
+				currentLeft +=.05;
+			}
+			if (speedLeft < currentLeft) {
+				leftDrives.set(currentLeft - .05);
+				currentLeft -= .05;
+			}
+			//rightDrives.set(speedRight);
+			//leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
