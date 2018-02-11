@@ -56,7 +56,7 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 		
@@ -155,6 +155,7 @@ public class Elevations extends GenericSubsytem {
 	{
 		if(state!=State.init) //To make sure init is not messed up by inputs
 		{
+			isMoving = true;
 			state = State.moveMiddle;
 			return true;
 		}else {return false;}
@@ -168,6 +169,7 @@ public class Elevations extends GenericSubsytem {
 	{
 		if(state!=State.init) //To make sure init is not messed up by inputs
 		{
+			isMoving = true;
 			state = State.moveUp; 
 			return true;
 		}else {return false;}
@@ -177,6 +179,7 @@ public class Elevations extends GenericSubsytem {
 	{
 		if(state!=State.init) //To make sure init is not messed up by inputs
 		{
+			isMoving = true;
 			state = State.moveDown;
 			return true;
 		}else {return false;}

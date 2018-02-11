@@ -72,7 +72,7 @@ public class Acquisitions extends GenericSubsytem{
 		AcqState = State.STANDBY;
 		rightMotorPower = MOTOR_STOP;
 		leftMotorPower = MOTOR_STOP;
-		pinchPosition = RELEASED;
+		pinchPosition = PINCHED;
 		wristPosition = RAISED;
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
