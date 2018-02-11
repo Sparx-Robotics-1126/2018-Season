@@ -25,6 +25,8 @@ public class Elevations extends GenericSubsytem {
 	DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	EncoderData encoder; 
 	
+	private boolean isMoving = false;
+	
 	enum State { //Execute decides what to do based on state
 		init, 
 		standBy, 
@@ -38,10 +40,10 @@ public class Elevations extends GenericSubsytem {
 	
 	@Override
 	public void init() {
-		top = 300; //TODO: Change these 
+		top = 90; //TODO: Change these 
 		middle = 50;
-		floor = 0;
-		state = State.init;
+		floor = 5;
+		state = State.standBy;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.elevationsRight); //TODO: get actual motor ID
 		motor2 = new WPI_TalonSRX(IO.elevationsLeft);
@@ -53,17 +55,15 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void execute() {
 		encoder.calculateSpeed();
-		height = encoder.getDistance();
-		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		height = -encoder.getDistance();
+		System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 		
 			case init:
-			{
-				setMotor(.2);
+				setMotor(-.2);
 				if(!limitSwitch.get())
 				{
-					
 					System.out.println("Home found");
 					motor1.stopMotor();
 					motor2.stopMotor();
@@ -72,13 +72,9 @@ public class Elevations extends GenericSubsytem {
 					state = State.standBy;
 				}
 				break;
-			}
 			case standBy: //while in standby, does nothing
-			{
-				break; 
-			}
+				return; 
 			case moveUp: //while in moveUp, elevator goes up to the top
-			{
 				if(top<height )
 				{
 					state = State.standBy;
@@ -87,10 +83,9 @@ public class Elevations extends GenericSubsytem {
 				} 
 				else 
 				{
-					setMotor(.2);
+					setMotor(1);
 				}
 				break;
-			}
 			case moveMiddle: //while in moveMiddle goes to the middle
 				if(middle<height+10 
 				&& middle>height-10)
@@ -101,17 +96,16 @@ public class Elevations extends GenericSubsytem {
 				} 
 				else if(height>middle) //If below go down
 				{
-					setMotor(-.2);
+					setMotor(-.5);
 					System.out.println("going down");
 				}
 				else //If above goes up
 				{
-					setMotor(.2);
+					setMotor(1);
 					System.out.println("going up");
 				}
 				break;
 			case moveDown: //while in moveDown, elevator goes down
-			{
 				if(floor>height)
 				{
 					state = State.standBy;
@@ -119,12 +113,10 @@ public class Elevations extends GenericSubsytem {
 					break;
 				}
 				else {
-					setMotor(-.2);
+					setMotor(-.5);
 				}
 				break;
-			}
 		}
-		
 	}
 
 	@Override
@@ -163,16 +155,20 @@ public class Elevations extends GenericSubsytem {
 	{
 		if(state!=State.init) //To make sure init is not messed up by inputs
 		{
-			state = State.moveUp;
+			state = State.moveMiddle;
 			return true;
 		}else {return false;}
+	}
+	
+	public void startInit() {
+		state = State.init;
 	}
 	
 	public boolean goScale() //Exe goes middle, state = moveMiddle
 	{
 		if(state!=State.init) //To make sure init is not messed up by inputs
 		{
-			state = State.moveMiddle; 
+			state = State.moveUp; 
 			return true;
 		}else {return false;}
 	}
@@ -195,6 +191,7 @@ public class Elevations extends GenericSubsytem {
 			motor1.stopMotor();
 			motor2.stopMotor();
 			setBrake(false);
+			isMoving = false;
 			System.out.println("stoped");
 			return true;
 		}else {return false;}
@@ -210,13 +207,29 @@ public class Elevations extends GenericSubsytem {
 	private void setMotor(double speed)
 	{
 		System.out.println("Set motors with "+speed);
-		motor1.set(speed);
+		if(!isMoving){
+			setBrake(true);
+			isMoving = true;
+		}		
+		setRawMotor(speed);
+	}
+	
+	private void setRawMotor(double speed) {
+		motor1.set(-speed);
 		motor2.set(-speed);
-		setBrake(true);
 	}
 	
 	private void setBrake(boolean power) {
 		breaker.set(power);
+		if(power){
+			setRawMotor(0.4);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 
