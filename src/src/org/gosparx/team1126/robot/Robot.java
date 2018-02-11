@@ -15,7 +15,7 @@ public class Robot extends IterativeRobot{
 		System.out.println("goScale returns "+elevator.goScale());
 		System.out.println("goSwitch reuturns "+elevator.goSwitch());
 		System.out.println("All should be false");
-		//elevator.start();
+		elevator.start();
 	}
 	 
 	@Override

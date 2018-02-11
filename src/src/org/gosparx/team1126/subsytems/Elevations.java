@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
@@ -42,12 +43,11 @@ public class Elevations extends GenericSubsytem {
 		floor = 0;
 		state = State.init;
 		height = 0; //height is not actually 0 yet, it will be at end of init
-		motor1 = new WPI_TalonSRX(6); //TODO: get actual motor ID
-		motor2 = new WPI_TalonSRX(9);
-		//breaker = new Solenoid(4);
-		//setSolenoid(true);
-		limitSwitch = new DigitalInput(20); //TODO: get actual channel  
-		encoder = new EncoderData(new Encoder(23, 22),0.0310354993); //TODO: find correct channels
+		motor1 = new WPI_TalonSRX(IO.elevationsRight); //TODO: get actual motor ID
+		motor2 = new WPI_TalonSRX(IO.elevationsLeft);
+		breaker = new Solenoid(IO.elevationsPneumatic);
+		limitSwitch = new DigitalInput(IO.magneticSensor); //TODO: get actual channel  
+		encoder = new EncoderData(new Encoder(IO.elevationsEncoder1, IO.elevationsEncoder2),0.0310354993); //TODO: find correct channels
 	}
 
 	@Override
@@ -57,15 +57,18 @@ public class Elevations extends GenericSubsytem {
 		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
+		
 			case init:
 			{
-				setMotor(-.2);
-				if(limitSwitch.get())
+				setMotor(.2);
+				if(!limitSwitch.get())
 				{
+					
+					System.out.println("Home found");
 					motor1.stopMotor();
 					motor2.stopMotor();
 					stopAll();
-					//encoder.reset();
+					encoder.reset();
 					state = State.standBy;
 				}
 				break;
@@ -191,7 +194,7 @@ public class Elevations extends GenericSubsytem {
 			state = State.standBy;
 			motor1.stopMotor();
 			motor2.stopMotor();
-			//setSolenoid(false);
+			setBrake(false);
 			System.out.println("stoped");
 			return true;
 		}else {return false;}
@@ -201,7 +204,7 @@ public class Elevations extends GenericSubsytem {
 	public void forceStandby() { //Use sparingly, might break init
 		motor1.stopMotor();
 		motor2.stopMotor();
-		//setSolenoid(false);
+		setBrake(false);
 	}
 	
 	private void setMotor(double speed)
@@ -209,9 +212,10 @@ public class Elevations extends GenericSubsytem {
 		System.out.println("Set motors with "+speed);
 		motor1.set(speed);
 		motor2.set(-speed);
+		setBrake(true);
 	}
 	
-	private void setSolenoid(boolean power) {
+	private void setBrake(boolean power) {
 		breaker.set(power);
 	}
 	
