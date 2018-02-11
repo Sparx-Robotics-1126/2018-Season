@@ -40,7 +40,7 @@ public class Elevations extends GenericSubsytem {
 	
 	@Override
 	public void init() {
-		top = 95; //TODO: Change these 
+		top = 95; 
 		middle = 50;
 		floor = 3;
 		state = State.standBy;
