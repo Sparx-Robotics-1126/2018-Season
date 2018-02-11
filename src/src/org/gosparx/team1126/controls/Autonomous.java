@@ -1,6 +1,7 @@
 package src.org.gosparx.team1126.controls;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
@@ -17,6 +18,10 @@ public class Autonomous implements Controls {
 	private boolean isRightScale;
 	private boolean isRightOpponentSwitch;
 
+	private double startingTime;
+	private boolean isBackgroundTimer;
+	private int timerStep;
+	
 	private AutoSelected selectedAuto;
 	
 	private boolean firstRun;
@@ -42,13 +47,14 @@ public class Autonomous implements Controls {
 //	};
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 172, 70},
+			{stateToInt(AutoState.BGR_TIMER), 12, 9},
+			{stateToInt(AutoState.DRIVES_FORWARD), 158, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 87, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 12, 40},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 45, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_SCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
@@ -100,13 +106,14 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 332, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 340, 80},
+			{stateToInt(AutoState.DRIVES_SLOW)},
 			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 12, 31},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 38, 31},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_SCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
@@ -168,15 +175,21 @@ public class Autonomous implements Controls {
 
 	@Override
 	public void execute() {
+		//System.out.println("t");
 		if(!firstRun && setFieldConditions()) {
 			setAuto();
 			firstRun = true;
+			startingTime = Timer.getFPGATimestamp();
 		} else {
 			runAuto();
 		}
 	} 
 
 	private void runAuto() {
+		if(isBackgroundTimer && startingTime + currentAuto[timerStep][1] < Timer.getFPGATimestamp()) {
+			autoStep = currentAuto[timerStep][2];
+			isBackgroundTimer = false;
+		}
 		if(currentAuto.length > autoStep) {
 			switch(currentAuto[autoStep][0]) {
 			case 0: //DRIVES_FORWARD
@@ -239,6 +252,18 @@ public class Autonomous implements Controls {
 				break;
 			case 14: //ACQ_DONE
 				if(acq.isDone()){
+					autoStep++;
+				}
+				break;
+			case 15: //TIMER
+				break;
+			case 16: //BGR_TIMER
+				isBackgroundTimer = true;
+				timerStep = autoStep;
+				autoStep++;
+				break;
+			case 17: //DRIVES_SLOW
+				if(drives.driveSlow()) {
 					autoStep++;
 				}
 				break;
@@ -357,8 +382,10 @@ public class Autonomous implements Controls {
 		ELE_FLOOR,
 		ELE_DONE,
 		ACQ_HOME,
-		ACQ_DONE;
-
+		ACQ_DONE,
+		TIMER,
+		BGR_TIMER,
+		DRIVES_SLOW;
 	}
 
 	public int stateToInt(AutoState auto) {
@@ -393,6 +420,12 @@ public class Autonomous implements Controls {
 			return 13;
 		case ACQ_DONE:
 			return 14;
+		case TIMER:
+			return 15;
+		case BGR_TIMER:
+			return 16;
+		case DRIVES_SLOW:
+			return 17;
 		default:
 			return -999;
 		}

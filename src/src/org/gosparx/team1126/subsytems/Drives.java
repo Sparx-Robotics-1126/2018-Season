@@ -51,17 +51,31 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double EVERYTHING = .7;			//What part of the way to destination in auto we start moving at a slow speed (move)
+	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
 
 	private final double DIZZY_SPINNER = .2;		//What decimal part of the way through a turn we start moving at slow speed (turn)
 	
-	private final double SCHOOL_WIFI = .2;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	
+	private final double TURN_SPEED = .35;
 
-	private final int DEADBAND_TELL_NO_TALES = 20;	//The deadband inside which a turn will stop, so robot doesn't over-turn
+	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
 	private final double KEVIN = .7;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double UNFORTUNATE_FEW = 2;		//Degrees robot can be off in move auto before straightening
+	private final double UNFORTUNATE_FEW = 0.2;		//Degrees robot can be off in move auto before straightening
+	
+	private final double RAMPUP = 0.75;
+	
+	private final double RAMPDOWN = -0.75;
+	
+	private final double DEADLOCK = 0.25;
+	
+	private final double DIST1 = 0.25;
+			
+	private final double DIST2 = 0.8;
+	
+	private final double DIST3 = 1;
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -80,6 +94,8 @@ public class Drives extends GenericSubsytem {
 	private double moveDist;
 
 	private double moveSpeed;
+	
+	private boolean slow;
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -110,6 +126,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
+		slow = false;
 		//addObjectsToShuffleboard();
 	}
 
@@ -159,57 +176,62 @@ public class Drives extends GenericSubsytem {
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			print("Gyro: " + gyro.getAngle());
 			break;
 		case TURN_R:
-			//print("Gyro Angle: " + gyro.getAngle());
+			print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			}else if(gyro.getAngle() > turnAngle * DIZZY_SPINNER){
-				turnSpeed = SCHOOL_WIFI;
+				turnSpeed = TURN_SPEED;
+				slow = true;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}else {
-				//print("angle: " + gyro.getAngle());
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
 			}
 			break;
 		case TURN_L:
+			print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() < turnAngle + DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			}else if(gyro.getAngle() < turnAngle * DIZZY_SPINNER) {
-				turnSpeed = SCHOOL_WIFI;
+				turnSpeed = TURN_SPEED;
+				slow = true;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}else {
-				//print("angle: " + gyro.getAngle());
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
 			}
 			break;
 		case MOVE_FWRD:
+			print("Gyro: " + gyro.getAngle());
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			if(moveDist < (rightEnc.getDistance() + leftEnc.getDistance())/2) {
-				stopMotors();
-				print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-				changeState(DriveState.STANDBY);
-				isMoving = false;
-			}else if((moveDist*EVERYTHING) < (rightEnc.getDistance() + leftEnc.getDistance())/2){
-				moveSpeed = SCHOOL_WIFI;
-				speedRight = moveSpeed;
-				speedLeft = moveSpeed;
+			if((moveDist * DIST3) < distance()) {
+				slow = true;
+				speedRight = rampDown();
+				speedLeft = rampDown();
 				straightenForward();
 				rightDrives.set(speedRight);
 				leftDrives.set(speedLeft);
-			}else {
+			}else if((moveDist * DIST2) < distance()){
 				straightenForward();
-				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
+				leftDrives.set(speedLeft);
+			}else if((moveDist * DIST1) < distance()) {
+				slow = false;
+				speedRight = rampUp();
+				speedLeft = rampUp();
+				straightenForward();
+				rightDrives.set(speedRight);
+				leftDrives.set(speedLeft);
 			}
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
@@ -222,6 +244,7 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 			}else if((moveDist*EVERYTHING) > (rightEnc.getDistance() + leftEnc.getDistance())/2){
 				moveSpeed = SCHOOL_WIFI;
+				slow = true;
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
@@ -347,6 +370,38 @@ public class Drives extends GenericSubsytem {
 	public void stopMotors() {
 		rightDrives.set(0);
 		leftDrives.set(0);
+	}
+	
+	/**
+	 * returns if drives is in it's slow state
+	 * @return - a boolean
+	 */
+	public boolean driveSlow() {
+		return slow || isDone();
+	}
+	
+	/**
+	 * ramps up the motors
+	 * @return - the motor speed
+	 */
+	public double rampUp() {
+		return (RAMPUP * distance()) + DEADLOCK;
+	}
+	
+	/**
+	 * ramps the motors down
+	 * @return - the motor speed
+	 */
+	public double rampDown() {
+		return (RAMPDOWN * distance()) + DEADLOCK;
+	}
+	
+	/**
+	 * gets the current distance
+	 * @return - the average distance
+	 */
+	public double distance() {
+		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
 	}
 
 	/**

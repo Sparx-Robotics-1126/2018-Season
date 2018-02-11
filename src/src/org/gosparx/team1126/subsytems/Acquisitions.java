@@ -245,6 +245,14 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
+	 * Sets the pincher to the opposite of what it is
+	 */
+	public void togglePinch() {
+		pinchPosition = !pinchPosition;
+		pincher.set(pinchPosition);
+	}
+	
+	/**
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){

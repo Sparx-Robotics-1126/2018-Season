@@ -154,9 +154,10 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(14)) { //xbox back button
 			System.out.println("xbox back button");
 		}
+		*/
 		if(isRisingEdgeButton(15)) { //xbox start button
-			System.out.println("xbox start button");
-		}
+			acq.togglePinch();
+		}/*
 		if(isRisingEdgeButton(16)) { //xbox L3 button
 			System.out.println("xbox L3 button");
 		}
@@ -199,10 +200,10 @@ public class TeleOP implements Controls{
 	}
 
 	public void setJoystickStates() {
-		/*
+		
 		for(boolean buttons[]: buttonStates) {
 			buttons[1] = buttons[0];
-		}
+		}/*
 		for(boolean povs[]: povStates) {
 			povs[1] = povs[0];
 		}
@@ -222,8 +223,8 @@ public class TeleOP implements Controls{
 		/*
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
-		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
-		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);
+		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);*/
+		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);/*
 		buttonStates[16][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L3);
 		buttonStates[17][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R3);
 
