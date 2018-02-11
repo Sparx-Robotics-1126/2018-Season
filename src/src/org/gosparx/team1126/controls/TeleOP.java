@@ -3,6 +3,7 @@ package src.org.gosparx.team1126.controls;
 import edu.wpi.first.wpilibj.Joystick;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Drives;
+import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class TeleOP implements Controls{
 
@@ -11,7 +12,7 @@ public class TeleOP implements Controls{
 	private Drives drives;
 	private Acquisitions acq;
 	//private Climbing climbing;
-	//private Elevations ele;
+	private Elevations ele;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -47,9 +48,10 @@ public class TeleOP implements Controls{
 				{false, false},  //XBOX_DOWN
 				{false, false}};  //XBOX_LEFT
 	
-	public TeleOP(Drives drives, Acquisitions acq) {
+	public TeleOP(Drives drives, Acquisitions acq, Elevations ele) {
 		this.drives = drives;
 		this.acq = acq;
+		this.ele = ele;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
@@ -75,7 +77,10 @@ public class TeleOP implements Controls{
 		}*/
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
 			drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		}/*
+		} else {
+			drives.joystickLeft(0);
+		}
+		/*
 		//POV Left
 		if(isRisingEdgePOV(0)) { //left joystick pov up
 			System.out.println("left joystick pov up");
@@ -108,7 +113,10 @@ public class TeleOP implements Controls{
 		}*/
 		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
 			drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		}/*
+		} else {
+			drives.joystickRight(0);
+		}
+		/*
 		//POV Right
 		if(isRisingEdgePOV(4)) { //right joystick pov up
 			System.out.println("right joystick pov up");
@@ -175,19 +183,19 @@ public class TeleOP implements Controls{
 			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 		}
 		//xbox POV
+		 */
 		if(isRisingEdgePOV(8)) { //xbox pov up
-			System.out.println("xbox pov up");
+			ele.goScale();
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
-			System.out.println("xbox pov right");
+			ele.goSwitch();
 		}
 		if(isRisingEdgePOV(10)) { //xbox pov down
-			System.out.println("xbox pov down");
+			ele.goFloor();
 		}
 		if(isRisingEdgePOV(11)) { //xbox pov left
-			System.out.println("xbox pov left");
+			ele.goSwitch();
 		}
-		*/
 	}
 
 	public void setJoystickStates() {
@@ -226,11 +234,11 @@ public class TeleOP implements Controls{
 		povStates[4][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_UP);
 		povStates[5][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_RIGHT);
 		povStates[6][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_DOWN);
-		povStates[7][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_LEFT);
+		povStates[7][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_LEFT);*/
 		povStates[8][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_UP);
 		povStates[9][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_RIGHT);
 		povStates[10][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_DOWN);
-		povStates[11][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_LEFT);*/
+		povStates[11][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_LEFT);
 	}
 
 	public boolean isRisingEdgeButton(int pos) {

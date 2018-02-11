@@ -9,6 +9,7 @@ import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Drives.DriveState;
+import src.org.gosparx.team1126.subsytems.Elevations;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class RobotSystem extends Thread{
@@ -17,6 +18,7 @@ public class RobotSystem extends Thread{
 
 	private Drives drives;
 	private Acquisitions acq;
+	private Elevations ele;
 	
 	private Controls currentControl;
 	private TeleOP teleopControl;
@@ -26,11 +28,13 @@ public class RobotSystem extends Thread{
 		//ALL THE SUBSYSTEMS
 		drives = new Drives();
 		acq = new Acquisitions();
+		ele = new Elevations();
 		drives.init();
 		acq.init();
+		ele.init();
 		currentState = RobotState.STANDBY;
 		autoControl = new Autonomous(drives, acq);
-		teleopControl = new TeleOP(drives, acq);
+		teleopControl = new TeleOP(drives, acq, ele);
 		currentControl = null;
 		Compressor compress = new Compressor(0);
 		compress.setClosedLoopControl(true);
@@ -39,6 +43,7 @@ public class RobotSystem extends Thread{
 	public void init(){
 		drives.start();
 		acq.start();
+		ele.start();
 	}
 
 	@Override
@@ -67,6 +72,7 @@ public class RobotSystem extends Thread{
 
 	public void teleStart(){
 		drives.changeState(DriveState.TELEOP);
+		ele.startInit();
 		currentControl = teleopControl;
 		currentState = RobotState.TELE;
 	}
