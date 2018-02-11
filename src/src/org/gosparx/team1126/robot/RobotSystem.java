@@ -66,6 +66,7 @@ public class RobotSystem extends Thread{
 
 	public void autoStart(){
 		autoControl.initAuto();
+		ele.startInit();
 		currentControl = autoControl;
 		currentState = RobotState.AUTO;
 	}
