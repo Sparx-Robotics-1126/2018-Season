@@ -188,6 +188,9 @@ public class Drives extends GenericSubsytem {
 					rightDrives.set(currentRight + .1);
 					currentRight +=.1;
 				}
+				else {
+					stopMotors();
+				}
 			}
 			if (speedRight < currentRight) {
 				if (currentRight > 0) {
