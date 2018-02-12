@@ -178,20 +178,44 @@ public class Drives extends GenericSubsytem {
 			break;
 		case TELEOP:
 			if (speedRight > currentRight) {
-				rightDrives.set(currentRight + .05);
-				currentRight +=.05;
+				if (currentRight < 0) {
+					rightDrives.set(currentRight + .2);
+					currentRight += .2;
+				}
+				else {
+				rightDrives.set(currentRight + .1);
+				currentRight +=.1;
+				}
 			}
 			if (speedRight < currentRight) {
-				rightDrives.set(currentRight - .05);
-				currentRight -= .05;
+				if (currentRight > 0) {
+					rightDrives.set(currentRight - .2);
+					currentRight -= .2;
+				}
+				else {
+				rightDrives.set(currentRight - .1);
+				currentRight -= .1;
+				}
 			}
 			if (speedLeft > currentLeft) {
-				leftDrives.set(currentLeft + .05);
-				currentLeft +=.05;
+				if (currentLeft < 0) {
+					leftDrives.set(currentLeft + .2);
+					currentLeft += .2;
+				}
+				else {
+				leftDrives.set(currentLeft + .1);
+				currentLeft +=.1;
+				}
 			}
 			if (speedLeft < currentLeft) {
-				leftDrives.set(currentLeft - .05);
-				currentLeft -= .05;
+				if (currentLeft > 0) {
+					leftDrives.set(currentLeft - .2);
+					currentLeft -= .2; 
+				}
+				else {
+				leftDrives.set(currentLeft - .1);
+				currentLeft -= .1;
+				}
 			}
 			//rightDrives.set(speedRight);
 			//leftDrives.set(speedLeft);
