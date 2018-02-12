@@ -61,13 +61,13 @@ public class Drives extends GenericSubsytem {
 
 	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
-	private final double KEVIN = .6;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
+	private final double KEVIN = .7;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
 	private final double UNFORTUNATE_FEW = 0.2;		//Degrees robot can be off in move auto before straightening
 	
-	private final double DEADLOCK = 0.25;
+	private final double DEADLOCK = 0.35;
 	
-	private final double DIST1 = 0.25;
+	private final double DIST1 = 0.15;
 			
 	private final double DIST2 = 0.8;
 	
@@ -92,10 +92,6 @@ public class Drives extends GenericSubsytem {
 	private double moveSpeed;
 	
 	private boolean slow;
-	
-	private double currentRight;
-	
-	private double currentLeft;
 	
 	private double rampDown;
 	
@@ -123,9 +119,7 @@ public class Drives extends GenericSubsytem {
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
-		currentRight = 0;
 		moveSpeed = 0;
-		currentLeft = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
@@ -270,7 +264,7 @@ public class Drives extends GenericSubsytem {
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			}else if(DIST3 * moveDist > dista) {
-				straightenForward();
+				//straightenForward();
 				leftDrives.set(rampDown(speedLeft));
 				rightDrives.set(rampDown(speedRight));
 			}else if(DIST2 * moveDist > dista) {
@@ -278,11 +272,11 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}else if(DIST1 * moveDist > dista) {
-				straightenForward();
-				leftDrives.set(rampUp(speedLeft));
-				rightDrives.set(rampUp(speedRight));
+				//straightenForward();
+				leftDrives.set(0.35);
+				rightDrives.set(0.35);
 			}
-			
+			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
 			break;
 		case MOVE_BKWD:

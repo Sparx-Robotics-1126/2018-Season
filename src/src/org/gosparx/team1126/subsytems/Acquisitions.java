@@ -115,19 +115,20 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case LAUNCH_SCORE:
-			lower();
-			rollerScore();
-			if (Timer.getFPGATimestamp() > scoreTime + 1){ //TODO get actual time
-				release();
-				setStandby();
-			}
+				rollerScore();
+				if (Timer.getFPGATimestamp() > scoreTime + 1) {
+					stopRollers();
+					setStandby();
+				}
 			break;
+			
 		case REGULAR_SCORE:
 			lower();
 			if (Timer.getFPGATimestamp() > regScoreTime + 1) {
 			release();
 			setStandby();
 			}
+			break;
 			
 		case HOME:
 			raise();
