@@ -135,22 +135,25 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(8)) { //xbox a button
 			acq.setAcquire(); //acquire
 		}
+		/*
 		if(isRisingEdgeButton(9)) { //xbox b button
-			acq.setScore(); //shoot
+			acq.setLaunchScore(); //shoot
 		}
+		*/
 		if(isRisingEdgeButton(10)) { //xbox x button
 			acq.setHome();
 		}
 		if(isRisingEdgeButton(11)) { //xbox y button
 			acq.setRaise(); //raise
 		}
-		/*
+		
 		if(isRisingEdgeButton(12)) { //xbox L1 button
-			System.out.println("xbox L1 button");
+			acq.setLaunchScore();
 		}
 		if(isRisingEdgeButton(13)) { //xbox R1 button
-			System.out.println("xbox R1 button");
+			acq.setRegScore();
 		}
+		/*
 		if(isRisingEdgeButton(14)) { //xbox back button
 			System.out.println("xbox back button");
 		}

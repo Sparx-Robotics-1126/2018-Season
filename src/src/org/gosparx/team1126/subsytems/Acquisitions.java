@@ -47,6 +47,8 @@ public class Acquisitions extends GenericSubsytem{
 	private static double pinchTime;
 	
 	private static double scoreTime;
+	
+	private static double regScoreTime;
 		
 	private static boolean pinchPosition;  //true = pinched 
 	
@@ -62,7 +64,8 @@ public class Acquisitions extends GenericSubsytem{
 		STANDBY,
 		RAISE,
 		ACQUIRE,
-		SCORE,
+		LAUNCH_SCORE,
+		REGULAR_SCORE,
 		HOME;
 	}
 	
@@ -111,7 +114,7 @@ public class Acquisitions extends GenericSubsytem{
 			}
 			break;
 			
-		case SCORE:
+		case LAUNCH_SCORE:
 			lower();
 			rollerScore();
 			if (Timer.getFPGATimestamp() > scoreTime + 1){ //TODO get actual time
@@ -119,7 +122,13 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-		
+		case REGULAR_SCORE:
+			lower();
+			if (Timer.getFPGATimestamp() > regScoreTime + 1) {
+			release();
+			setStandby();
+			}
+			
 		case HOME:
 			raise();
 			release();
@@ -187,13 +196,24 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
-	 * Sets acquisition state to score.
+	 * Sets acquisition state to launching score.
 	 */
-	public void setScore() {
-		if (AcqState != State.SCORE){
-			AcqState = State.SCORE;
+	public void setLaunchScore() {
+		if (AcqState != State.LAUNCH_SCORE){
+			AcqState = State.LAUNCH_SCORE;
 			scoreTime = Timer.getFPGATimestamp();
-			log("State set to SCORE");
+			log("State set to LAUNCH_SCORE");
+		}
+	}
+	
+	/**
+	 * Set acquisitions state to regular score
+	 */
+	public void setRegScore() {
+		if (AcqState != State.REGULAR_SCORE) {
+			AcqState = State.REGULAR_SCORE;
+			regScoreTime = Timer.getFPGATimestamp();
+			log("State set to REGULAR_SCORE");
 		}
 	}
 	

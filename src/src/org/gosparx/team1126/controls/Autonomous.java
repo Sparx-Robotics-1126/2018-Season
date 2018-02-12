@@ -226,7 +226,7 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 8: //ACQ_SCORE
-				acq.setScore();
+				acq.setRegScore();
 				autoStep++;
 				break;
 			case 9: //ELE_SWITCH
