@@ -57,7 +57,7 @@ public class Drives extends GenericSubsytem {
 	
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 	
-	private final double TURN_SPEED = .35;
+	private final double TURN_SPEED = .35;			//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
@@ -65,13 +65,13 @@ public class Drives extends GenericSubsytem {
 
 	private final double UNFORTUNATE_FEW = 0.2;		//Degrees robot can be off in move auto before straightening
 	
-	private final double DEADLOCK = 0.35;
+	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
 	
-	private final double DIST1 = 0.15;
+	private final double DIST1 = 0.15;				//The distance where it changed to autonomous speed
 			
-	private final double DIST2 = 0.8;
+	private final double DIST2 = 0.8;				//The distance where it changes to rampdown
 	
-	private final double DIST3 = 1;
+	private final double DIST3 = 1;					//The distance where it changes to stop
 	
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
