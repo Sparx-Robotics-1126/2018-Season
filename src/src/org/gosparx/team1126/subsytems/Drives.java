@@ -65,10 +65,6 @@ public class Drives extends GenericSubsytem {
 
 	private final double UNFORTUNATE_FEW = 0.2;		//Degrees robot can be off in move auto before straightening
 	
-	private final double RAMPUP = 0.75;
-	
-	private final double RAMPDOWN = -0.75;
-	
 	private final double DEADLOCK = 0.25;
 	
 	private final double DIST1 = 0.25;
@@ -100,7 +96,11 @@ public class Drives extends GenericSubsytem {
 	private double currentRight;
 	
 	private double currentLeft;
-
+	
+	private double rampDown;
+	
+	private double rampUp;
+	
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
 	@Override
@@ -133,6 +133,8 @@ public class Drives extends GenericSubsytem {
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
 		slow = false;
+		rampUp = 0;
+		rampDown = 0;
 		//addObjectsToShuffleboard();
 	}
 
@@ -183,8 +185,8 @@ public class Drives extends GenericSubsytem {
 					currentRight += .2;
 				}
 				else {
-				rightDrives.set(currentRight + .1);
-				currentRight +=.1;
+					rightDrives.set(currentRight + .1);
+					currentRight +=.1;
 				}
 			}
 			if (speedRight < currentRight) {
@@ -193,8 +195,8 @@ public class Drives extends GenericSubsytem {
 					currentRight -= .2;
 				}
 				else {
-				rightDrives.set(currentRight - .1);
-				currentRight -= .1;
+					rightDrives.set(currentRight - .1);
+					currentRight -= .1;
 				}
 			}
 			if (speedLeft > currentLeft) {
@@ -203,8 +205,8 @@ public class Drives extends GenericSubsytem {
 					currentLeft += .2;
 				}
 				else {
-				leftDrives.set(currentLeft + .1);
-				currentLeft +=.1;
+					leftDrives.set(currentLeft + .1);
+					currentLeft +=.1;
 				}
 			}
 			if (speedLeft < currentLeft) {
@@ -213,19 +215,17 @@ public class Drives extends GenericSubsytem {
 					currentLeft -= .2; 
 				}
 				else {
-				leftDrives.set(currentLeft - .1);
-				currentLeft -= .1;
+					leftDrives.set(currentLeft - .1);
+					currentLeft -= .1;
 				}
 			}
-			//rightDrives.set(speedRight);
-			//leftDrives.set(speedLeft);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-			print("Gyro: " + gyro.getAngle());
+			//print("Gyro: " + gyro.getAngle());
 			break;
 		case TURN_R:
-			print("Gyro Angle: " + gyro.getAngle());
+			//print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
@@ -241,7 +241,7 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case TURN_L:
-			print("Gyro Angle: " + gyro.getAngle());
+			//print("Gyro Angle: " + gyro.getAngle());
 			if(gyro.getAngle() < turnAngle + DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
@@ -257,29 +257,25 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case MOVE_FWRD:
-			print("Gyro: " + gyro.getAngle());
-			leftEnc.calculateSpeed();
-			rightEnc.calculateSpeed();
-			if((moveDist * DIST3) < distance()) {
-				slow = true;
-				speedRight = rampDown();
-				speedLeft = rampDown();
+			double dista = distance();
+			if(distance() > DIST3) {
+				stopMotors();
+				changeState(DriveState.STANDBY);
+				isMoving = false;
+			}else if(DIST3 > dista) {
 				straightenForward();
-				rightDrives.set(speedRight);
-				leftDrives.set(speedLeft);
-			}else if((moveDist * DIST2) < distance()){
+				leftDrives.set(rampDown(speedLeft));
+				rightDrives.set(rampDown(speedRight));
+			}else if(DIST2 > dista) {
 				straightenForward();
-				rightDrives.set(speedRight);
 				leftDrives.set(speedLeft);
-			}else if((moveDist * DIST1) < distance()) {
-				slow = false;
-				speedRight = rampUp();
-				speedLeft = rampUp();
+				rightDrives.set(speedRight);
+			}else if(DIST1 > dista) {
 				straightenForward();
-				rightDrives.set(speedRight);
-				leftDrives.set(speedLeft);
+				leftDrives.set(rampUp(speedLeft));
+				rightDrives.set(rampUp(speedRight));
 			}
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -430,16 +426,18 @@ public class Drives extends GenericSubsytem {
 	 * ramps up the motors
 	 * @return - the motor speed
 	 */
-	public double rampUp() {
-		return (RAMPUP * distance()) + DEADLOCK;
+	public double rampUp(double speed) {
+		rampUp = (speed - DEADLOCK)/(DIST1);
+		return (rampUp * distance()) + DEADLOCK;
 	}
 	
 	/**
 	 * ramps the motors down
 	 * @return - the motor speed
 	 */
-	public double rampDown() {
-		return (RAMPDOWN * distance()) + DEADLOCK;
+	public double rampDown(double speed) {
+		rampDown = -(speed - DEADLOCK)/(DIST2);
+		return (rampDown * (distance()-DIST2)) + speed;
 	}
 	
 	/**
@@ -447,6 +445,8 @@ public class Drives extends GenericSubsytem {
 	 * @return - the average distance
 	 */
 	public double distance() {
+		rightEnc.calculateSpeed();
+		leftEnc.calculateSpeed();
 		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
 	}
 
