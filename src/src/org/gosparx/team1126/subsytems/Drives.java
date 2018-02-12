@@ -258,19 +258,19 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_FWRD:
 			double dista = distance();
-			if(distance() > DIST3) {
+			if(distance() > DIST3 * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(DIST3 > dista) {
+			}else if(DIST3 * moveDist > dista) {
 				straightenForward();
 				leftDrives.set(rampDown(speedLeft));
 				rightDrives.set(rampDown(speedRight));
-			}else if(DIST2 > dista) {
+			}else if(DIST2 * moveDist > dista) {
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
-			}else if(DIST1 > dista) {
+			}else if(DIST1 * moveDist > dista) {
 				straightenForward();
 				leftDrives.set(rampUp(speedLeft));
 				rightDrives.set(rampUp(speedRight));
@@ -427,7 +427,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampUp(double speed) {
-		rampUp = (speed - DEADLOCK)/(DIST1);
+		rampUp = (speed - DEADLOCK)/(DIST1 * moveDist);
 		return (rampUp * distance()) + DEADLOCK;
 	}
 	
@@ -436,8 +436,8 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampDown(double speed) {
-		rampDown = -(speed - DEADLOCK)/(DIST2);
-		return (rampDown * (distance()-DIST2)) + speed;
+		rampDown = -(speed - DEADLOCK)/(DIST2 * moveDist);
+		return (rampDown * (distance()-(DIST2 * moveDist))) + speed;
 	}
 	
 	/**
