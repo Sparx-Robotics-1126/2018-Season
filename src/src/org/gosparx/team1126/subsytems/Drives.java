@@ -181,47 +181,61 @@ public class Drives extends GenericSubsytem {
 		case TELEOP:
 			if (speedRight >= currentRight) {
 				if (currentRight < 0) {
-					rightDrives.set(currentRight + .2);
+					//rightDrives.set(currentRight + .2);
 					currentRight += .2;
 				}
 				else if(currentRight > 0){
-					rightDrives.set(currentRight + .1);
+					//rightDrives.set(currentRight + .1);
 					currentRight +=.1;
 				}
-				else {
-					stopMotors();
-				}
 			}
-			if (speedRight < currentRight) {
+			else if (speedRight < currentRight) {
 				if (currentRight > 0) {
-					rightDrives.set(currentRight - .2);
+					//rightDrives.set(currentRight - .2);
 					currentRight -= .2;
 				}
 				else {
-					rightDrives.set(currentRight - .1);
+					//rightDrives.set(currentRight - .1);
 					currentRight -= .1;
 				}
 			}
 			if (speedLeft > currentLeft) {
 				if (currentLeft < 0) {
-					leftDrives.set(currentLeft + .2);
+					//leftDrives.set(currentLeft + .2);
 					currentLeft += .2;
 				}
 				else {
-					leftDrives.set(currentLeft + .1);
+					//leftDrives.set(currentLeft + .1);
 					currentLeft +=.1;
 				}
 			}
-			if (speedLeft < currentLeft) {
+			else if (speedLeft < currentLeft) {
 				if (currentLeft > 0) {
-					leftDrives.set(currentLeft - .2);
+				//	leftDrives.set(currentLeft - .2);
 					currentLeft -= .2; 
 				}
 				else {
-					leftDrives.set(currentLeft - .1);
+					//leftDrives.set(currentLeft - .1);
 					currentLeft -= .1;
 				}
 			}
+			if(speedRight == 0) {
+				if (speedRight > currentRight) {
+					currentRight += (currentRight % 0.2 == 0) ? 0.2 : 0.1;
+				} else if(speedRight < currentRight){
+					currentRight -= (currentRight % 0.2 == 0) ? 0.2 : 0.1;
+				}
+			}
+			if(speedLeft == 0) {
+				if (speedLeft > currentLeft) {
+					currentLeft += (currentLeft % 0.2 == 0) ? 0.2 : 0.1;
+				} else if(speedLeft < currentLeft){
+					currentLeft -= (currentLeft % 0.2 == 0) ? 0.2 : 0.1;
+				}
+			}
+			
+			leftDrives.set(currentLeft);
+			rightDrives.set(currentRight);
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
