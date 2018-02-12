@@ -179,12 +179,12 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
-			if (speedRight > currentRight) {
+			if (speedRight >= currentRight) {
 				if (currentRight < 0) {
 					rightDrives.set(currentRight + .2);
 					currentRight += .2;
 				}
-				else {
+				else if(currentRight > 0){
 					rightDrives.set(currentRight + .1);
 					currentRight +=.1;
 				}
