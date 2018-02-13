@@ -12,27 +12,19 @@ import src.org.gosparx.team1126.util.DebuggerResult;
  */
 public class Climbing extends GenericSubsytem
 {
-	Solenoid climbingSoul;
-	
-	public State climbingState;
+	private Solenoid climbingSoul;
 	
 	public Climbing() {
 		super("Climbing");
 	}
 
 	@Override
-	public void execute() 
-	{
-		// TODO Auto-generated method stub
-	
-		
-	}
+	public void execute() {}
 
 	@Override
 	public void init() 
 	{
-		// TODO Auto-generated method stub
-		climbingSoul = new Solenoid(IO.ptoSwitch);
+		climbingSoul = new Solenoid(IO.PTO_PNU);
 	}
 
 	@Override
@@ -41,6 +33,7 @@ public class Climbing extends GenericSubsytem
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public void forceStandby() {
 		
@@ -55,6 +48,7 @@ public class Climbing extends GenericSubsytem
 	public long sleepTime() {
 		return 20;
 	}
+	
 	public void enableClimbing(boolean enabled) {
 		climbingSoul.set (enabled);
 	}

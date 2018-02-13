@@ -9,9 +9,7 @@ private Joystick Joy;
 private Climbing Climb;
 	@Override
 	public void robotInit() {
-		Joy = new Joystick(0);
-		Climb = new Climbing();
-		Climb.init();
+
 	}
 	
 	@Override
@@ -21,9 +19,7 @@ private Climbing Climb;
 	
 	@Override
 	public void teleopInit() {
-		while(true) {
-			Climb.enableClimbing(Joy.getRawButton(1));
-		}
+		
 	}
 	
 	@Override
