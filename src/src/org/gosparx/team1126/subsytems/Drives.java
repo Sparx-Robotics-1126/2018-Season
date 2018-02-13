@@ -6,7 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.Solenoid;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
@@ -40,8 +40,6 @@ public class Drives extends GenericSubsytem {
 	private Encoder rawRightEnc;
 
 	private Encoder rawLeftEnc;
-
-	private Solenoid ptoSwitch;
 
 	private AHRS gyro;
 
@@ -112,7 +110,6 @@ public class Drives extends GenericSubsytem {
 		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
-		//ptoSwitch = new Solenoid(0);
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
@@ -157,7 +154,6 @@ public class Drives extends GenericSubsytem {
 		SmartDashboard.putData(gyro);
 		SmartDashboard.putData(rightDrives);
 		SmartDashboard.putData(leftDrives);
-		SmartDashboard.putData(ptoSwitch);	
 		SmartDashboard.updateValues();
 	}
 
@@ -220,10 +216,10 @@ public class Drives extends GenericSubsytem {
 //			}
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
-			leftEnc.calculateSpeed();
-			rightEnc.calculateSpeed();
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-			//print("Gyro: " + gyro.getAngle());
+//			leftEnc.calculateSpeed();
+//			rightEnc.calculateSpeed();
+//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+//			print("Gyro: " + gyro.getAngle());
 			break;
 		case TURN_R:
 			//print("Gyro Angle: " + gyro.getAngle());
@@ -258,20 +254,20 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case MOVE_FWRD:
-			double dista = distance();
+			double currentDistance = distance();
 			if(distance() > DIST3 * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(DIST3 * moveDist > dista) {
+			}else if(DIST3 * moveDist > currentDistance) {
 				//straightenForward();
 				leftDrives.set(rampDown(speedLeft));
 				rightDrives.set(rampDown(speedRight));
-			}else if(DIST2 * moveDist > dista) {
+			}else if(DIST2 * moveDist > currentDistance) {
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
-			}else if(DIST1 * moveDist > dista) {
+			}else if(DIST1 * moveDist > currentDistance) {
 				//straightenForward();
 				leftDrives.set(0.35);
 				rightDrives.set(0.35);
@@ -428,8 +424,8 @@ public class Drives extends GenericSubsytem {
 	 * ramps up the motors
 	 * @return - the motor speed
 	 */
-	public double rampUp(double speed) {
-		rampUp = (speed - DEADLOCK)/(DIST1 * moveDist);
+	public double rampUp(double wantedSpeed) {
+		rampUp = (wantedSpeed - DEADLOCK)/(DIST1 * moveDist);
 		return (rampUp * distance()) + DEADLOCK;
 	}
 	
@@ -437,9 +433,9 @@ public class Drives extends GenericSubsytem {
 	 * ramps the motors down
 	 * @return - the motor speed
 	 */
-	public double rampDown(double speed) {
-		rampDown = -(speed - DEADLOCK)/(DIST2 * moveDist);
-		return (rampDown * (distance()-(DIST2 * moveDist))) + speed;
+	public double rampDown(double wantedSpeed) {
+		rampDown = -(wantedSpeed - DEADLOCK)/(DIST2 * moveDist);
+		return (rampDown * (distance()-(DIST2 * moveDist))) + wantedSpeed;
 	}
 	
 	/**
@@ -450,14 +446,6 @@ public class Drives extends GenericSubsytem {
 		rightEnc.calculateSpeed();
 		leftEnc.calculateSpeed();
 		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
-	}
-
-	/**
-	 * switches between driving and climbing
-	 * @param switchingToClimb - true if driving, false if climbing
-	 */
-	public void PTOSwitch(boolean switchingToClimb) {
-		//ptoSwitch.set(switchingToClimb);
 	}
 
 	@Override
