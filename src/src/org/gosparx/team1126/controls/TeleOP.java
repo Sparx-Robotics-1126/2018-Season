@@ -75,12 +75,11 @@ public class TeleOP implements Controls{
 		}
 		*/
 		if(buttonStates[3][0]) { //left joystick trigger
-			climbing.enableClimbing(true);
 			isClimbing = true;
 		} else {
-			climbing.enableClimbing(false);
 			isClimbing = false;
 		}
+		climbing.enableClimbing(isClimbing);
 		/*
 		//Axis Left
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
@@ -88,19 +87,16 @@ public class TeleOP implements Controls{
 		}*/
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
 			if(!isClimbing) {
-			drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-			} else {
 				drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-				drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			} else {
+				drives.joystickLeft(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+				drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			}
 		} else {
-			if(!isClimbing) {
-				drives.joystickLeft(0);
-			} else {
-				drives.joystickLeft(0);
+			if(isClimbing) {
 				drives.joystickRight(0);
 			}
-
+				drives.joystickLeft(0);
 		}
 		/*
 		//POV Left
