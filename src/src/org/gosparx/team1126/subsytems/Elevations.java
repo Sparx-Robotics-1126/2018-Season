@@ -43,13 +43,13 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
-		middle = 50;
+		middle = 40;
 		floor = 3;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
 		motor2 = new WPI_TalonSRX(IO.ELEVATIONSLEFT);
-		breaker = new Solenoid(IO.ELEVATIONSPNUEMATICS);
+		breaker = new Solenoid(IO.ELEVATIONSPNUEMA(TICS);
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR); 
 		encoder = new EncoderData(new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2),0.0310354993); 
 	}
@@ -84,7 +84,7 @@ public class Elevations extends GenericSubsytem {
 					break;
 				} 
 				else 
-				{
+				{	
 					setMotor(1);
 				}
 				break;
