@@ -38,7 +38,7 @@ public class RobotSystem extends Thread{
 		climb.init();
 		currentState = RobotState.STANDBY;
 		autoControl = new Autonomous(drives, acq, ele);
-		teleopControl = new TeleOP(drives, acq, ele);
+		teleopControl = new TeleOP(drives, acq, ele, climb);
 		currentControl = null;
 		Compressor compress = new Compressor(0);
 		compress.setClosedLoopControl(true);

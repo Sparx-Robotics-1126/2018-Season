@@ -2,6 +2,7 @@ package src.org.gosparx.team1126.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
+import src.org.gosparx.team1126.subsytems.Climbing;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Elevations;
 
@@ -11,7 +12,7 @@ public class TeleOP implements Controls{
 	
 	private Drives drives;
 	private Acquisitions acq;
-	//private Climbing climbing;
+	private Climbing climbing;
 	private Elevations ele;
 
 	private boolean[][] buttonStates =
@@ -48,10 +49,11 @@ public class TeleOP implements Controls{
 				{false, false},  //XBOX_DOWN
 				{false, false}};  //XBOX_LEFT
 	
-	public TeleOP(Drives drives, Acquisitions acq, Elevations ele) {
+	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb) {
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
+		climbing = climb;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
@@ -68,9 +70,13 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(2)) { //left joystick right button
 			System.out.println("left joystick right button");
 		}
-		if(isRisingEdgeButton(3)) { //left joystick trigger
-			System.out.println("left joystick trigger button");
+		*/
+		if(buttonStates[3][0]) { //left joystick trigger
+			climbing.enableClimbing(true);
+		} else {
+			climbing.enableClimbing(false);
 		}
+		/*
 		//Axis Left
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
 			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
@@ -153,11 +159,9 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(13)) { //xbox R1 button
 			acq.setRegScore();
 		}
-		/*
-		if(isRisingEdgeButton(14)) { //xbox back button
-			System.out.println("xbox back button");
-		}
-		*/
+	//	if(isRisingEdgeButton(14)) { //xbox back button
+			
+//		}
 		if(isRisingEdgeButton(15)) { //xbox start button
 			acq.togglePinch();
 		}/*
@@ -226,7 +230,7 @@ public class TeleOP implements Controls{
 		
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
-		//buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);*/
+		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
 		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);/*
 		buttonStates[16][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L3);
 		buttonStates[17][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R3);

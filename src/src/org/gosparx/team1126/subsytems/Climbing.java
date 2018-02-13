@@ -52,4 +52,5 @@ public class Climbing extends GenericSubsytem
 	public void enableClimbing(boolean enabled) {
 		climbingSoul.set (enabled);
 	}
+	
 }
