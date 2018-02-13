@@ -7,6 +7,7 @@ import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
 import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
+import src.org.gosparx.team1126.subsytems.Climbing;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Drives.DriveState;
 import src.org.gosparx.team1126.subsytems.Elevations;
@@ -19,6 +20,7 @@ public class RobotSystem extends Thread{
 	private Drives drives;
 	private Acquisitions acq;
 	private Elevations ele;
+	private Climbing climb;
 	
 	private Controls currentControl;
 	private TeleOP teleopControl;
@@ -29,9 +31,11 @@ public class RobotSystem extends Thread{
 		drives = new Drives();
 		acq = new Acquisitions();
 		ele = new Elevations();
+		climb = new Climbing();
 		drives.init();
 		acq.init();
 		ele.init();
+		climb.init();
 		currentState = RobotState.STANDBY;
 		autoControl = new Autonomous(drives, acq, ele);
 		teleopControl = new TeleOP(drives, acq, ele);
