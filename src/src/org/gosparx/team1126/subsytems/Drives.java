@@ -61,7 +61,7 @@ public class Drives extends GenericSubsytem {
 		
 	private final double KEVIN = .7;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double UNFORTUNATE_FEW = 0.2;		//Degrees robot can be off in move auto before straightening
+	private final double UNFORTUNATE_FEW = 2;		//Degrees robot can be off in move auto before straightening
 	
 	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
 	
@@ -255,7 +255,7 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_FWRD:
 			double currentDistance = distance();
-			if(distance() > DIST3 * moveDist) {
+			if(currentDistance > DIST3 * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
@@ -374,9 +374,11 @@ public class Drives extends GenericSubsytem {
 	private boolean straightenForward() {
 		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedRight = moveSpeed * KEVIN;
+			speedLeft = moveSpeed;
 			return true;
 		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft = moveSpeed * KEVIN;
+			speedRight = moveSpeed;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
@@ -393,9 +395,11 @@ public class Drives extends GenericSubsytem {
 	private boolean straightenBackward() {
 		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedLeft = moveSpeed * KEVIN;
+			speedRight = moveSpeed;
 			return true;
 		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedRight = moveSpeed * KEVIN;
+			speedLeft = moveSpeed;
 			return true;
 		}else {
 			speedLeft = moveSpeed;
