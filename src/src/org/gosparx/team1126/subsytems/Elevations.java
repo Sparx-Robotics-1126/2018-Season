@@ -49,7 +49,7 @@ public class Elevations extends GenericSubsytem {
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
 		motor2 = new WPI_TalonSRX(IO.ELEVATIONSLEFT);
-		breaker = new Solenoid(IO.ELEVATIONSPNUEMA(TICS);
+		breaker = new Solenoid(IO.ELEVATIONSPNUEMATICS);
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR); 
 		encoder = new EncoderData(new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2),0.0310354993); 
 	}
