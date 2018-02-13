@@ -261,16 +261,18 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 			}else if(DIST3 * moveDist > currentDistance) {
 				//straightenForward();
-				leftDrives.set(rampDown(speedLeft));
-				rightDrives.set(rampDown(speedRight));
+				leftDrives.set(rampDown());
+				rightDrives.set(rampDown());
 			}else if(DIST2 * moveDist > currentDistance) {
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}else if(DIST1 * moveDist > currentDistance) {
-				//straightenForward();
-				leftDrives.set(0.35);
-				rightDrives.set(0.35);
+				speedLeft = rampUp();
+				speedRight = rampUp();
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
 			}
 			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
@@ -359,7 +361,6 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
-		//print("MOVING");
 		if(dist > 0) {
 			changeState(DriveState.MOVE_FWRD);
 		}else {
@@ -373,16 +374,11 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean straightenForward() {
 		if(gyro.getAngle() > UNFORTUNATE_FEW) {
-			speedRight = moveSpeed * KEVIN;
-			speedLeft = moveSpeed;
+			speedRight *= KEVIN;
 			return true;
 		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
-			speedLeft = moveSpeed * KEVIN;
-			speedRight = moveSpeed;
+			speedLeft *= KEVIN;
 			return true;
-		}else {
-			speedLeft = moveSpeed;
-			speedRight = moveSpeed;
 		}
 		return false;
 
@@ -428,8 +424,8 @@ public class Drives extends GenericSubsytem {
 	 * ramps up the motors
 	 * @return - the motor speed
 	 */
-	public double rampUp(double wantedSpeed) {
-		rampUp = (wantedSpeed - DEADLOCK)/(DIST1 * moveDist);
+	public double rampUp() {
+		rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
 		return (rampUp * distance()) + DEADLOCK;
 	}
 	
@@ -437,9 +433,9 @@ public class Drives extends GenericSubsytem {
 	 * ramps the motors down
 	 * @return - the motor speed
 	 */
-	public double rampDown(double wantedSpeed) {
-		rampDown = -(wantedSpeed - DEADLOCK)/(DIST2 * moveDist);
-		return (rampDown * (distance()-(DIST2 * moveDist))) + wantedSpeed;
+	public double rampDown() {
+		rampDown = -(moveSpeed - DEADLOCK)/(DIST2 * moveDist);
+		return (rampDown * (distance()-(DIST2 * moveDist))) + moveSpeed;
 	}
 	
 	/**
