@@ -2,12 +2,16 @@ package src.org.gosparx.team1126.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import src.org.gosparx.team1126.subsytems.Climbing;
 
 public class Robot extends IterativeRobot{
-
+private Joystick Joy;
+private Climbing Climb;
 	@Override
 	public void robotInit() {
-		Joystick joy = new Joystick(0);
+		Joy = new Joystick(0);
+		Climb = new Climbing();
+		Climb.init();
 	}
 	
 	@Override
@@ -17,7 +21,9 @@ public class Robot extends IterativeRobot{
 	
 	@Override
 	public void teleopInit() {
-		
+		while(true) {
+			Climb.enableClimbing(Joy.getRawButton(1));
+		}
 	}
 	
 	@Override
