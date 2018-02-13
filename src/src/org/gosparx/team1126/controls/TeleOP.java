@@ -14,6 +14,8 @@ public class TeleOP implements Controls{
 	private Acquisitions acq;
 	private Climbing climbing;
 	private Elevations ele;
+	
+	private boolean isClimbing;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -54,6 +56,7 @@ public class TeleOP implements Controls{
 		this.acq = acq;
 		this.ele = ele;
 		climbing = climb;
+		isClimbing = false;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
@@ -73,8 +76,10 @@ public class TeleOP implements Controls{
 		*/
 		if(buttonStates[3][0]) { //left joystick trigger
 			climbing.enableClimbing(true);
+			isClimbing = true;
 		} else {
 			climbing.enableClimbing(false);
+			isClimbing = false;
 		}
 		/*
 		//Axis Left
@@ -82,9 +87,20 @@ public class TeleOP implements Controls{
 			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		}*/
 		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+			if(!isClimbing) {
 			drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			} else {
+				drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+				drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			}
 		} else {
-			drives.joystickLeft(0);
+			if(!isClimbing) {
+				drives.joystickLeft(0);
+			} else {
+				drives.joystickLeft(0);
+				drives.joystickRight(0);
+			}
+
 		}
 		/*
 		//POV Left
@@ -117,10 +133,12 @@ public class TeleOP implements Controls{
 		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
 			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		}*/
-		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-			drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		} else {
-			drives.joystickRight(0);
+		if(!isClimbing) {
+			if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+				drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			} else {
+				drives.joystickRight(0);
+			}
 		}
 		/*
 		//POV Right
