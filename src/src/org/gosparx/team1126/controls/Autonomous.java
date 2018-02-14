@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.controls;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -106,7 +108,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 340, 80},
+			{stateToInt(AutoState.DRIVES_FORWARD), 340, 60},
 			{stateToInt(AutoState.DRIVES_SLOW)},
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -211,6 +213,7 @@ public class Autonomous implements Controls {
 			case 4: //DRIVES_WAIT
 				if(drives.isDone()) {
 					autoStep++;
+					System.out.println("DRIVES COMPLETED");
 				}
 				break;
 			case 5: //DRIVES_STOP

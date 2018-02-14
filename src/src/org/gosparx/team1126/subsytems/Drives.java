@@ -59,9 +59,9 @@ public class Drives extends GenericSubsytem {
 
 	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
-	private final double KEVIN = .7;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
+	private final double KEVIN = .99;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double UNFORTUNATE_FEW = 2;		//Degrees robot can be off in move auto before straightening
+	private final double UNFORTUNATE_FEW = .5;		//Degrees robot can be off in move auto before straightening
 	
 	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
 	
@@ -91,9 +91,6 @@ public class Drives extends GenericSubsytem {
 	
 	private boolean slow;
 	
-	private double rampDown;
-	
-	private double rampUp;
 	
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -124,8 +121,6 @@ public class Drives extends GenericSubsytem {
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
 		slow = false;
-		rampUp = 0;
-		rampDown = 0;
 		//addObjectsToShuffleboard();
 	}
 
@@ -255,29 +250,31 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_FWRD:
 			double currentDistance = distance();
-			if(currentDistance > DIST3 * moveDist) {
+			if (currentDistance > DIST3 * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}
-				else if(DIST1 * moveDist > currentDistance) {
-					speedLeft = rampUp();
-					speedRight = rampUp();
-					straightenForward();
-					leftDrives.set(speedLeft);
-					rightDrives.set(speedRight);
-				}
-					else if(DIST2 * moveDist > currentDistance) {
-						straightenForward();
-						leftDrives.set(speedLeft);
-						rightDrives.set(speedRight);
-					}
-			else if(DIST3 * moveDist > currentDistance) {
-				//straightenForward();
-				//leftDrives.set(rampDown());
-				//rightDrives.set(rampDown());
-				leftDrives.set(.3);
-				rightDrives.set(.3);
+			} else if (DIST1 * moveDist > currentDistance) { //ramp up
+				System.out.println("D1111111111111111");
+				speedLeft = rampUp();
+				speedRight = rampUp();
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
+				System.out.println("D22222222222222222222222222222");
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+			} else if (DIST3 * moveDist > currentDistance) {  //ramp down
+				System.out.println("D3333333333333333333333333");
+				speedLeft = rampDown();
+				speedRight = rampDown();
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+				// leftDrives.set(.3);
+				// rightDrives.set(.3);
 			}
 			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
@@ -380,10 +377,16 @@ public class Drives extends GenericSubsytem {
 	private boolean straightenForward() {
 		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedRight *= KEVIN;
+			speedLeft = moveSpeed;
 			return true;
 		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft *= KEVIN;
+			speedRight = moveSpeed;
 			return true;
+		}
+		else {
+			speedLeft = moveSpeed;
+			speedRight = moveSpeed;
 		}
 		return false;
 
@@ -430,7 +433,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampUp() {
-		rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
+		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist * 2);
 		return (rampUp * distance()) + DEADLOCK;
 	}
 	
@@ -439,7 +442,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampDown() {
-		rampDown = -(moveSpeed - DEADLOCK)/(DIST2 * moveDist);
+		double rampDown = -(moveSpeed - DEADLOCK)/(DIST2 * moveDist);
 		return (rampDown * (distance()-(DIST2 * moveDist))) + moveSpeed;
 	}
 	
