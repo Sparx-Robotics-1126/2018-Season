@@ -434,7 +434,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampUp() {
-		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist * 2);
+		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
 		return (rampUp * distance()) + DEADLOCK;
 	}
 	
@@ -443,8 +443,8 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampDown() {
-		double rampDown = -(moveSpeed - DEADLOCK)/(DIST2 * moveDist);
-		return (rampDown * (distance()-(DIST2 * moveDist))) + moveSpeed;
+		double rampDown = (moveSpeed - DEADLOCK)/(moveDist-DIST2 * moveDist);
+		return (rampDown * distance()) + moveSpeed;
 	}
 	
 	/**
