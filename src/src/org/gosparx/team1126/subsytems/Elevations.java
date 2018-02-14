@@ -43,7 +43,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
-		middle = 29;
+		middle = 34;
 		floor = 3;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
