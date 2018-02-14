@@ -263,6 +263,8 @@ public class Drives extends GenericSubsytem {
 				rightDrives.set(speedRight);
 			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
 				System.out.println("D22222222222222222222222222222");
+				speedRight = moveSpeed;
+				speedLeft = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
@@ -273,8 +275,7 @@ public class Drives extends GenericSubsytem {
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
-				// leftDrives.set(.3);
-				// rightDrives.set(.3);
+				slow = true;
 			}
 			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
