@@ -43,7 +43,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
-		middle = 40;
+		middle = 30;
 		floor = 3;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
@@ -128,7 +128,7 @@ public class Elevations extends GenericSubsytem {
 		while(!limitSwitch.get()) //If this does not work then you have to force stop
 		{
 			stopAll(); 
-			result[0] = new DebuggerResult("Limit switch and motors work",true,"Elevations limit switch hit");;
+			result[0] = new DebuggerResult("Limit switch and motors work",true,"Elevations limit switch hit");
 			encoder.reset();
 		}
 		encoder.calculateSpeed();
