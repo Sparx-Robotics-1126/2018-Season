@@ -259,20 +259,25 @@ public class Drives extends GenericSubsytem {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(DIST3 * moveDist > currentDistance) {
+			}
+				else if(DIST1 * moveDist > currentDistance) {
+					speedLeft = rampUp();
+					speedRight = rampUp();
+					straightenForward();
+					leftDrives.set(speedLeft);
+					rightDrives.set(speedRight);
+				}
+					else if(DIST2 * moveDist > currentDistance) {
+						straightenForward();
+						leftDrives.set(speedLeft);
+						rightDrives.set(speedRight);
+					}
+			else if(DIST3 * moveDist > currentDistance) {
 				//straightenForward();
-				leftDrives.set(rampDown());
-				rightDrives.set(rampDown());
-			}else if(DIST2 * moveDist > currentDistance) {
-				straightenForward();
-				leftDrives.set(speedLeft);
-				rightDrives.set(speedRight);
-			}else if(DIST1 * moveDist > currentDistance) {
-				speedLeft = rampUp();
-				speedRight = rampUp();
-				straightenForward();
-				leftDrives.set(speedLeft);
-				rightDrives.set(speedRight);
+				//leftDrives.set(rampDown());
+				//rightDrives.set(rampDown());
+				leftDrives.set(.3);
+				rightDrives.set(.3);
 			}
 			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
