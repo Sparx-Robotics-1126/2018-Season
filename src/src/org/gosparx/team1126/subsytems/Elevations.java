@@ -28,7 +28,7 @@ public class Elevations extends GenericSubsytem {
 	
 	private boolean isMoving = false;
 	
-	private boolean finishedInit = false;
+	private boolean finishedInit = false; 
 	
 	enum State { //Execute decides what to do based on state
 		INIT, 
