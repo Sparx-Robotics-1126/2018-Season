@@ -443,7 +443,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampDown() {
-		double rampDown = (moveSpeed - DEADLOCK)/(moveDist-DIST2 * moveDist);
+		double rampDown = (DEADLOCK - moveSpeed)/(moveDist-DIST2 * moveDist);
 		return (rampDown * distance()) + moveSpeed;
 	}
 	
