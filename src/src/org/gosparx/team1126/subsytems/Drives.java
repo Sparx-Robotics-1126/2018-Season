@@ -444,7 +444,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	public double rampDown() {
 		double rampDown = (DEADLOCK - moveSpeed)/(moveDist-DIST2 * moveDist);
-		return (rampDown * distance()) + moveSpeed;
+		return (rampDown * (distance() - DIST2*moveDist)) + moveSpeed;
 	}
 	
 	/**
