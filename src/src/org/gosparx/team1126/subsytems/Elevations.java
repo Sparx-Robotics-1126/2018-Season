@@ -1,5 +1,6 @@
 package src.org.gosparx.team1126.subsytems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -49,6 +50,8 @@ public class Elevations extends GenericSubsytem {
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
 		motor2 = new WPI_TalonSRX(IO.ELEVATIONSLEFT);
+		motor1.setNeutralMode(NeutralMode.Brake);
+		motor2.setNeutralMode(NeutralMode.Brake);
 		breaker = new Solenoid(IO.ELEVATIONSPNUEMATICS);
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR); 
 		encoder = new EncoderData(new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2),0.0310354993); 
