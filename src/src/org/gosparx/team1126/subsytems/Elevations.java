@@ -199,8 +199,8 @@ public class Elevations extends GenericSubsytem {
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
 			state = State.STANDBY;
-			motor1.stopMotor();
-			motor2.stopMotor();
+			motor1.set(.1);
+			motor2.set(.1);
 			setBrake(false);
 			isMoving = false;
 			System.out.println("stoped");
