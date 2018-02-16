@@ -51,17 +51,17 @@ public class Drives extends GenericSubsytem {
 
 	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
 
-	private final double DIZZY_SPINNER = .2;		//What decimal part of the way through a turn we start moving at slow speed (turn)
+	private final double DIZZY_SPINNER = .3;		//What decimal part of the way through a turn we start moving at slow speed (turn)
 	
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 	
-	private final double TURN_SPEED = .35;			//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TURN_SPEED = .40;			//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
 	private final double KEVIN = .99;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
-	private final double UNFORTUNATE_FEW = .5;		//Degrees robot can be off in move auto before straightening
+	private final double UNFORTUNATE_FEW = .1;		//Degrees robot can be off in move auto before straightening
 	
 	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
 	
