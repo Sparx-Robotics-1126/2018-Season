@@ -44,7 +44,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
-		middle = 34;
+		middle = 39;
 		floor = 3;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
@@ -92,8 +92,8 @@ public class Elevations extends GenericSubsytem {
 				}
 				break;
 			case MOVEMIDDLE: //while in moveMiddle goes to the middle
-				if(middle<height+10 
-				&& middle>height-10)
+				if(middle<height+1 
+				&& middle>height-1)
 				{
 					state = State.STANDBY;
 					stopAll();
@@ -199,8 +199,8 @@ public class Elevations extends GenericSubsytem {
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
 			state = State.STANDBY;
-			motor1.set(.1);
-			motor2.set(.1);
+			motor1.set(-.1);
+			motor2.set(-.1);
 			setBrake(false);
 			isMoving = false;
 			System.out.println("stoped");
