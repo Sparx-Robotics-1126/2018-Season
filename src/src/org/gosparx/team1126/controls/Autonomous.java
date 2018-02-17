@@ -1,5 +1,7 @@
  package src.org.gosparx.team1126.controls;
 
+import java.util.Arrays;
+
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,7 +43,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CROSS_AUTO_LINE = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 140, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 128, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	
@@ -311,6 +313,7 @@ public class Autonomous implements Controls {
 	public boolean initAuto(){
 		if(setFieldConditions()) {
 			setAuto();
+			System.out.println("Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
 			return true;
 		}else{
 			return false;
@@ -341,8 +344,12 @@ public class Autonomous implements Controls {
 		//System.out.println("t");
 		if(!firstRun && setFieldConditions()) {
 			setAuto();
+			System.out.println("Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
 			firstRun = true;
 			startingTime = Timer.getFPGATimestamp();
+			for(int[] arr: currentAuto) {
+				System.out.println(arr);
+			}
 		} else {
 			runAuto();
 		}
@@ -456,7 +463,7 @@ public class Autonomous implements Controls {
 			currentAuto = DEFAULT_AUTO;
 			return;
 		}
-		if(selectedAuto == AutoSelected.CROSSBORDER) {
+		if(selectedPosition == PositionSelected.MIDDLE || selectedAuto == AutoSelected.CROSSBORDER) {
 			currentAuto = CROSS_AUTO_LINE;
 			return;
 		}

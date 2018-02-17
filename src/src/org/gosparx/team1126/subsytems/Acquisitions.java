@@ -49,6 +49,8 @@ public class Acquisitions extends GenericSubsytem{
 	private static double scoreTime;
 	
 	private static double regScoreTime;
+	
+	private static double spitTime;
 		
 	private static boolean pinchPosition;  //true = pinched 
 	
@@ -67,7 +69,8 @@ public class Acquisitions extends GenericSubsytem{
 		LAUNCH_SCORE,
 		REGULAR_SCORE,
 		HOME,
-		SPIN;
+		SPIN,
+		SPIT;
 	}
 	
 	
@@ -135,6 +138,14 @@ public class Acquisitions extends GenericSubsytem{
 			if (Timer.getFPGATimestamp() > regScoreTime + 1) {
 			release();
 			setStandby();
+			}
+			break;
+			
+		case SPIT:
+			lower();
+			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
+				rollerScore();
+				setStandby();
 			}
 			break;
 			
@@ -241,6 +252,13 @@ public class Acquisitions extends GenericSubsytem{
 	public void setHome(){
 		if (AcqState != State.HOME){
 			AcqState = State.HOME;
+		}
+	}
+	
+	public void setSpit() {
+		if (AcqState != State.SPIT) {
+			AcqState = State.SPIT;
+			spitTime = Timer.getFPGATimestamp();
 		}
 	}
 	

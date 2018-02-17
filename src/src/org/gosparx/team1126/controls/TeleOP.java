@@ -174,9 +174,9 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(13)) { //xbox R1 button
 			acq.setRegScore();
 		}
-	//	if(isRisingEdgeButton(14)) { //xbox back button
-			
-//		}
+		if(isRisingEdgeButton(14)) { //xbox back button
+			acq.setSpit();
+		}
 		if(isRisingEdgeButton(15)) { //xbox start button
 			acq.togglePinch();
 		}/*
@@ -245,7 +245,7 @@ public class TeleOP implements Controls{
 		
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
-//		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
+		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
 		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);
 //		buttonStates[16][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L3);
 //		buttonStates[17][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R3);
