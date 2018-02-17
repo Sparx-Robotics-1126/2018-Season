@@ -89,12 +89,28 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_FORWARD), 180, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SCORE)}
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+	};
+	
+	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 80, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 222, 40},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 34, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+			//{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
 	};
 
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE = {
@@ -296,7 +312,7 @@ public class Autonomous implements Controls {
 					currentAuto = DEFAULT_AUTO;
 					break;
 				case SCALE:
-					currentAuto = DEFAULT_AUTO;
+					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT;
 					break;
 				case CROSSBORDER:
 					currentAuto = CROSS_AUTO_LINE;
