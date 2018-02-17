@@ -120,7 +120,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 20, 31},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SCORE)},
+			{stateToInt(AutoState.ACQ_REGSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -273,6 +273,10 @@ public class Autonomous implements Controls {
 					autoStep++;
 				}
 				break;
+			case 18: //ACQ_REGSCORE
+				acq.setRegScore();
+				autoStep++;
+				break;
 			default:
 				break;
 			}
@@ -391,7 +395,8 @@ public class Autonomous implements Controls {
 		ACQ_DONE,
 		TIMER,
 		BGR_TIMER,
-		DRIVES_SLOW;
+		DRIVES_SLOW,
+		ACQ_REGSCORE;
 	}
 
 	public int stateToInt(AutoState auto) {
@@ -432,6 +437,8 @@ public class Autonomous implements Controls {
 			return 16;
 		case DRIVES_SLOW:
 			return 17;
+		case ACQ_REGSCORE:
+			return 18;
 		default:
 			return -999;
 		}
