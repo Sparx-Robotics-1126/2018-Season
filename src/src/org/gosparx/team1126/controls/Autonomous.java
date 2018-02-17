@@ -103,12 +103,12 @@ public class Autonomous implements Controls {
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 80, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 80, 75},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 180, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -133,7 +133,7 @@ public class Autonomous implements Controls {
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 70},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 206, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -164,16 +164,26 @@ public class Autonomous implements Controls {
 	};
 
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE = {
-			/*{stateToInt(AutoState.DRIVES_FORWARD), 262, 70},
+			{stateToInt(AutoState.DRIVES_FORWARD), 12, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 7, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 70, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 261, 70},
+			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_HOME)},
+			{stateToInt(AutoState.ELE_FLOOR)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 158, 65},
+			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)}*/
+			{stateToInt(AutoState.ACQ_ACQUIRE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 42, 60},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_RAISE)},
+			{stateToInt(AutoState.ACQ_DONE)},
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
@@ -472,21 +482,21 @@ public class Autonomous implements Controls {
 			switch(selectedAuto) {
 			case SCALE:
 				currentAuto = isRightScale ? CUBE_ON_RIGHT_SCALE_FROM_LEFT : CUBE_ON_LEFT_SCALE_FROM_LEFT;
-				break;
+				return;
 			case SWITCH:
 				currentAuto = isRightAllySwitch ? CUBE_ON_RIGHT_SWITCH_FROM_LEFT : CUBE_ON_LEFT_SWITCH_FROM_LEFT;
-				break;
+				return;
 			case SWITCHSCALE:
 				if(isRightScale) {
 					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT;
-					break;
+					return;
 				}
 				if(isRightAllySwitch) {
 					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT;
 				} else {
 					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SWITCH;
 				}
-				break;
+				return;
 			case SWITCHACQ:
 				if(isRightScale) {
 					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT;
