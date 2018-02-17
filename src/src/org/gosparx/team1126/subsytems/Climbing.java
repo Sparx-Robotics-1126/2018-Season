@@ -14,6 +14,9 @@ public class Climbing extends GenericSubsytem
 {
 	private Solenoid climbingSoul;
 	
+	private Solenoid climbingArms;
+	private Solenoid climbingLatch;
+	
 	public Climbing() {
 		super("Climbing");
 	}
@@ -25,6 +28,8 @@ public class Climbing extends GenericSubsytem
 	public void init() 
 	{
 		climbingSoul = new Solenoid(IO.PTO_PNU);
+		climbingArms = new Solenoid(IO.CLIMBINGARMS);
+		climbingLatch = new Solenoid(IO.CLIMBINGLATCH);
 	}
 
 	@Override
@@ -53,4 +58,19 @@ public class Climbing extends GenericSubsytem
 		climbingSoul.set (enabled);
 	}
 	
+	public void climbingLatch(boolean bool) {
+		climbingLatch.set(bool);
+	}
+	
+	public void climbingArms(boolean bool) {
+		climbingArms.set(bool);
+	}
+	
+	public boolean getClimbingLatch() {
+		return climbingLatch.get();
+	}
+	
+	public boolean getClimbingArms() {
+		return climbingArms.get();
+	}
 }

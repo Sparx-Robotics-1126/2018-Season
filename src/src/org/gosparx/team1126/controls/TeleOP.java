@@ -64,16 +64,16 @@ public class TeleOP implements Controls{
 	public void execute() {
 		//Joystick Buttons Left
 		setJoystickStates();
-		/*if(isRisingEdgeButton(0)) { //left joystick left button
-			System.out.println("left joystick left button");
+		if(isRisingEdgeButton(0)) { //left joystick left button
+			climbing.climbingArms(!climbing.getClimbingArms());
 		}
-		if(isRisingEdgeButton(1)) { //left joystick middle button
-			System.out.println("left joystick middle button");
-		}
+//		if(isRisingEdgeButton(1)) { //left joystick middle button
+//			System.out.println("left joystick middle button");
+//		}
 		if(isRisingEdgeButton(2)) { //left joystick right button
-			System.out.println("left joystick right button");
+			climbing.climbingArms(!climbing.getClimbingLatch());
 		}
-		*/
+		
 		if(buttonStates[3][0]) { //left joystick trigger
 			isClimbing = true;
 		} else {
@@ -228,9 +228,9 @@ public class TeleOP implements Controls{
 //		for(boolean povs[]: povStates) {
 //			povs[1] = povs[0];
 //		}
-//		buttonStates[0][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
+		buttonStates[0][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
 //		buttonStates[1][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
-//		buttonStates[2][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
+		buttonStates[2][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
 		buttonStates[3][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 //		buttonStates[4][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_LEFT);
 //		buttonStates[5][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
