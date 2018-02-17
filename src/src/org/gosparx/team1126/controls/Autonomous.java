@@ -82,11 +82,11 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 238, 60},
+			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 80, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 216, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 180, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -120,7 +120,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 20, 31},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_REGSCORE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -277,6 +277,10 @@ public class Autonomous implements Controls {
 				acq.setRegScore();
 				autoStep++;
 				break;
+			case 19: //ACQ_LAUNCHSCORE
+				acq.setLaunchScore();
+				autoStep++;
+				break;
 			default:
 				break;
 			}
@@ -396,7 +400,8 @@ public class Autonomous implements Controls {
 		TIMER,
 		BGR_TIMER,
 		DRIVES_SLOW,
-		ACQ_REGSCORE;
+		ACQ_REGSCORE,
+		ACQ_LAUNCHSCORE;
 	}
 
 	public int stateToInt(AutoState auto) {
@@ -439,6 +444,8 @@ public class Autonomous implements Controls {
 			return 17;
 		case ACQ_REGSCORE:
 			return 18;
+		case ACQ_LAUNCHSCORE:
+			return 19;
 		default:
 			return -999;
 		}
