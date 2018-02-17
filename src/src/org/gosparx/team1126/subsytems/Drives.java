@@ -59,7 +59,7 @@ public class Drives extends GenericSubsytem {
 
 	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
 		
-	private final double KEVIN = .99;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
+	private final double KEVIN = .8;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
 	private final double UNFORTUNATE_FEW = .1;		//Degrees robot can be off in move auto before straightening
 	
@@ -378,16 +378,10 @@ public class Drives extends GenericSubsytem {
 	private boolean straightenForward() {
 		if(gyro.getAngle() > UNFORTUNATE_FEW) {
 			speedRight *= KEVIN;
-			speedLeft = moveSpeed;
 			return true;
 		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft *= KEVIN;
-			speedRight = moveSpeed;
 			return true;
-		}
-		else {
-			speedLeft = moveSpeed;
-			speedRight = moveSpeed;
 		}
 		return false;
 

@@ -50,13 +50,13 @@ public class Autonomous implements Controls {
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
 			{stateToInt(AutoState.BGR_TIMER), 12, 9},
-			{stateToInt(AutoState.DRIVES_FORWARD), 158, 85},
+			{stateToInt(AutoState.DRIVES_FORWARD), 158, 65},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 87, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 45, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 27, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_SCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
@@ -111,14 +111,14 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 340, 60},
+			{stateToInt(AutoState.DRIVES_FORWARD), 316, 95},
 			{stateToInt(AutoState.DRIVES_SLOW)},
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 50, 31},
+			{stateToInt(AutoState.DRIVES_FORWARD), 20, 31},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_SCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
