@@ -154,6 +154,7 @@ public class TeleOP implements Controls{
 		 */
 		if(isRisingEdgeButton(8)) { //xbox a button
 			acq.setAcquire(); //acquire
+			//acq.setSpin();
 		}
 		/*
 		if(isRisingEdgeButton(9)) { //xbox b button

@@ -66,7 +66,8 @@ public class Acquisitions extends GenericSubsytem{
 		ACQUIRE,
 		LAUNCH_SCORE,
 		REGULAR_SCORE,
-		HOME;
+		HOME,
+		SPIN;
 	}
 	
 	
@@ -101,6 +102,13 @@ public class Acquisitions extends GenericSubsytem{
 			lower();
 			release();
 			rollerAcq();
+			setStandby();
+			break;
+			
+		case SPIN:
+			lower();
+			release();
+			spin();
 			setStandby();
 			break;
 			
@@ -184,6 +192,15 @@ public class Acquisitions extends GenericSubsytem{
 		}
 	}
 	
+	/**
+	 * Sets acquisition state to spin.
+	 */
+	public void setSpin() {
+		if (AcqState != State.SPIN){
+			AcqState = State.SPIN;
+			log("State set to SPIN");
+		}
+	}
 	
 	/**
 	 * Sets acquisition state to raise.
@@ -287,6 +304,14 @@ public class Acquisitions extends GenericSubsytem{
 	private void rollerAcq(){
 		rightMotorPower = MOTOR_ON;
 		leftMotorPower = MOTOR_ON;
+	}
+	
+	/**
+	 * Turns intake motors in a certain direction to acquire
+	 */
+	private void spin() {
+		rightMotorPower = MOTOR_ON;
+		leftMotorPower = MOTOR_ON/2;
 	}
 	
 	/**

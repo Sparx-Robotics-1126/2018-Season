@@ -46,7 +46,7 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup leftDrives;
 
 	private MotorGroup rightDrives;
-
+	
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
 	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
@@ -57,7 +57,7 @@ public class Drives extends GenericSubsytem {
 	
 	private final double TURN_SPEED = .40;			//The speed we want when turning after we went the DIZZY_SPINNER
 
-	private final int DEADBAND_TELL_NO_TALES = 12;	//The deadband inside which a turn will stop, so robot doesn't over-turn
+	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 		
 	private final double KEVIN = .8;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
@@ -90,7 +90,8 @@ public class Drives extends GenericSubsytem {
 	private double moveSpeed;
 	
 	private boolean slow;
-	
+
+	private double lastAngle;
 	
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -121,6 +122,7 @@ public class Drives extends GenericSubsytem {
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
 		slow = false;
+		lastAngle = 0;
 		//addObjectsToShuffleboard();
 	}
 
@@ -214,15 +216,16 @@ public class Drives extends GenericSubsytem {
 //			leftEnc.calculateSpeed();
 //			rightEnc.calculateSpeed();
 //			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-//			print("Gyro: " + gyro.getAngle());
+//			print("Gyro: " + getAngle());
 			break;
 		case TURN_R:
-			//print("Gyro Angle: " + gyro.getAngle());
-			if(gyro.getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
+			print("Gyro Angle: " + getAngle());
+			if(getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() > turnAngle * DIZZY_SPINNER){
+				System.out.println("Turn left finished");
+			}else if(getAngle() > turnAngle * DIZZY_SPINNER){
 				turnSpeed = TURN_SPEED;
 				slow = true;
 				leftDrives.set(-turnSpeed);
@@ -233,12 +236,12 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case TURN_L:
-			//print("Gyro Angle: " + gyro.getAngle());
-			if(gyro.getAngle() < turnAngle + DEADBAND_TELL_NO_TALES) {
+			print("Gyro Angle: " + getAngle());
+			if(getAngle() < turnAngle + DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if(gyro.getAngle() < turnAngle * DIZZY_SPINNER) {
+			}else if(getAngle() < turnAngle * DIZZY_SPINNER) {
 				turnSpeed = TURN_SPEED;
 				slow = true;
 				leftDrives.set(turnSpeed);
@@ -255,21 +258,21 @@ public class Drives extends GenericSubsytem {
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			} else if (DIST1 * moveDist > currentDistance) { //ramp up
-				System.out.println("D1111111111111111");
+//				System.out.println("D1111111111111111");
 				speedLeft = rampUp();
 				speedRight = rampUp();
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
-				System.out.println("D22222222222222222222222222222");
+//				System.out.println("D22222222222222222222222222222");
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST3 * moveDist > currentDistance) {  //ramp down
-				System.out.println("D3333333333333333333333333");
+//				System.out.println("D3333333333333333333333333");
 				speedLeft = rampDown();
 				speedRight = rampDown();
 				straightenForward();
@@ -277,8 +280,8 @@ public class Drives extends GenericSubsytem {
 				rightDrives.set(speedRight);
 				slow = true;
 			}
-			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + gyro.getAngle());
+//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -340,7 +343,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speed - the speed amount, -100 to 100
 	 */
 	public void turn(int degree, int speed) {
-		gyro.zeroYaw();
+		resetGyroAngle();
+		slow = false;
+		System.out.println("Gyro angle after zeroYaw: " + getAngle());
 		turnAngle = degree;
 		turnSpeed = speed/100.;
 		isMoving = true;
@@ -356,7 +361,8 @@ public class Drives extends GenericSubsytem {
 	 * @param speed - the speed amount, -100 to 100
 	 */
 	public void move(int dist, int speed) {
-		gyro.zeroYaw();
+		resetGyroAngle();
+		slow = false;
 		rightEnc.reset();
 		leftEnc.reset();
 		moveDist = dist;
@@ -376,10 +382,10 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenForward() {
-		if(gyro.getAngle() > UNFORTUNATE_FEW) {
+		if(getAngle() > UNFORTUNATE_FEW) {
 			speedRight *= KEVIN;
 			return true;
-		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
+		}else if(getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft *= KEVIN;
 			return true;
 		}
@@ -392,11 +398,11 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenBackward() {
-		if(gyro.getAngle() > UNFORTUNATE_FEW) {
+		if(getAngle() > UNFORTUNATE_FEW) {
 			speedLeft = moveSpeed * KEVIN;
 			speedRight = moveSpeed;
 			return true;
-		}else if(gyro.getAngle() < -UNFORTUNATE_FEW) {
+		}else if(getAngle() < -UNFORTUNATE_FEW) {
 			speedRight = moveSpeed * KEVIN;
 			speedLeft = moveSpeed;
 			return true;
@@ -425,7 +431,7 @@ public class Drives extends GenericSubsytem {
 	
 	/**
 	 * ramps up the motors
-	 * @return - the motor speed
+	 * @return - the motor speedf
 	 */
 	public double rampUp() {
 		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
@@ -468,6 +474,14 @@ public class Drives extends GenericSubsytem {
 		return results;
 	}
 
+	private double getAngle() {
+		return gyro.getAngle() - lastAngle;
+	}
+	
+	private void resetGyroAngle() {
+		lastAngle = gyro.getAngle();
+	}
+	
 	/**
 	 * Tests a motor with a controller
 	 * @param mtrTesting - motor to test

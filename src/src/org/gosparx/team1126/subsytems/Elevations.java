@@ -217,7 +217,7 @@ public class Elevations extends GenericSubsytem {
 	
 	private void setMotor(double speed)
 	{
-		System.out.println("Set motors with "+speed);
+		//System.out.println("Set motors with "+speed);
 		if(!isMoving){
 			setBrake(true);
 			isMoving = true;
