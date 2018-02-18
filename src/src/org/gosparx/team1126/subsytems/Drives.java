@@ -6,7 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
@@ -46,31 +46,33 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup leftDrives;
 
 	private MotorGroup rightDrives;
-	
+
+	private Solenoid drivesPTO;
+
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
 	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
 
 	private final double DIZZY_SPINNER = .3;		//What decimal part of the way through a turn we start moving at slow speed (turn)
-	
+
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
-	
+
 	private final double TURN_SPEED = .40;			//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
-		
+
 	private final double KEVIN = .8;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
 	private final double UNFORTUNATE_FEW = .1;		//Degrees robot can be off in move auto before straightening
-	
+
 	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
-	
+
 	private final double DIST1 = 0.15;				//The distance where it changed to autonomous speed
-			
+
 	private final double DIST2 = 0.8;				//The distance where it changes to rampdown
-	
+
 	private final double DIST3 = 1;					//The distance where it changes to stop
-	
+
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
 	private boolean isMoving;
@@ -88,11 +90,11 @@ public class Drives extends GenericSubsytem {
 	private double moveDist;
 
 	private double moveSpeed;
-	
+
 	private boolean slow;
 
 	private double lastAngle;
-	
+
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
 	@Override
@@ -136,6 +138,8 @@ public class Drives extends GenericSubsytem {
 	public enum DriveState{
 		STANDBY,
 		TELEOP,
+		CLIMB_INIT,
+		CLIMB,
 		MOVE_FWRD,
 		MOVE_BKWD,
 		TURN_R,
@@ -146,11 +150,11 @@ public class Drives extends GenericSubsytem {
 	 * Adds all the sendable objects to shuffleboard
 	 */
 	private void addObjectsToShuffleboard() {
-		SmartDashboard.putData(rawLeftEnc);
-		SmartDashboard.putData(rawRightEnc);
-		SmartDashboard.putData(gyro);
-		SmartDashboard.putData(rightDrives);
-		SmartDashboard.putData(leftDrives);
+		SmartDashboard.putData("LeftEnc", rawLeftEnc);
+		SmartDashboard.putData("RightEnc", rawRightEnc);
+		SmartDashboard.putData("Gyro", gyro);
+		SmartDashboard.putData("Right Drives", rightDrives);
+		SmartDashboard.putData("Left Drives", leftDrives);
 		SmartDashboard.updateValues();
 	}
 
@@ -166,57 +170,32 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
-//			if (speedRight >= currentRight) {
-//				if (currentRight < 0) {
-//					rightDrives.set(currentRight + .2);
-//					currentRight += .2;
-//				}
-//				else if(currentRight > 0){
-//					rightDrives.set(currentRight + .1);
-//					currentRight +=.1;
-//				}
-//				else {
-//					rightDrives.set(0);
-//				}
-//			}
-//			if (speedRight < currentRight) {
-//				if (currentRight > 0) {
-//					rightDrives.set(currentRight - .2);
-//					currentRight -= .2;
-//				}
-//				else {
-//					rightDrives.set(currentRight - .1);
-//					currentRight -= .1;
-//				}
-//			}
-//			if (speedLeft >= currentLeft) {
-//				if (currentLeft < 0) {
-//					leftDrives.set(currentLeft + .2);
-//					currentLeft += .2;
-//				}
-//				else if(currentLeft > 0){
-//					leftDrives.set(currentLeft + .1);
-//					currentLeft +=.1;
-//				} else {
-//					leftDrives.set(0);
-//				}
-//			}
-//			if (speedLeft < currentLeft) {
-//				if (currentLeft > 0) {
-//					leftDrives.set(currentLeft - .2);
-//					currentLeft -= .2; 
-//				}
-//				else {
-//					leftDrives.set(currentLeft - .1);
-//					currentLeft -= .1;
-//				}
-//			}
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
-//			leftEnc.calculateSpeed();
-//			rightEnc.calculateSpeed();
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-//			print("Gyro: " + getAngle());
+			//			leftEnc.calculateSpeed();
+			//			rightEnc.calculateSpeed();
+			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+			//			print("Gyro: " + getAngle());
+			break;
+		case CLIMB_INIT:
+			if(isTaught(leftDrives) && isTaught(rightDrives)) {
+				rightDrives.set(-.1);
+				leftDrives.set(-.1);
+			}else {
+				rightEnc.reset();
+				leftEnc.reset();
+				changeState(DriveState.CLIMB);
+			}
+
+			break;
+		case CLIMB:		//using only right joystick
+			if(rightEnc.getDistance() - leftEnc.getDistance() > 3) {
+				rightDrives.set(speedRight * .7);
+				leftDrives.set(speedRight);
+			} else if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
+				rightDrives.set(speedRight);
+				leftDrives.set(speedRight * .7);	
+			}
 			break;
 		case TURN_R:
 			print("Gyro Angle: " + getAngle());
@@ -258,21 +237,21 @@ public class Drives extends GenericSubsytem {
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			} else if (DIST1 * moveDist > currentDistance) { //ramp up
-//				System.out.println("D1111111111111111");
+				//				System.out.println("D1111111111111111");
 				speedLeft = rampUp();
 				speedRight = rampUp();
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
-//				System.out.println("D22222222222222222222222222222");
+				//				System.out.println("D22222222222222222222222222222");
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST3 * moveDist > currentDistance) {  //ramp down
-//				System.out.println("D3333333333333333333333333");
+				//				System.out.println("D3333333333333333333333333");
 				speedLeft = rampDown();
 				speedRight = rampDown();
 				straightenForward();
@@ -280,8 +259,8 @@ public class Drives extends GenericSubsytem {
 				rightDrives.set(speedRight);
 				slow = true;
 			}
-//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
+			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -310,7 +289,7 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * changes drives state
+	 * changes drives state (should only use to switch to teloep from auto)
 	 * @param st - the state to switch to
 	 */
 	public void changeState(DriveState st) {
@@ -322,13 +301,34 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
+	 * Disables or enables PTO that controls drives
+	 * @param disabing - true if disabling drives, false if enabling
+	 */
+	private void disablePTO(boolean disabing) {
+		drivesPTO.set(false);
+	}
+
+	/**
+	 * Checks if robot side is almost off ground 
+	 * @param side - the side we're checking
+	 * @return true if side is almost off ground
+	 */
+	private boolean isTaught(MotorGroup side) {
+		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
+		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
+		if(motor1Amp > 13 || motor2Amp > 13)
+			return true;
+		return false;
+	}
+
+	/**
 	 * moves right motors to joystick value, -1 to 1
 	 * @param speedR - the right joystick speed
 	 */
 	public void joystickRight(double speedR) {
 		speedRight = speedR;
 	}
-	
+
 	/**
 	 * moves left motors to joystick value, -1 to 1
 	 * @param speedL - the left joystick speed
@@ -353,6 +353,15 @@ public class Drives extends GenericSubsytem {
 			changeState(DriveState.TURN_R);
 		}else
 			changeState(DriveState.TURN_L);
+	}
+
+	/**
+	 * Climbs from floor to top
+	 */
+	public void climb(){
+		disablePTO(true);
+		changeState(DriveState.CLIMB_INIT);
+
 	}
 
 	/**
@@ -420,7 +429,7 @@ public class Drives extends GenericSubsytem {
 		rightDrives.set(0);
 		leftDrives.set(0);
 	}
-	
+
 	/**
 	 * returns if drives is in it's slow state
 	 * @return - a boolean
@@ -428,7 +437,7 @@ public class Drives extends GenericSubsytem {
 	public boolean driveSlow() {
 		return slow || isDone();
 	}
-	
+
 	/**
 	 * ramps up the motors
 	 * @return - the motor speedf
@@ -437,7 +446,7 @@ public class Drives extends GenericSubsytem {
 		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
 		return (rampUp * distance()) + DEADLOCK;
 	}
-	
+
 	/**
 	 * ramps the motors down
 	 * @return - the motor speed
@@ -446,7 +455,7 @@ public class Drives extends GenericSubsytem {
 		double rampDown = (DEADLOCK - moveSpeed)/(moveDist-DIST2 * moveDist);
 		return (rampDown * (distance() - DIST2*moveDist)) + moveSpeed;
 	}
-	
+
 	/**
 	 * gets the current distance
 	 * @return - the average distance
@@ -470,18 +479,18 @@ public class Drives extends GenericSubsytem {
 		for(int i = 0; i < rightDrives.getMtrCount(); i++) {
 			results[i+results.length/2] = testMotor((WPI_TalonSRX)rightDrives.getSpeedController(i), rightEnc, i);		
 		}
-		
+
 		return results;
 	}
 
 	private double getAngle() {
 		return gyro.getAngle() - lastAngle;
 	}
-	
+
 	private void resetGyroAngle() {
 		lastAngle = gyro.getAngle();
 	}
-	
+
 	/**
 	 * Tests a motor with a controller
 	 * @param mtrTesting - motor to test
