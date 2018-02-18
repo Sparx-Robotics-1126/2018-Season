@@ -178,14 +178,18 @@ public class Drives extends GenericSubsytem {
 			//			print("Gyro: " + getAngle());
 			break;
 		case CLIMB_INIT:
-			if(isTaught(leftDrives) && isTaught(rightDrives)) {
-				rightDrives.set(-.1);
-				leftDrives.set(-.1);
-			}else {
+			boolean right = isTaught(rightDrives);
+			boolean left = isTaught(leftDrives);
+			if(left && right) {
 				rightEnc.reset();
 				leftEnc.reset();
 				changeState(DriveState.CLIMB);
 			}
+			if(!left){
+				rightDrives.set(-speedRight);
+			} 
+			if(!right)
+				leftDrives.set(-speedRight);
 
 			break;
 		case CLIMB:		//using only right joystick
