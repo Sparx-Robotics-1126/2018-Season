@@ -30,6 +30,7 @@ public class CtrlMap {
 	public static final int XBOX_START = 8;
 	public static final int XBOX_L3 = 9;
 	public static final int XBOX_R3 = 10;
+	public static final double TRIGGER_DEADBAND = 0.25;
 	
 	public static final int LEFTJOYSTICK = 0;
 	public static final int RIGHTJOYSTICK = 1;
