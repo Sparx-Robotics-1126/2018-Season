@@ -293,22 +293,27 @@ public class Drives extends GenericSubsytem {
 	}
 
 	/**
-	 * changes drives state (should only use to switch to teloep from auto)
+	 * Changes state to teleop
+	 */
+	public void toTeleop() {
+		changeState(DriveState.TELEOP);
+		leftDrives.setNeutralMode(NeutralMode.Coast);
+		rightDrives.setNeutralMode(NeutralMode.Coast);
+	}
+
+	/**
+	 * changes drives state
 	 * @param st - the state to switch to
 	 */
-	public void changeState(DriveState st) {
+	private void changeState(DriveState st) {
 		state = st;
-		if(state == DriveState.TELEOP) {
-			leftDrives.setNeutralMode(NeutralMode.Coast);
-			rightDrives.setNeutralMode(NeutralMode.Coast);
-		}
 	}
 
 	/**
 	 * Disables or enables PTO that controls drives
 	 * @param disabing - true if disabling drives, false if enabling
 	 */
-	private void disablePTO(boolean disabing) {
+	private void enablePTO(boolean disabing) {
 		drivesPTO.set(false);
 	}
 
@@ -319,7 +324,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	private boolean isTaught(MotorGroup side) {
 		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
-		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
+		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
 		if(motor1Amp > 13 || motor2Amp > 13)
 			return true;
 		return false;
@@ -361,11 +366,16 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * Climbs from floor to top
+	 * @param climb: True if want to climb, false if getting out of climb 
 	 */
-	public void climb(){
-		disablePTO(true);
-		changeState(DriveState.CLIMB_INIT);
-
+	public void enableClimb(boolean climb){
+		if(climb) {
+			enablePTO(true);
+			changeState(DriveState.CLIMB_INIT);
+		}else {
+			enablePTO(false);
+			changeState(DriveState.TELEOP);
+		}
 	}
 
 	/**
