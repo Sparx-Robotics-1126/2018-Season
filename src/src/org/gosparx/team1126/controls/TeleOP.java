@@ -92,8 +92,12 @@ public class TeleOP implements Controls{
 				drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			} else {
 				drives.joystickLeft(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+				drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			}
 		} else {
+			if(isClimbing) {
+				drives.joystickRight(0);
+			}
 			drives.joystickLeft(0);
 		}
 		/*
@@ -115,12 +119,13 @@ public class TeleOP implements Controls{
 			System.out.println("right joystick left button");
 		}*/
 		if(isRisingEdgeButton(5)) { //right joystick middle button
-			climbing.enableClimbing(true);
-			drives.enableClimb(true);
+			isClimbing = true;
+			climbing.enableClimbing(isClimbing);
+			drives.enableClimb(isClimbing);
 		}
 		if(isFallingEdgeButton(5)) {
-			climbing.enableClimbing(false);
-			drives.enableClimb(false);
+			climbing.enableClimbing(isClimbing);
+			drives.enableClimb(isClimbing);
 		}
 		/*
 		}
@@ -134,15 +139,18 @@ public class TeleOP implements Controls{
 		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
 			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		}*/
-		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-			if(!isClimbing) {
+		if(!isClimbing) {
+			if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
 				drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			} else {
-				drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+				drives.joystickRight(0);
 			}
-		} else {
-			drives.joystickRight(0);
 		}
+//		if(!isClimbing) {
+//			drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//		} else {
+//			drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//		}
 		/*
 		//POV Right
 		if(isRisingEdgePOV(4)) { //right joystick pov up

@@ -113,6 +113,7 @@ public class Drives extends GenericSubsytem {
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
+		drivesPTO = new Solenoid(IO.PTO_PNU);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
@@ -193,10 +194,10 @@ public class Drives extends GenericSubsytem {
 
 			break;
 		case CLIMB:		//using only right joystick
-			if(rightEnc.getDistance() - leftEnc.getDistance() > 3) {
+			if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
 				rightDrives.set(speedRight * .7);
 				leftDrives.set(speedRight);
-			} else if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
+			} else if(rightEnc.getDistance() - leftEnc.getDistance() > 3) {
 				rightDrives.set(speedRight);
 				leftDrives.set(speedRight * .7);	
 			}

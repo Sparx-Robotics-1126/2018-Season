@@ -10,6 +10,7 @@ public class IO {
 	public static final int ELEVATIONSENCODER1												= 22;
 	public static final int ELEVATIONSENCODER2												= 23;	
 	public static final int ELEVATIONSPNUEMATICS												= 6;
+	
 
 	//CAN
 	public static final int CAN_ACQ_RIGHT_INTAKE                  = 7;
