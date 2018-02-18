@@ -114,14 +114,16 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(4)) { //right joystick left button
 			System.out.println("right joystick left button");
 		}*/
-		if(buttonStates[5][0]) { //right joystick middle button
-			isClimbing = true;
-		} else {
-			isClimbing = false;
+		if(isRisingEdgeButton(5)) { //right joystick middle button
+			climbing.enableClimbing(true);
+			drives.enableClimb(true);
 		}
-		climbing.enableClimbing(isClimbing);/*
+		if(isFallingEdgeButton(5)) {
+			climbing.enableClimbing(false);
+			drives.enableClimb(false);
 		}
-		
+		/*
+		}
 		if(isRisingEdgeButton(6)) { //right joystick right button
 			System.out.println("right joystick right button");
 		}
@@ -287,6 +289,10 @@ public class TeleOP implements Controls{
 
 	public boolean isRisingEdgeButton(int pos) {
 		return buttonStates[pos][0] && !buttonStates[pos][1];
+	}
+	
+	public boolean isFallingEdgeButton(int pos) {
+		return !buttonStates[pos][0] && buttonStates[pos][1];
 	}
 
 	public boolean isRisingEdgePOV(int pos) {
