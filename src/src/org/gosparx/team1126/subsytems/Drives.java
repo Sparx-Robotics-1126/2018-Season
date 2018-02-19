@@ -190,7 +190,7 @@ public class Drives extends GenericSubsytem {
 		case CLIMB_INIT:
 			boolean right = isTaught(rightDrives);
 			boolean left = isTaught(leftDrives);
-			if(left && right) {
+			if(!notRightYet && !notLeftYet) {
 				System.out.print(highestAmp);
 				rightEnc.reset();
 				leftEnc.reset();
@@ -208,13 +208,14 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(-.2);
 			}else {
 				leftDrives.set(0);
-				notRightYet = false;
+				notLeftYet = false;
 			}
-			System.out.println("Right side: " + (right && !notRightYet));
-			System.out.println("Left side: " + (left && !notLeftYet));
+			System.out.println("Right side: " + (right || !notRightYet));
+			System.out.println("Left side: " + (left || !notLeftYet));
 			System.out.println(highestAmp);
 			break;
 		case CLIMB:		//using only right joystick
+			System.out.println(speedRight);
 			if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
 				rightDrives.set(speedRight * .7);
 				leftDrives.set(speedRight);
@@ -223,7 +224,7 @@ public class Drives extends GenericSubsytem {
 				leftDrives.set(speedRight * .7);	
 			}else {
 				rightDrives.set(speedRight);
-				leftDrives.set(speedLeft);
+				leftDrives.set(speedRight);
 			}
 			break;
 		case TURN_R:

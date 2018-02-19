@@ -119,6 +119,7 @@ public class TeleOP implements Controls{
 			System.out.println("right joystick left button");
 		}*/
 		if(isRisingEdgeButton(5)) { //right joystick middle button
+			System.out.println("started climbing");
 			isClimbing = true;
 			climbing.enableClimbing(isClimbing);
 			drives.enableClimb(isClimbing);
