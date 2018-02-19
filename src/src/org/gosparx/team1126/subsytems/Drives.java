@@ -7,6 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
@@ -96,11 +97,13 @@ public class Drives extends GenericSubsytem {
 	private double lastAngle;
 
 	private boolean notRightYet; //for climb init
-	
+
 	private boolean notLeftYet; //for climb init
-	
+
 	private double highestAmp;
-	
+
+	private double climbTimer;
+
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
 	@Override
@@ -188,8 +191,12 @@ public class Drives extends GenericSubsytem {
 			//			print("Gyro: " + getAngle());
 			break;
 		case CLIMB_INIT:
-			boolean right = isTaught(rightDrives);
-			boolean left = isTaught(leftDrives);
+			boolean right = false;
+			boolean left = false;
+			if(climbTimer + 1 > Timer.getFPGATimestamp()) {
+				right = isTaught(rightDrives);
+				left = isTaught(leftDrives);
+			}
 			if(!notRightYet && !notLeftYet) {
 				System.out.print(highestAmp);
 				rightEnc.reset();
@@ -326,7 +333,7 @@ public class Drives extends GenericSubsytem {
 		leftDrives.setNeutralMode(NeutralMode.Coast);
 		rightDrives.setNeutralMode(NeutralMode.Coast);
 	}
-	
+
 	/**
 	 * Changes state to auto
 	 */
@@ -364,7 +371,7 @@ public class Drives extends GenericSubsytem {
 			highestAmp = motor1Amp;
 		if(motor2Amp > highestAmp)
 			highestAmp = motor2Amp;
-		if(motor1Amp > 2.5 || motor2Amp > 2.5)
+		if(motor1Amp > 3 || motor2Amp > 3)
 			return true;
 		return false;
 	}
@@ -410,6 +417,10 @@ public class Drives extends GenericSubsytem {
 	public void enableClimb(boolean climb){
 		if(climb) {
 			enablePTO(true);
+			notLeftYet = true;
+			notRightYet = true;
+			highestAmp = 0.0;
+			climbTimer = Timer.getFPGATimestamp();
 			changeState(DriveState.CLIMB_INIT);
 		}else {
 			enablePTO(false);
