@@ -113,7 +113,7 @@ public class Drives extends GenericSubsytem {
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
-		drivesPTO = new Solenoid(IO.PTO_PNU);
+//		drivesPTO = new Solenoid(IO.PTO_PNU);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
