@@ -22,7 +22,6 @@ public class Elevations extends GenericSubsytem {
 	private int floor; 
 	private WPI_TalonSRX motor1; 
 	private WPI_TalonSRX motor2;
-	private Solenoid breaker;
 	private DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	private EncoderData encoder; 
 	
@@ -52,7 +51,6 @@ public class Elevations extends GenericSubsytem {
 		motor2 = new WPI_TalonSRX(IO.ELEVATIONSLEFT);
 		motor1.setNeutralMode(NeutralMode.Brake);
 		motor2.setNeutralMode(NeutralMode.Brake);
-		breaker = new Solenoid(IO.ELEVATIONSPNUEMATICS);
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR); 
 		encoder = new EncoderData(new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2),0.0310354993); 
 	}
@@ -231,7 +229,6 @@ public class Elevations extends GenericSubsytem {
 	}
 	
 	private void setBrake(boolean power) {
-		breaker.set(power);
 		if(power){
 			setRawMotor(0.4);
 			try {

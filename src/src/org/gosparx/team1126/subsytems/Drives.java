@@ -113,7 +113,8 @@ public class Drives extends GenericSubsytem {
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
-//		drivesPTO = new Solenoid(IO.PTO_PNU);
+		drivesPTO = new Solenoid(IO.PTO_PNU);
+		drivesPTO.set(true); //Enable Drives?
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
@@ -126,7 +127,7 @@ public class Drives extends GenericSubsytem {
 		changeState(DriveState.STANDBY);
 		slow = false;
 		lastAngle = 0;
-		//addObjectsToShuffleboard();
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -150,7 +151,8 @@ public class Drives extends GenericSubsytem {
 	/**
 	 * Adds all the sendable objects to shuffleboard
 	 */
-	private void addObjectsToShuffleboard() {
+	public void addObjectsToShuffleboard() {
+		SmartDashboard.putData("Drives PTO", drivesPTO);
 		SmartDashboard.putData("LeftEnc", rawLeftEnc);
 		SmartDashboard.putData("RightEnc", rawRightEnc);
 		SmartDashboard.putData("Gyro", gyro);

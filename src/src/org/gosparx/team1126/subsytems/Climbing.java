@@ -4,6 +4,7 @@
 package src.org.gosparx.team1126.subsytems;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
 /**
@@ -27,9 +28,10 @@ public class Climbing extends GenericSubsytem
 	@Override
 	public void init() 
 	{
-		climbingSoul = new Solenoid(IO.PTO_PNU);
+		climbingSoul = new Solenoid(IO.PTO_ELE);
 		climbingArms = new Solenoid(IO.CLIMBINGARMS);
 		climbingLatch = new Solenoid(IO.CLIMBINGLATCH);
+		SmartDashboard.putData("ClimbPTO", climbingSoul);
 	}
 
 	@Override
