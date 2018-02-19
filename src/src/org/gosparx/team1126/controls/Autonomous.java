@@ -186,17 +186,34 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_DONE)},
 	};
 	
-	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
+	/*private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 316, 95},
 			{stateToInt(AutoState.DRIVES_SLOW)},
 			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.ACQ_RAISE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_STOP)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 20, 31},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 75, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_REGSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_HOME)}
+	};*/
+	
+	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.ACQ_RAISE)},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_STOP)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 43, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -239,9 +256,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 12, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_REGSCORE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 3, 31}
 			/*{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},

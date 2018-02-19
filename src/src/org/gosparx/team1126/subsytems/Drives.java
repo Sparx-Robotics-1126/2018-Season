@@ -95,6 +95,12 @@ public class Drives extends GenericSubsytem {
 
 	private double lastAngle;
 
+	private boolean notRightYet; //for climb init
+	
+	private boolean notLeftYet; //for climb init
+	
+	private double highestAmp;
+	
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
 	@Override
@@ -114,18 +120,21 @@ public class Drives extends GenericSubsytem {
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		drivesPTO = new Solenoid(IO.PTO_PNU);
-		drivesPTO.set(true); //Enable Drives?
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
 		moveSpeed = 0;
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
+		rightDrives.setInverted(true);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
 		slow = false;
+		notLeftYet = true;
+		notRightYet = true;
 		lastAngle = 0;
+		highestAmp = 0;
 	}
 
 	/**
@@ -182,20 +191,28 @@ public class Drives extends GenericSubsytem {
 			boolean right = isTaught(rightDrives);
 			boolean left = isTaught(leftDrives);
 			if(left && right) {
+				System.out.print(highestAmp);
 				rightEnc.reset();
 				leftEnc.reset();
+				leftDrives.set(0);
+				rightDrives.set(0);
 				changeState(DriveState.CLIMB);
 			}
-			if(!left){
-				rightDrives.set(-speedRight);
+			if(!right && notRightYet){
+				rightDrives.set(-.2);
 			}else {
 				rightDrives.set(0);
+				notRightYet = false;
 			}
-			if(!right){
-				leftDrives.set(-speedRight);
+			if(!left && notLeftYet){
+				leftDrives.set(-.2);
 			}else {
 				leftDrives.set(0);
+				notRightYet = false;
 			}
+			System.out.println("Right side: " + (right && !notRightYet));
+			System.out.println("Left side: " + (left && !notLeftYet));
+			System.out.println(highestAmp);
 			break;
 		case CLIMB:		//using only right joystick
 			if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
@@ -272,7 +289,7 @@ public class Drives extends GenericSubsytem {
 				slow = true;
 			}
 			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -308,6 +325,15 @@ public class Drives extends GenericSubsytem {
 		leftDrives.setNeutralMode(NeutralMode.Coast);
 		rightDrives.setNeutralMode(NeutralMode.Coast);
 	}
+	
+	/**
+	 * Changes state to auto
+	 */
+	public void toAuto() {
+		changeState(DriveState.STANDBY);
+		leftDrives.setNeutralMode(NeutralMode.Brake);
+		rightDrives.setNeutralMode(NeutralMode.Brake);
+	}
 
 	/**
 	 * changes drives state
@@ -321,8 +347,8 @@ public class Drives extends GenericSubsytem {
 	 * Disables or enables PTO that controls drives
 	 * @param disabing - true if disabling drives, false if enabling
 	 */
-	private void enablePTO(boolean disabing) {
-		drivesPTO.set(false);
+	private void enablePTO(boolean disabling) {
+		drivesPTO.set(disabling);
 	}
 
 	/**
@@ -333,7 +359,11 @@ public class Drives extends GenericSubsytem {
 	private boolean isTaught(MotorGroup side) {
 		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
 		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
-		if(motor1Amp > 13 || motor2Amp > 13)
+		if(motor1Amp > highestAmp)
+			highestAmp = motor1Amp;
+		if(motor2Amp > highestAmp)
+			highestAmp = motor2Amp;
+		if(motor1Amp > 2.5 || motor2Amp > 2.5)
 			return true;
 		return false;
 	}

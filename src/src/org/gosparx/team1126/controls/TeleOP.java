@@ -92,7 +92,7 @@ public class TeleOP implements Controls{
 				drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			} else {
 				drives.joystickLeft(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-				drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+				drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			}
 		} else {
 			if(isClimbing) {
@@ -124,6 +124,7 @@ public class TeleOP implements Controls{
 			drives.enableClimb(isClimbing);
 		}
 		if(isFallingEdgeButton(5)) {
+			isClimbing = false;
 			climbing.enableClimbing(isClimbing);
 			drives.enableClimb(isClimbing);
 		}
@@ -233,7 +234,6 @@ public class TeleOP implements Controls{
 //		 */
 		if(isRisingEdgePOV(8)) { //xbox pov up
 		//	acq.setHome();
-			System.out.println("ELE UP");
 			ele.goScale();
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
