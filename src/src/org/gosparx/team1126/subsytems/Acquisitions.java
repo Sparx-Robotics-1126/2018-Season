@@ -103,26 +103,27 @@ public class Acquisitions extends GenericSubsytem{
 		
 		case ACQUIRE:
 			lower();
-			release();
-			rollerAcq();
-			setStandby();
+//			release();
+//			rollerAcq();
+//			setStandby();
 			break;
 			
 		case SPIN:
-			lower();
-			release();
-			spin();
-			setStandby();
+			pinch(); //BAD REMOVE REMOVE REMOVE
+//			lower();
+//			release();
+//			spin();
+//			setStandby();
 			break;
 			
 		case RAISE:
-			pinch();
-			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + 1){ //TODO get actual time
-				stopRollers();
+//			pinch();
+//			rollerAcq();
+//			if (Timer.getFPGATimestamp() > pinchTime + 1){ //TODO get actual time
+//				stopRollers();
 				raise();
-				setStandby();
-			}
+//				setStandby();
+//			}
 			break;
 			
 		case LAUNCH_SCORE:
@@ -150,9 +151,9 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case HOME:
-			raise();
+//			raise();
 			release();
-			stopRollers();
+//			stopRollers();
 			break;
 			
 		default:
