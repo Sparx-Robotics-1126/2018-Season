@@ -122,12 +122,10 @@ public class Drives extends GenericSubsytem {
 		rightDrives = new MotorGroup(rightMtr1, rightMtr2, rightMtr3);
 		leftDrives = new MotorGroup(leftMtr1, leftMtr2, leftMtr3);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
-		rightDrives.setInverted(true);
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		changeState(DriveState.STANDBY);
 		slow = false;
 		lastAngle = 0;
-		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -190,10 +188,14 @@ public class Drives extends GenericSubsytem {
 			}
 			if(!left){
 				rightDrives.set(-speedRight);
-			} 
-			if(!right)
+			}else {
+				rightDrives.set(0);
+			}
+			if(!right){
 				leftDrives.set(-speedRight);
-
+			}else {
+				leftDrives.set(0);
+			}
 			break;
 		case CLIMB:		//using only right joystick
 			if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
@@ -202,6 +204,9 @@ public class Drives extends GenericSubsytem {
 			} else if(rightEnc.getDistance() - leftEnc.getDistance() > 3) {
 				rightDrives.set(speedRight);
 				leftDrives.set(speedRight * .7);	
+			}else {
+				rightDrives.set(speedRight);
+				leftDrives.set(speedLeft);
 			}
 			break;
 		case TURN_R:

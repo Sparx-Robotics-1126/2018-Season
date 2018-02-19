@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -23,6 +24,7 @@ public class Elevations extends GenericSubsytem {
 	private WPI_TalonSRX motor1; 
 	private WPI_TalonSRX motor2;
 	private DigitalInput limitSwitch; //Limit switch at the bottom of winch
+	private Encoder rawEnc;
 	private EncoderData encoder; 
 	
 	private boolean isMoving = false;
@@ -51,21 +53,29 @@ public class Elevations extends GenericSubsytem {
 		motor2 = new WPI_TalonSRX(IO.ELEVATIONSLEFT);
 		motor1.setNeutralMode(NeutralMode.Brake);
 		motor2.setNeutralMode(NeutralMode.Brake);
-		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR); 
-		encoder = new EncoderData(new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2),0.0310354993); 
+		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR);
+		rawEnc = new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2);
+		encoder = new EncoderData(rawEnc, 0.0310354993); 
+	}
+	
+	public void putThingsOnDashboard() {
+		SmartDashboard.putData("Right motor", motor1);
+		SmartDashboard.putData("Left motor", motor2);
+		SmartDashboard.putData("Elevator Encoder", rawEnc);
+		SmartDashboard.putData("Elevator Limit Switch", limitSwitch);
 	}
 
 	@Override
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 		
 			case INIT:
 				setMotor(-.2);
-				if(!limitSwitch.get())
+				if(limitSwitch.get())
 				{
 					System.out.println("Home found");
 					motor1.stopMotor();
@@ -126,7 +136,7 @@ public class Elevations extends GenericSubsytem {
 	public DebuggerResult[] debug() {
 		DebuggerResult[] result = new DebuggerResult[2]; 
 		setMotor(-.2);
-		while(!limitSwitch.get()) //If this does not work then you have to force stop
+		while(limitSwitch.get()) //If this does not work then you have to force stop
 		{
 			stopAll(); 
 			result[0] = new DebuggerResult("Limit switch and motors work",true,"Elevations limit switch hit");

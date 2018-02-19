@@ -1,10 +1,10 @@
 package src.org.gosparx.team1126.robot;
 
 public class IO {
-	public static final int PTO_PNU = 7; //Drives
-	public static final int PTO_ELE = 6; //Climbing PTO
-	public static final int CLIMBINGLATCH = 2;
-	public static final int CLIMBINGARMS = 3;
+	public static final int PTO_PNU 														= 7; //Drives
+	public static final int PTO_ELE 														= 6; //Climbing PTO
+	public static final int CLIMBINGLATCH												 	= 2;
+	public static final int CLIMBINGARMS 													= 3;
 	public static final int ELEVATIONSRIGHT													= 4;
 	public static final int ELEVATIONSLEFT													= 9;
 	public static final int MAGNETICSENSOR													= 14;

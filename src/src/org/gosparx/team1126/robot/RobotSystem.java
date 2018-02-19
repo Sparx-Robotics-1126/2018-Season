@@ -94,8 +94,8 @@ public class RobotSystem extends Thread{
 	
 	public void test() {
 		drives.forceStandby();
-		System.out.println(Arrays.toString(drives.debug()));
-		
+		drives.addObjectsToShuffleboard();
+		ele.putThingsOnDashboard();
 	}
 
 }

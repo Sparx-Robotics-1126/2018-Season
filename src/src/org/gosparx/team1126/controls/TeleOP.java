@@ -199,7 +199,6 @@ public class TeleOP implements Controls{
 			climbing.climbingArms(true);
 		}
 		if(isRisingEdgeButton(16)) { //xbox L2 button
-			System.out.println("xbox L2 button");
 			acq.setRegScore();
 		}
 		if(isRisingEdgeButton(17)) { //xbox R2 button
@@ -233,19 +232,20 @@ public class TeleOP implements Controls{
 //		//xbox POV
 //		 */
 		if(isRisingEdgePOV(8)) { //xbox pov up
-			acq.setHome();
+		//	acq.setHome();
+			System.out.println("ELE UP");
 			ele.goScale();
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
-			acq.setHome();
+		//	acq.setHome();
 			ele.goSwitch();
 		}
 		if(isRisingEdgePOV(10)) { //xbox pov down
-			acq.setHome();
+		//	acq.setHome();
 			ele.goFloor();
 		}
 		if(isRisingEdgePOV(11)) { //xbox pov left
-			acq.setHome();
+		//	acq.setHome();
 			ele.goSwitch();
 		}
 	}
