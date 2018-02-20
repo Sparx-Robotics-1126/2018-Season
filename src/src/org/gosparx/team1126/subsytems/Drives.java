@@ -33,6 +33,10 @@ public class Drives extends GenericSubsytem {
 	private WPI_TalonSRX leftMtr2;
 
 	private WPI_TalonSRX leftMtr3;
+	//	
+	//	private BetterEncoderData rightEnc;
+	//	
+	//	private BetterEncoderData leftEnc;
 
 	private EncoderData rightEnc;
 
@@ -101,8 +105,10 @@ public class Drives extends GenericSubsytem {
 	private boolean notLeftYet; //for climb init
 
 	private double highestAmp;
-
+	
 	private double climbTimer;
+	
+	private boolean climbed;
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -117,6 +123,8 @@ public class Drives extends GenericSubsytem {
 		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
 		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
 		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
+		//		rightEnc = new BetterEncoderData(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2, 0.033860431);
+		//		leftEnc = new BetterEncoderData(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2, -0.033860431);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
@@ -136,8 +144,10 @@ public class Drives extends GenericSubsytem {
 		slow = false;
 		notLeftYet = true;
 		notRightYet = true;
+		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -163,8 +173,10 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void addObjectsToShuffleboard() {
 		SmartDashboard.putData("Drives PTO", drivesPTO);
-		SmartDashboard.putData("LeftEnc", rawLeftEnc);
-		SmartDashboard.putData("RightEnc", rawRightEnc);
+		SmartDashboard.putData("LeftEnc", leftEnc);
+		SmartDashboard.putData("RightEnc", rightEnc);
+		//		SmartDashboard.putData("LeftEnc", rawLeftEnc);
+		//		SmartDashboard.putData("RightEnc", rawRightEnc);
 		SmartDashboard.putData("Gyro", gyro);
 		SmartDashboard.putData("Right Drives", rightDrives);
 		SmartDashboard.putData("Left Drives", leftDrives);
@@ -183,62 +195,49 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
-			print("drives starteddddddddddd ");
-			leftEnc.calculateSpeed();
-			rightEnc.calculateSpeed();
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
-			//			leftEnc.calculateSpeed();
-			//			rightEnc.calculateSpeed();
-						print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-			//			print("Gyro: " + getAngle());
 			break;
 		case CLIMB_INIT:
-			boolean right = false;
-			boolean left = false;
-			if(climbTimer + 3 < Timer.getFPGATimestamp()) {
-				right = isTaught(rightDrives);
-				left = isTaught(leftDrives);
+			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
+				boolean right = false;
+				boolean left = false;
+				if(climbTimer + 3 < Timer.getFPGATimestamp()) {
+					right = isTaught(rightDrives);
+					left = isTaught(leftDrives);
+				}
+				if(!notRightYet && !notLeftYet) {
+					System.out.print(highestAmp);
+					rightEnc.reset();
+					leftEnc.reset();
+					leftDrives.set(0);
+					rightDrives.set(0);
+					enablePTO(false);
+					changeState(DriveState.CLIMB);
+				}
+				if(!right && notRightYet){
+					rightDrives.set(-.35);
+				}else {
+					rightDrives.set(0);
+					notRightYet = false;
+				}
+				if(!left && notLeftYet){
+					leftDrives.set(-.35);
+				}else {
+					leftDrives.set(0);
+					notLeftYet = false;
+				}
+				System.out.println("Right side: " + (right || !notRightYet));
+				System.out.println("Left side: " + (left || !notLeftYet));
 			}
-			if(!notRightYet && !notLeftYet) {
-				System.out.print(highestAmp);
-				rightEnc.reset();
-				leftEnc.reset();
-				leftDrives.set(0);
-				rightDrives.set(0);
-				enablePTO(false);
-				changeState(DriveState.CLIMB);
-			}
-			if(!right && notRightYet){
-				rightDrives.set(-.35);
-			}else {
-				rightDrives.set(0);
-				notRightYet = false;
-			}
-			if(!left && notLeftYet){
-				leftDrives.set(-.35);
-			}else {
-				leftDrives.set(0);
-				notLeftYet = false;
-			}
-			System.out.println("Right side: " + (right || !notRightYet));
-			System.out.println("Left side: " + (left || !notLeftYet));
-			
 			break;
 		case CLIMB:
 			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
 			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
+			//CHANGE THIS BACKKKKKKKKKKKK
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			if(distOff > 0) {
-				print("offsetting left");
-				rightDrives.set(speedRight);
-				if(distOff > 5) {
-					leftDrives.set(0);
-				} else {
-					leftDrives.set(levelOffset);
-				}
-			} else if(distOff < 0) {
 				print("offsetting right");
 				leftDrives.set(speedRight);
 				if(distOff < -5) {
@@ -246,10 +245,20 @@ public class Drives extends GenericSubsytem {
 				} else {
 					rightDrives.set(levelOffset);
 				}
+			} else if(distOff < 0) {
+				print("offsetting left");
+				rightDrives.set(speedRight);
+				if(distOff > 5) {
+					leftDrives.set(0);
+				} else {
+					leftDrives.set(levelOffset);
+				}
 			}else {
 				rightDrives.set(speedRight);
-				leftDrives.set(speedLeft);
+				leftDrives.set(speedRight);
 			}
+			if(distance() < -340)
+				climbed = true;
 			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
@@ -395,6 +404,10 @@ public class Drives extends GenericSubsytem {
 		return false;
 	}
 
+	public boolean hasClimbed() {
+		return climbed;
+	}
+	
 	/**
 	 * moves right motors to joystick value, -1 to 1
 	 * @param speedR - the right joystick speed

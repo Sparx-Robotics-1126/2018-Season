@@ -14,13 +14,13 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Acquisitions extends GenericSubsytem{
 
 	//Objects
-	private static WPI_TalonSRX leftIntake;
+	private WPI_TalonSRX leftIntake;
 	
-	private static WPI_TalonSRX rightIntake;
+	private WPI_TalonSRX rightIntake;
 	
-	private static Solenoid pincher;
+	private Solenoid pincher;
 	
-	private static Solenoid wrist;
+	private Solenoid wrist;
 	
 	
 	//Constants
@@ -38,23 +38,25 @@ public class Acquisitions extends GenericSubsytem{
 	
 	
 	//Variables
-	private static State AcqState;
+	private State AcqState;
 	
-	private static double rightMotorPower;
+	private double rightMotorPower;
 	
-	private static double leftMotorPower;
+	private double leftMotorPower;
 	
-	private static double pinchTime;
+	private double pinchTime;
 	
-	private static double scoreTime;
+	private double scoreTime;
 	
-	private static double regScoreTime;
+	private double regScoreTime;
 	
-	private static double spitTime;
+	private double spitTime;
+	
+	private double lowTime;
 		
-	private static boolean pinchPosition;  //true = pinched 
+	private boolean pinchPosition;  //true = pinched 
 	
-	private static boolean wristPosition;  //true = lowered
+	private boolean wristPosition;  //true = lowered
 		
 	
 	public Acquisitions() {
@@ -70,7 +72,8 @@ public class Acquisitions extends GenericSubsytem{
 		REGULAR_SCORE,
 		HOME,
 		SPIN,
-		SPIT;
+		SPIT,
+		LOW_LAUNCH;
 	}
 	
 	
@@ -131,6 +134,14 @@ public class Acquisitions extends GenericSubsytem{
 					stopRollers();
 					setStandby();
 				}
+			break;
+			
+		case LOW_LAUNCH:
+			lowLaunch();
+			if(Timer.getFPGATimestamp() > lowTime + 1) {
+				release();
+				setStandby();
+			}
 			break;
 			
 		case REGULAR_SCORE:
@@ -247,6 +258,16 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
+	 * Sets acquisition state to low launch.
+	 */
+	public void setLowLaunch() {
+		if (AcqState != State.LOW_LAUNCH) {
+			AcqState = State.LOW_LAUNCH;
+			lowTime = Timer.getFPGATimestamp();
+		}
+	}
+	
+	/**
 	 * Sets the acquisitions to home
 	 */
 	public void setHome(){
@@ -314,6 +335,14 @@ public class Acquisitions extends GenericSubsytem{
 	private void rollerScore(){
 		rightMotorPower = -MOTOR_ON;
 		leftMotorPower = -MOTOR_ON;
+	}
+	
+	/**
+	 * Reverses the intake motors to score the cube at half speed.
+	 */
+	private void lowLaunch() {
+		rightMotorPower = -0.65;
+		leftMotorPower = -0.65;
 	}
 	
 	/**

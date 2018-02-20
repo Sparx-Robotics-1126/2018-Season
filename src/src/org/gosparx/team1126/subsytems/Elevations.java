@@ -59,8 +59,8 @@ public class Elevations extends GenericSubsytem {
 	}
 	
 	public void putThingsOnDashboard() {
-		SmartDashboard.putData("Right motor", motor1);
-		SmartDashboard.putData("Left motor", motor2);
+		SmartDashboard.putData("Right Elevations motor", motor1);
+		SmartDashboard.putData("Left Elevations motor", motor2);
 		SmartDashboard.putData("Elevator Encoder", rawEnc);
 		SmartDashboard.putData("Elevator Limit Switch", limitSwitch);
 	}

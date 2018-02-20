@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.sensors;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SendableBase;
@@ -12,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
  * @author Solis Knight
  * @version 1.5 Pre 2012
  */
-public class EncoderData {
+public class EncoderData extends SendableBase{
     private Encoder controlled;
     private Counter counter;
     private double distPerTickForward;
@@ -138,6 +140,14 @@ public class EncoderData {
     }
     
     /**
+     * Returns the distance per tick forward.
+     * @return
+     */
+    private double getDistPerTickForward() {
+    	return distPerTickForward;
+    }
+    
+    /**
      * @return the time (in seconds) that the encoder has updated its values 
      */
     public double getLastReadingTime(){
@@ -151,6 +161,16 @@ public class EncoderData {
     private long getCurrentTime() {
     	return (long)(Timer.getFPGATimestamp()*(Math.pow(10., -6.)));
     }
+
+	@Override
+	public void initSendable(SendableBuilder arg0) {
+		arg0.setSmartDashboardType("Encoder");
+		arg0.addDoubleProperty("Speed", this::getSpeed, null);
+		arg0.addDoubleProperty("Distance", this::getDistance, null);
+		arg0.addDoubleProperty("Distance per Tick", this::getDistPerTickForward, null);
+		
+		
+	}
 
 //	@Override
 //	public void initSendable(SendableBuilder arg0) {

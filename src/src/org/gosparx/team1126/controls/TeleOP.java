@@ -15,7 +15,7 @@ public class TeleOP implements Controls{
 	private Climbing climbing;
 	private Elevations ele;
 	
-	private boolean isClimbing;
+	private boolean finishedClimbing;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -58,80 +58,82 @@ public class TeleOP implements Controls{
 		this.acq = acq;
 		this.ele = ele;
 		climbing = climb;
-		isClimbing = false;
-		joysticks = new Joystick[] {new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
+		finishedClimbing = false;
+		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
 	@Override
 	public void execute() {
 		//Joystick Buttons Left
 		setJoystickStates();
-//		if(isRisingEdgeButton(0)) { //left joystick left button
-////			climbing.climbingArms(!climbing.getClimbingArms());
+		if(!finishedClimbing && drives.hasClimbed()) {
+			finishedClimbing = true;
+			climbing.climbingLatch(true);
+		}
+		if(isRisingEdgeButton(0)) { //right joystick left button
+			climbing.climbingArms(true);
+		}
+//		if(isRisingEdgeButton(1)) { //right joystick middle button
+//			System.out.println("right joystick middle button");
 //		}
-////		if(isRisingEdgeButton(1)) { //left joystick middle button
-////			System.out.println("left joystick middle button");
-////		}
-		if(isRisingEdgeButton(1)) { //left joystick middle button
-//			System.out.println();
-			isClimbing = true;
-			climbing.enableClimbing(isClimbing);
-			drives.enableClimb(isClimbing);
+		if(isRisingEdgeButton(1)) { //right joystick middle button
+			finishedClimbing = false;
+			climbing.enableClimbing(true);
+			drives.enableClimb(true);
 		}
 		if(isFallingEdgeButton(1)) {
-			System.out.println("its falling");
-			isClimbing = false;
-			climbing.enableClimbing(isClimbing);
-			drives.enableClimb(isClimbing);
+			climbing.enableClimbing(false);
+			drives.enableClimb(false);
 		}
-		if(isRisingEdgeButton(2)) { //left joystick right button
+		if(isRisingEdgeButton(2)) { //right joystick right button
 			climbing.climbingLatch(!climbing.getClimbingLatch());
 		}
-//		
-//		if(buttonStates[3][0]) { //left joystick trigger
+//		if(buttonStates[3][0]) { //right joystick trigger
 //			isClimbing = true;
 //		} else {
 //			isClimbing = false;
 //		}
 //		climbing.enableClimbing(isClimbing);
-		/*
 		//Axis Left
-		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
-			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
-		}*/
-		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-//			if(!isClimbing) {
-				drives.joystickLeft(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-//			} else {
-//				drives.joystickLeft(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-//				drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-//			}
+//		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
+//			getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
+//		}
+		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+			drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		} else {
+			drives.joystickLeft(0);
+		}
+//		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+//			if(!isClimbing) {
+//				drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			} else {
+//				drives.joystickLeft(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//				drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			}
+//		} else {
 //			if(isClimbing) {
 //				drives.joystickRight(0);
 //			}
-			drives.joystickLeft(0);
-		}
-		/*
-		//POV Left
-		if(isRisingEdgePOV(0)) { //left joystick pov up
-			System.out.println("left joystick pov up");
-		}
-		if(isRisingEdgePOV(1)) { //left joystick pov right
-			System.out.println("left joystick pov right");
-		}
-		if(isRisingEdgePOV(2)) { //left joystick pov down
-			System.out.println("left joystick pov down");
-		}
-		if(isRisingEdgePOV(3)) { //left joystick pov left
-			System.out.println("left joystick pov left");
-		}
-		//Joystick Buttons Right
-		if(isRisingEdgeButton(4)) { //right joystick left button
-			System.out.println("right joystick left button");
-		}*/
-//		if(isRisingEdgeButton(5)) { //right joystick middle button
-////			System.out.println();
+//			drives.joystickLeft(0);
+//		}	
+//		//POV Left
+//		if(isRisingEdgePOV(0)) { //right joystick pov up
+//			System.out.println("right joystick pov up");
+//		}
+//		if(isRisingEdgePOV(1)) { //right joystick pov right
+//			System.out.println("right joystick pov right");
+//		}
+//		if(isRisingEdgePOV(2)) { //right joystick pov down
+//			System.out.println("right joystick pov down");
+//		}
+//		if(isRisingEdgePOV(3)) { //right joystick pov left
+//			System.out.println("right joystick pov left");
+//		}
+//		//Joystick Buttons Right
+//		if(isRisingEdgeButton(4)) { //left joystick left button
+//			System.out.println("left joystick left button");
+//		}
+//		if(isRisingEdgeButton(5)) { //left joystick middle button
 //			isClimbing = true;
 //			climbing.enableClimbing(isClimbing);
 //			drives.enableClimb(isClimbing);
@@ -142,43 +144,41 @@ public class TeleOP implements Controls{
 //			climbing.enableClimbing(isClimbing);
 //			drives.enableClimb(isClimbing);
 //		}
-		/*
-		}
-		if(isRisingEdgeButton(6)) { //right joystick right button
-			System.out.println("right joystick right button");
-		}
-		if(isRisingEdgeButton(7)) { //right joystick trigger
-			System.out.println("right joystick trigger button");
-		}
-		//Axis Right
-		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
-			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
-		}*/
-//		if(!isClimbing) {
-			if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-				drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//		}
+//		if(isRisingEdgeButton(6)) { //left joystick right button
+//			System.out.println("left joystick right button");
+//		}
+//		if(isRisingEdgeButton(7)) { //left joystick trigger
+//			System.out.println("left joystick trigger button");
+//		}
+//		//Axis Right
+//		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
+//		}
+			if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+				drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 			} else {
 				drives.joystickRight(0);
 			}
-//		}
 //		if(!isClimbing) {
-//			drives.joystickRight(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 //		} else {
-//			drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 //		}
+		
 		/*
 		//POV Right
-		if(isRisingEdgePOV(4)) { //right joystick pov up
-			System.out.println("right joystick pov up");
+		if(isRisingEdgePOV(4)) { //left joystick pov up
+			System.out.println("left joystick pov up");
 		}
-		if(isRisingEdgePOV(5)) { //right joystick pov right
-			System.out.println("right joystick pov right");
+		if(isRisingEdgePOV(5)) { //left joystick pov right
+			System.out.println("left joystick pov right");
 		}
-		if(isRisingEdgePOV(6)) { //right joystick pov down
-			System.out.println("right joystick pov down");
+		if(isRisingEdgePOV(6)) { //left joystick pov down
+			System.out.println("left joystick pov down");
 		}
-		if(isRisingEdgePOV(7)) { //right joystick pov left
-			System.out.println("right joystick pov left");
+		if(isRisingEdgePOV(7)) { //left joystick pov left
+			System.out.println("left joystick pov left");
 		}
 		//xBox Buttons
 		 */
@@ -227,22 +227,22 @@ public class TeleOP implements Controls{
 //		}
 //		//xBox Axis
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_X)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
 //		}
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_Y)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_X)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R2)) {
-//			//getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
 //		//xbox POV
 //		 */
@@ -272,17 +272,17 @@ public class TeleOP implements Controls{
 //		for(boolean povs[]: povStates) {
 //			povs[1] = povs[0];
 //		}
-//		buttonStates[0][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
-//		buttonStates[1][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
-		buttonStates[2][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
-//		buttonStates[3][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
-//		buttonStates[4][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_LEFT);
-		buttonStates[5][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
-//		buttonStates[6][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
-//		buttonStates[7][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_TRIGGER);
+		buttonStates[0][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_LEFT);
+		buttonStates[1][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
+		buttonStates[2][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
+//		buttonStates[3][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_TRIGGER);
+//		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK2, CtrlMap.JOY_LEFT);
+		buttonStates[5][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
+//		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
+//		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 		
-//		buttonStates[8][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
-//		buttonStates[9][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
+//		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
+//		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
 		buttonStates[10][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X);
 //		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
 		
@@ -295,14 +295,14 @@ public class TeleOP implements Controls{
 //		buttonStates[18][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L3);
 //		buttonStates[19][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R3);
 //
-//		povStates[0][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_UP);
-//		povStates[1][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_RIGHT);
-//		povStates[2][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_DOWN);
-//		povStates[3][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_LEFT);
-//		povStates[4][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_UP);
-//		povStates[5][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_RIGHT);
-//		povStates[6][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_DOWN);
-//		povStates[7][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_LEFT);
+//		povStates[0][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_UP);
+//		povStates[1][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_RIGHT);
+//		povStates[2][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_DOWN);
+//		povStates[3][0] = isPressedPOV(CtrlMap.RIGHTJOYSTICK, CtrlMap.POV_LEFT);
+//		povStates[4][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_UP);
+//		povStates[5][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_RIGHT);
+//		povStates[6][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_DOWN);
+//		povStates[7][0] = isPressedPOV(CtrlMap.LEFTJOYSTICK, CtrlMap.POV_LEFT);
 		povStates[8][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_UP);
 		povStates[9][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_RIGHT);
 		povStates[10][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_DOWN);
