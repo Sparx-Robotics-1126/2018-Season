@@ -183,17 +183,20 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
+			print("drives starteddddddddddd ");
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
 			//			leftEnc.calculateSpeed();
 			//			rightEnc.calculateSpeed();
-			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
+						print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			//			print("Gyro: " + getAngle());
 			break;
 		case CLIMB_INIT:
 			boolean right = false;
 			boolean left = false;
-			if(climbTimer + 1 > Timer.getFPGATimestamp()) {
+			if(climbTimer + 3 < Timer.getFPGATimestamp()) {
 				right = isTaught(rightDrives);
 				left = isTaught(leftDrives);
 			}
@@ -203,36 +206,51 @@ public class Drives extends GenericSubsytem {
 				leftEnc.reset();
 				leftDrives.set(0);
 				rightDrives.set(0);
+				enablePTO(false);
 				changeState(DriveState.CLIMB);
 			}
 			if(!right && notRightYet){
-				rightDrives.set(-.2);
+				rightDrives.set(-.35);
 			}else {
 				rightDrives.set(0);
 				notRightYet = false;
 			}
 			if(!left && notLeftYet){
-				leftDrives.set(-.2);
+				leftDrives.set(-.35);
 			}else {
 				leftDrives.set(0);
 				notLeftYet = false;
 			}
 			System.out.println("Right side: " + (right || !notRightYet));
 			System.out.println("Left side: " + (left || !notLeftYet));
-			System.out.println(highestAmp);
+			
 			break;
-		case CLIMB:		//using only right joystick
-			System.out.println(speedRight);
-			if(rightEnc.getDistance() - leftEnc.getDistance() < 3) {
-				rightDrives.set(speedRight * .7);
-				leftDrives.set(speedRight);
-			} else if(rightEnc.getDistance() - leftEnc.getDistance() > 3) {
+		case CLIMB:
+			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
+			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
+			if(distOff > 0) {
+				print("offsetting left");
 				rightDrives.set(speedRight);
-				leftDrives.set(speedRight * .7);	
+				if(distOff > 5) {
+					leftDrives.set(0);
+				} else {
+					leftDrives.set(levelOffset);
+				}
+			} else if(distOff < 0) {
+				print("offsetting right");
+				leftDrives.set(speedRight);
+				if(distOff < -5) {
+					rightDrives.set(0);
+				} else {
+					rightDrives.set(levelOffset);
+				}
 			}else {
 				rightDrives.set(speedRight);
-				leftDrives.set(speedRight);
+				leftDrives.set(speedLeft);
 			}
+			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
 			print("Gyro Angle: " + getAngle());
@@ -297,7 +315,7 @@ public class Drives extends GenericSubsytem {
 				slow = true;
 			}
 			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle());
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "CurrentDistance: " + currentDistance);
 			break;
 		case MOVE_BKWD:
 			leftEnc.calculateSpeed();
@@ -367,11 +385,12 @@ public class Drives extends GenericSubsytem {
 	private boolean isTaught(MotorGroup side) {
 		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
 		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
+		System.out.println("Motor 1: " + motor1Amp + " Motor 2: " + motor2Amp);
 		if(motor1Amp > highestAmp)
 			highestAmp = motor1Amp;
 		if(motor2Amp > highestAmp)
 			highestAmp = motor2Amp;
-		if(motor1Amp > 3 || motor2Amp > 3)
+		if(motor1Amp > 6 || motor2Amp > 6)
 			return true;
 		return false;
 	}

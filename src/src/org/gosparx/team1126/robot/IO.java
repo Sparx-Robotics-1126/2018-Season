@@ -30,12 +30,12 @@ public static final int rightDriveCIM2																				= 2;	//motor 4 back
 public static final int rightDriveCIM3																				= 3;	//motor 5 front
 
 //----------------------------------------------------Sensors----------------------------------------------------------------------
-
-public static final int leftDriveEncoderChannel1																	= 12;
-public static final int leftDriveEncoderChannel2																	= 13;
-public static final int rightDriveEncoderChannel1																	= 10;
-public static final int rightDriveEncoderChannel2																	= 11;
-
+//FLIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+public static final int leftDriveEncoderChannel1																	= 13; //CHANNELS SWAPPED ON BOTH
+public static final int leftDriveEncoderChannel2																	= 12; //CHANGE BACK
+public static final int rightDriveEncoderChannel1																	= 11; //CHANGE BACK
+public static final int rightDriveEncoderChannel2																	= 10; //CHANGE BACK
+//CHANGE BACK
 //--------------------------------------------------Pneumatics--------------------------------------------------------------------=
 
 public static final int ptoSwitch																					= 7;
