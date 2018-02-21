@@ -47,11 +47,6 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	
-//	private final int[][] CROSS_AUTO_LINE = {
-//			{stateToInt(AutoState.DRIVES_FORWARD), 140, 70},
-//			{stateToInt(AutoState.DRIVES_WAIT)}
-//	};
-	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
 			{stateToInt(AutoState.BGR_TIMER), 12, 9},
 			{stateToInt(AutoState.DRIVES_FORWARD), 158, 65},
@@ -67,100 +62,22 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
-	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_RIGHT = {
-			{stateToInt(AutoState.BGR_TIMER), 12, 9},
-			{stateToInt(AutoState.DRIVES_FORWARD), 146, 65},
+	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.ACQ_RAISE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 55},
-			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_STOP)},
 			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 43, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
-	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_MIDDLE = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 80, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 40},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 80, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 12, 40},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)}
-	};
-	
-	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 226, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 180, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
-	};
-	
-	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_RIGHT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 80, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 180, 40},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 10, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
-	};
-	
-	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 226, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 194, 70},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 28, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
-			//{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
-	};
-	
-	private final int[][] CUBE_ON_LEFT_SCALE_FROM_RIGHT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 226, 60},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 206, 55},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 34, 35},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
-	};
-
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 12, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -184,54 +101,6 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_DONE)},
 	};
 	
-	/*private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 316, 95},
-			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.ACQ_RAISE)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_STOP)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 75, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)}
-	};*/
-	
-	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
-			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.ACQ_RAISE)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_STOP)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 43, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)}
-	};
-	
-	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_RIGHT = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
-			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ELE_SCALE)},
-			{stateToInt(AutoState.ACQ_RAISE)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_STOP)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNLEFT), 43, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)}
-	};
-
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SWITCH = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 12, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -257,51 +126,68 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 3, 31}
-			/*{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)},
-			{stateToInt(AutoState.ELE_FLOOR)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 85, 50},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 92, 60},
-			{stateToInt(AutoState.ACQ_ACQUIRE)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_RAISE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ELE_SWITCH)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}*/
 	};
 	
-	/*
-	 private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SWITCH = {
-			{stateToInt(AutoState.DRIVES_FORWARD), 316, 95},
-			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ELE_SCALE)},
+	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 226, 70},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 82, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_HOME)},
-			{stateToInt(AutoState.ELE_FLOOR)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 85, 50},
+			{stateToInt(AutoState.DRIVES_FORWARD), 180, 70},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 92, 60},
-			{stateToInt(AutoState.ACQ_ACQUIRE)},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_RAISE)},
-			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ELE_SWITCH)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+	};
+	
+	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 226, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 194, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 28, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
 	};
-	 */
 	
+	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_RIGHT = {
+			{stateToInt(AutoState.BGR_TIMER), 12, 9},
+			{stateToInt(AutoState.DRIVES_FORWARD), 146, 65},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_SWITCH)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 55},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_HOME)}
+	};
+	
+	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_RIGHT = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.ACQ_RAISE)},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_STOP)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 43, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_HOME)}
+	};
+
 	public Autonomous(Drives drives, Acquisitions acq, Elevations ele) {
 		autoStep = 0;
 		isRightAllySwitch = false;
@@ -318,10 +204,10 @@ public class Autonomous implements Controls {
 
 		autoChooser.addDefault("Do Nothing", AutoSelected.NOTHING);
 		autoChooser.addObject("Cross The Border", AutoSelected.CROSSBORDER);
-		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
 		autoChooser.addObject("Score The Switch", AutoSelected.SWITCH);
-		autoChooser.addObject("Score The Switch + Acquire", AutoSelected.SWITCHACQ);
-		autoChooser.addObject("Score The Switch + Scale", AutoSelected.SWITCHSCALE);
+		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
+		autoChooser.addObject("Score The Scale + Acquire", AutoSelected.SWITCHACQ);
+		autoChooser.addObject("Score The Scale + Switch", AutoSelected.SWITCHSCALE);
 
 		posChooser = new SendableChooser<PositionSelected>();
 		
@@ -541,97 +427,6 @@ public class Autonomous implements Controls {
 		default:
 			System.out.println("Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
 			break;
-				
-			
-//		if(isRightAllySwitch) {
-//			if(isRightScale) {
-//				switch()
-//				switch(selectedAuto) {
-//				case NOTHING:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SCALE:
-//					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT;
-//					break;
-//				case CROSSBORDER:
-//					currentAuto = CROSS_AUTO_LINE;
-//					break;
-//				case SWITCH:
-//					currentAuto = CUBE_ON_RIGHT_SWITCH_FROM_LEFT;
-//					break;
-//				case SWITCHSCALE:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SWITCHACQ:
-//					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE;
-//					break;
-//				}
-//			} else {
-//				switch(selectedAuto) {
-//				case NOTHING:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SCALE:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case CROSSBORDER:
-//					currentAuto = CROSS_AUTO_LINE;
-//					break;
-//				case SWITCH:
-//					currentAuto = CUBE_ON_RIGHT_SWITCH_FROM_LEFT;
-//					break;
-//				case SWITCHSCALE:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SWITCHACQ:
-//					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT_AND_ACQUIRE;
-//					break;
-//				}
-//			}
-//		} else {
-//			if(isRightScale) {
-//				switch(selectedAuto) {
-//				case NOTHING:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SCALE:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case CROSSBORDER:
-//					currentAuto = CROSS_AUTO_LINE;
-//					break;
-//				case SWITCH:
-//					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT;
-//					break;
-//				case SWITCHSCALE:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SWITCHACQ:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				}
-//			} else {
-//				switch(selectedAuto) {
-//				case NOTHING:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				case SCALE:
-//					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT;
-//					break;
-//				case CROSSBORDER:
-//					currentAuto = CROSS_AUTO_LINE;
-//					break;
-//				case SWITCH:
-//					currentAuto = CUBE_ON_LEFT_SWITCH_FROM_LEFT;
-//					break;
-//				case SWITCHSCALE:
-//					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SWITCH;
-//					break;
-//				case SWITCHACQ:
-//					currentAuto = DEFAULT_AUTO;
-//					break;
-//				}
-//			}
 		}
 	}
 

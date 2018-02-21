@@ -276,6 +276,9 @@ public class Acquisitions extends GenericSubsytem{
 		}
 	}
 	
+	/**
+	 * Sets motors to spit out the cube after moving down wrist (Exchange zone)
+	 */
 	public void setSpit() {
 		if (AcqState != State.SPIT) {
 			AcqState = State.SPIT;

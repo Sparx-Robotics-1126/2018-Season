@@ -12,11 +12,6 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 
 public class Elevations extends GenericSubsytem {
 
-	public Elevations() {
-		super("Elevations");
-	}
-
- 
 	private double height; //Height of elevator
 	private int top;
 	private int middle;
@@ -25,13 +20,16 @@ public class Elevations extends GenericSubsytem {
 	private WPI_TalonSRX motor2;
 	private DigitalInput limitSwitch; //Limit switch at the bottom of winch
 	private Encoder rawEnc;
-	private EncoderData encoder; 
-	
+	private EncoderData encoder; 	
+	private State state;
 	private boolean isMoving = false;
-	
 	private boolean finishedInit = false; 
 	
-	enum State { //Execute decides what to do based on state
+	public Elevations() {
+		super("Elevations");
+	}
+	
+	public enum State { //Execute decides what to do based on state
 		INIT, 
 		STANDBY, 
 		MOVEMIDDLE,
@@ -39,9 +37,6 @@ public class Elevations extends GenericSubsytem {
 		MOVEDOWN; //Go to the bottom
 	}
 
-	
-	State state;
-	
 	@Override
 	public void init() {
 		top = 95; 
@@ -58,6 +53,9 @@ public class Elevations extends GenericSubsytem {
 		encoder = new EncoderData(rawEnc, 0.0310354993); 
 	}
 	
+	/**
+	 * Adds objects to smartDashboard
+	 */
 	public void putThingsOnDashboard() {
 		SmartDashboard.putData("Right Elevations motor", motor1);
 		SmartDashboard.putData("Left Elevations motor", motor2);
@@ -110,12 +108,10 @@ public class Elevations extends GenericSubsytem {
 				else if(height>middle) //If below go down
 				{
 					setMotor(-.5);
-					System.out.println("going down");
 				}
 				else //If above goes up
 				{
 					setMotor(1);
-					System.out.println("going up");
 				}
 				break;
 			case MOVEDOWN: //while in moveDown, elevator goes down
@@ -211,7 +207,7 @@ public class Elevations extends GenericSubsytem {
 			motor2.set(-.1);
 			setBrake(false);
 			isMoving = false;
-			System.out.println("stoped");
+			System.out.println("stopped");
 			return true;
 		}else {return false;}
 	}
@@ -250,7 +246,6 @@ public class Elevations extends GenericSubsytem {
 		}
 	}
 	
-
 	@Override
 	public boolean isDone() {
 		if(isMoving){

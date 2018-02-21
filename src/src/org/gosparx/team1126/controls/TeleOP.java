@@ -53,6 +53,13 @@ public class TeleOP implements Controls{
 				{false, false},  //XBOX_DOWN
 				{false, false}};  //XBOX_LEFT
 	
+	/**
+	 * Initializes stuff in TeleOP
+	 * @param drives - an instance of Drives created by RobotSystem.
+	 * @param acq - an instance of Acquisitions created by RobotSystem.
+	 * @param ele - an instance of Elevations created by RobotSystem.
+	 * @param climb - an instance of Climbing created by RobotSystem.
+	 */
 	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb) {
 		this.drives = drives;
 		this.acq = acq;
@@ -62,6 +69,9 @@ public class TeleOP implements Controls{
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
+	/**
+	 * Execute - 2 mana destroy a damaged enemy minion.
+	 */
 	@Override
 	public void execute() {
 		//Joystick Buttons Left
@@ -166,51 +176,45 @@ public class TeleOP implements Controls{
 //			drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 //		}
 		
-		/*
+		
 		//POV Right
-		if(isRisingEdgePOV(4)) { //left joystick pov up
-			System.out.println("left joystick pov up");
-		}
-		if(isRisingEdgePOV(5)) { //left joystick pov right
-			System.out.println("left joystick pov right");
-		}
-		if(isRisingEdgePOV(6)) { //left joystick pov down
-			System.out.println("left joystick pov down");
-		}
-		if(isRisingEdgePOV(7)) { //left joystick pov left
-			System.out.println("left joystick pov left");
-		}
+//		if(isRisingEdgePOV(4)) { //left joystick pov up
+//			System.out.println("left joystick pov up");
+//		}
+//		if(isRisingEdgePOV(5)) { //left joystick pov right
+//			System.out.println("left joystick pov right");
+//		}
+//		if(isRisingEdgePOV(6)) { //left joystick pov down
+//			System.out.println("left joystick pov down");
+//		}
+//		if(isRisingEdgePOV(7)) { //left joystick pov left
+//			System.out.println("left joystick pov left");
+//		}
 		//xBox Buttons
-		 */
+		 
 //		if(isRisingEdgeButton(8)) { //xbox a button
 //			acq.setAcquire(); //acquire
 //			acq.setSpin();
 //		}
-		/*
-		if(isRisingEdgeButton(9)) { //xbox b button
-			acq.setLaunchScore(); //shoot
-		}
-		*/
+//		if(isRisingEdgeButton(9)) { //xbox b button
+//			acq.setLaunchScore(); //shoot
+//		}
 		if(isRisingEdgeButton(10)) { //xbox x button
-//			acq.setHome(); //Feb 17
 			acq.setSpit();
 		}
 //		if(isRisingEdgeButton(11)) { //xbox y button
 //			acq.setRaise(); //raise
 //		}
-		
 		if(isRisingEdgeButton(12)) { //xbox L1 button
 			acq.setLaunchScore();
 		}
 		if(isRisingEdgeButton(13)) { //xbox R1 button
-			//acq.setRegScore(); Feb 17
 			acq.setRaise();
 		}
 //		if(isRisingEdgeButton(14)) { //xbox back button
 //			acq.setSpit();
 //		}
 		if(isRisingEdgeButton(15)) { //xbox start button
-			//acq.togglePinch(); Feb 17
 			climbing.climbingArms(true);
 		}
 		if(isRisingEdgeButton(16)) { //xbox L2 button
@@ -247,25 +251,23 @@ public class TeleOP implements Controls{
 //		//xbox POV
 //		 */
 		if(isRisingEdgePOV(8)) { //xbox pov up
-		//	acq.setHome();
 			ele.goScale();
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
-		//	acq.setHome();
 			ele.goSwitch();
 		}
 		if(isRisingEdgePOV(10)) { //xbox pov down
-		//	acq.setHome();
 			ele.goFloor();
 		}
 		if(isRisingEdgePOV(11)) { //xbox pov left
-		//	acq.setHome();
 			ele.goSwitch();
 		}
 	}
 
+	/**
+	 * Updates the previous joystick states to what they currently are now.
+	 */
 	public void setJoystickStates() {
-		
 		for(boolean buttons[]: buttonStates) {
 			buttons[1] = buttons[0];
 		}
@@ -309,14 +311,29 @@ public class TeleOP implements Controls{
 		povStates[11][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_LEFT);
 	}
 
+	/**
+	 * Return if the specified button was previously not pressed and is now pressed.
+	 * @param pos - the button to check in buttonStates.
+	 * @return if the button was previously not pressed and is now pressed.
+	 */
 	public boolean isRisingEdgeButton(int pos) {
 		return buttonStates[pos][0] && !buttonStates[pos][1];
 	}
 	
+	/**
+	 * Return if the specified button was previously pressed and is now no longer pressed.
+	 * @param pos - the button to check in buttonStates.
+	 * @return if the button was previously pressed and is no longer pressed.
+	 */
 	public boolean isFallingEdgeButton(int pos) {
 		return !buttonStates[pos][0] && buttonStates[pos][1];
 	}
 
+	/**
+	 * Returns if the POV was previously not pressed and is now pressed.
+	 * @param pos - the POV to check in posStates.
+	 * @return if the POV was previously not pressed and is now pressed.
+	 */
 	public boolean isRisingEdgePOV(int pos) {
 		return povStates[pos][0] && !povStates[pos][1];
 	}
@@ -361,6 +378,12 @@ public class TeleOP implements Controls{
 		return -joysticks[joy].getRawAxis(axis);
 	}
 
+	/**
+	 * Returns if the axis of the specified joystick is greater than the DEADBAND as stated in CtrlMap.java.
+	 * @param joy - the joystick.
+	 * @param axis - the axis on the joystick to check.
+	 * @return if the axis of the specified joystick is greater than the DEADBAND.
+	 */
 	public boolean isOffZeroAxis(int joy, int axis) {
 		return getAxis(joy, axis) > CtrlMap.DEADBAND || getAxis(joy, axis) < -CtrlMap.DEADBAND;
 	}

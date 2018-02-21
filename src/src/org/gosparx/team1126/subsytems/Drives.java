@@ -25,7 +25,7 @@ public class Drives extends GenericSubsytem {
 	private WPI_TalonSRX rightMtr1;
 
 	private WPI_TalonSRX rightMtr2;
-
+	
 	private WPI_TalonSRX rightMtr3;
 
 	private WPI_TalonSRX leftMtr1;
@@ -33,10 +33,6 @@ public class Drives extends GenericSubsytem {
 	private WPI_TalonSRX leftMtr2;
 
 	private WPI_TalonSRX leftMtr3;
-	//	
-	//	private BetterEncoderData rightEnc;
-	//	
-	//	private BetterEncoderData leftEnc;
 
 	private EncoderData rightEnc;
 
@@ -123,8 +119,6 @@ public class Drives extends GenericSubsytem {
 		leftMtr1 = new WPI_TalonSRX(IO.leftDriveCIM1);
 		leftMtr2 = new WPI_TalonSRX(IO.leftDriveCIM2);
 		leftMtr3 = new WPI_TalonSRX(IO.leftDriveCIM3);
-		//		rightEnc = new BetterEncoderData(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2, 0.033860431);
-		//		leftEnc = new BetterEncoderData(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2, -0.033860431);
 		rawRightEnc = new Encoder(IO.rightDriveEncoderChannel1, IO.rightDriveEncoderChannel2);
 		rawLeftEnc = new Encoder(IO.leftDriveEncoderChannel1, IO.leftDriveEncoderChannel2);
 		leftEnc = new EncoderData(rawLeftEnc, -0.033860431);
@@ -147,7 +141,6 @@ public class Drives extends GenericSubsytem {
 		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
-		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -175,11 +168,22 @@ public class Drives extends GenericSubsytem {
 		SmartDashboard.putData("Drives PTO", drivesPTO);
 		SmartDashboard.putData("LeftEnc", leftEnc);
 		SmartDashboard.putData("RightEnc", rightEnc);
-		//		SmartDashboard.putData("LeftEnc", rawLeftEnc);
-		//		SmartDashboard.putData("RightEnc", rawRightEnc);
 		SmartDashboard.putData("Gyro", gyro);
 		SmartDashboard.putData("Right Drives", rightDrives);
 		SmartDashboard.putData("Left Drives", leftDrives);
+		SmartDashboard.updateValues();
+	}
+	
+	/**
+	 * Deletes all objects from drives and adds to shuffleboard
+	 */
+	public void deleteObjectsFromShuffleboard() {
+		SmartDashboard.delete("Drives PTO");
+		SmartDashboard.delete("LeftEnc");
+		SmartDashboard.delete("RightEnc");
+		SmartDashboard.delete("Gyro");
+		SmartDashboard.delete("Right Drives");
+		SmartDashboard.delete("Left Drives");
 		SmartDashboard.updateValues();
 	}
 
@@ -234,7 +238,7 @@ public class Drives extends GenericSubsytem {
 		case CLIMB:
 			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
 			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
-			//CHANGE THIS BACKKKKKKKKKKKK
+			//CHANGE THIS BACKKKKKKKK //We flipped code for right and left drives, because right drives effected our left side
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			if(distOff > 0) {
@@ -262,12 +266,11 @@ public class Drives extends GenericSubsytem {
 			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			break;
 		case TURN_R:
-			print("Gyro Angle: " + getAngle());
 			if(getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-				System.out.println("Turn left finished");
+				System.out.println("Turn right finished");
 			}else if(getAngle() > turnAngle * DIZZY_SPINNER){
 				turnSpeed = TURN_SPEED;
 				slow = true;
@@ -279,11 +282,11 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case TURN_L:
-			print("Gyro Angle: " + getAngle());
 			if(getAngle() < turnAngle + DEADBAND_TELL_NO_TALES) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
+				System.out.println("Turn left finished");
 			}else if(getAngle() < turnAngle * DIZZY_SPINNER) {
 				turnSpeed = TURN_SPEED;
 				slow = true;
@@ -301,21 +304,18 @@ public class Drives extends GenericSubsytem {
 				changeState(DriveState.STANDBY);
 				isMoving = false;
 			} else if (DIST1 * moveDist > currentDistance) { //ramp up
-				//				System.out.println("D1111111111111111");
 				speedLeft = rampUp();
 				speedRight = rampUp();
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
-				//				System.out.println("D22222222222222222222222222222");
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			} else if (DIST3 * moveDist > currentDistance) {  //ramp down
-				//				System.out.println("D3333333333333333333333333");
 				speedLeft = rampDown();
 				speedRight = rampDown();
 				straightenForward();
@@ -348,9 +348,39 @@ public class Drives extends GenericSubsytem {
 			}
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
+//			double currentBackwardDistance = distance();
+//			if (currentBackwardDistance < DIST3 * moveDist) {
+//				stopMotors();
+//				changeState(DriveState.STANDBY);
+//				isMoving = false;
+//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
+//				speedLeft = rampUp();
+//				speedRight = rampUp();
+//				straightenBackward();
+//				leftDrives.set(speedLeft);
+//				rightDrives.set(speedRight);
+//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
+//				speedRight = moveSpeed;
+//				speedLeft = moveSpeed;
+//				straightenBackward();
+//				leftDrives.set(speedLeft);
+//				rightDrives.set(speedRight);
+//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
+//				//				System.out.println("D3333333333333333333333333");
+//				speedLeft = rampDown();
+//				speedRight = rampDown();
+//				straightenBackward();
+//				leftDrives.set(speedLeft);
+//				rightDrives.set(speedRight);
+//				slow = true;
+//			}
+//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
+
 			break;
 		}
-	}
+		
+}
 
 	/**
 	 * Changes state to teleop
