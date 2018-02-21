@@ -41,7 +41,7 @@ public class Elevations extends GenericSubsytem {
 	public void init() {
 		top = 95; 
 		middle = 39;
-		floor = 3;
+		floor = 1;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
