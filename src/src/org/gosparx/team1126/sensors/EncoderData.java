@@ -1,8 +1,12 @@
 package src.org.gosparx.team1126.sensors;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Utility;
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
  * Class for obtaining more reliable data from an encoder.
@@ -10,7 +14,7 @@ import edu.wpi.first.wpilibj.Utility;
  * @author Solis Knight
  * @version 1.5 Pre 2012
  */
-public class EncoderData {
+public class EncoderData extends SendableBase{
     private Encoder controlled;
     private Counter counter;
     private double distPerTickForward;
@@ -22,7 +26,7 @@ public class EncoderData {
     private long forwardCount = 0;
     private long reverseCount = 0;
     private long deltaCount = 0;
-
+    
     private boolean USE_COUNTER;
     
     /**
@@ -35,7 +39,7 @@ public class EncoderData {
         controlled.setDistancePerPulse(distPerTick);
         distPerTickForward = distPerTick;
         distPerTickReverse = distPerTick;
-        lastTime = Utility.getFPGATime();
+        lastTime = getCurrentTime();
         USE_COUNTER = false;
     }
     
@@ -43,7 +47,7 @@ public class EncoderData {
         this.counter = controlled;
         distPerTickForward = distPerTick;
         distPerTickReverse = distPerTick;
-        lastTime = Utility.getFPGATime();
+        lastTime = getCurrentTime();
         USE_COUNTER = true;
     }
     
@@ -56,7 +60,7 @@ public class EncoderData {
      * it a user defined interval)
      */
     public void calculateSpeed() {
-        long currentTime = Utility.getFPGATime();
+        long currentTime = getCurrentTime();
         long encoderCount = USE_COUNTER ? counter.get() : controlled.get();
         long elapsedTime = currentTime - lastTime;
         long tempCount;
@@ -128,7 +132,7 @@ public class EncoderData {
         else
             controlled.reset();
         
-        lastTime = Utility.getFPGATime();
+        lastTime = getCurrentTime();
         lastEncoderCount =  USE_COUNTER ? counter.get() : controlled.get();
         forwardCount = 0;
         reverseCount = 0;
@@ -136,9 +140,39 @@ public class EncoderData {
     }
     
     /**
+     * Returns the distance per tick forward.
+     * @return
+     */
+    private double getDistPerTickForward() {
+    	return distPerTickForward;
+    }
+    
+    /**
      * @return the time (in seconds) that the encoder has updated its values 
      */
     public double getLastReadingTime(){
-        return Utility.getFPGATime() - lastTime;
+        return getCurrentTime() - lastTime;
     }
+    
+    /**
+     * Get the current time 
+     * @return - the time in milliseconds
+     */
+    private long getCurrentTime() {
+    	return (long)(Timer.getFPGATimestamp()*(Math.pow(10., -6.)));
+    }
+
+	@Override
+	public void initSendable(SendableBuilder arg0) {
+		arg0.setSmartDashboardType("Encoder");
+		arg0.addDoubleProperty("Speed", this::getSpeed, null);
+		arg0.addDoubleProperty("Distance", this::getDistance, null);
+		arg0.addDoubleProperty("Distance per Tick", this::getDistPerTickForward, null);
+		
+		
+	}
+
+//	@Override
+//	public void initSendable(SendableBuilder arg0) {
+//	}
 }

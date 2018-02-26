@@ -25,5 +25,9 @@ public class DebuggerResult {
 	public String getMessage() {
 		return message;
 	}
+	
+	public String toString() {
+		return name + ": " + message  + ", this " + pass; 
+	}
 
 }
