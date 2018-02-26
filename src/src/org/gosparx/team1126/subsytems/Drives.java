@@ -66,13 +66,13 @@ public class Drives extends GenericSubsytem {
 
 	private final double UNFORTUNATE_FEW = .1;		//Degrees robot can be off in move auto before straightening
 
-	private final double DEADLOCK = 0.35;			//The minimum speed the robot will ever move
+	private final double DEADPOOL = 0.35;			//The minimum speed the robot will ever move
 
-	private final double DIST1 = 0.15;				//The distance where it changed to autonomous speed
+	private final double BLEEP = 0.15;				//The distance where it changed to autonomous speed
 
-	private final double DIST2 = 0.8;				//The distance where it changes to rampdown
+	private final double BLOOP = 0.8;				//The distance where it changes to rampdown
 
-	private final double DIST3 = 1;					//The distance where it changes to stop
+	private final double BLERP = 1;					//The distance where it changes to stop
 
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
@@ -299,23 +299,23 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_FWRD:
 			double currentDistance = distance();
-			if (currentDistance > DIST3 * moveDist) {
+			if (currentDistance > BLERP * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			} else if (DIST1 * moveDist > currentDistance) { //ramp up
+			} else if (BLEEP * moveDist > currentDistance) { //ramp up
 				speedLeft = rampUp();
 				speedRight = rampUp();
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
-			} else if (DIST2 * moveDist > currentDistance) {  //hold speed
+			} else if (BLOOP * moveDist > currentDistance) {  //hold speed
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
-			} else if (DIST3 * moveDist > currentDistance) {  //ramp down
+			} else if (BLERP * moveDist > currentDistance) {  //ramp down
 				speedLeft = rampDown();
 				speedRight = rampDown();
 				straightenForward();
@@ -569,8 +569,8 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speedf
 	 */
 	public double rampUp() {
-		double rampUp = (moveSpeed - DEADLOCK)/(DIST1 * moveDist);
-		return (rampUp * distance()) + DEADLOCK;
+		double rampUp = (moveSpeed - DEADPOOL)/(BLEEP * moveDist);
+		return (rampUp * distance()) + DEADPOOL;
 	}
 
 	/**
@@ -578,8 +578,8 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	public double rampDown() {
-		double rampDown = (DEADLOCK - moveSpeed)/(moveDist-DIST2 * moveDist);
-		return (rampDown * (distance() - DIST2*moveDist)) + moveSpeed;
+		double rampDown = (DEADPOOL - moveSpeed)/(moveDist-BLOOP * moveDist);
+		return (rampDown * (distance() - BLOOP*moveDist)) + moveSpeed;
 	}
 
 	/**
