@@ -58,7 +58,7 @@ public class Drives extends GenericSubsytem {
 
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 
-	private final double TURN_SPEED = .40;			//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .40;		//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 
@@ -105,6 +105,10 @@ public class Drives extends GenericSubsytem {
 	private double climbTimer;
 	
 	private boolean climbed;
+	
+	private double timer;
+	
+	
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -155,10 +159,11 @@ public class Drives extends GenericSubsytem {
 		TELEOP,
 		CLIMB_INIT,
 		CLIMB,
-		MOVE_FWRD,
+		MOVE_FRWD,
 		MOVE_BKWD,
 		TURN_R,
-		TURN_L;
+		TURN_L,
+		MOVE_TIMED;
 	}
 
 	/**
@@ -272,7 +277,7 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 				System.out.println("Turn right finished");
 			}else if(getAngle() > turnAngle * DIZZY_SPINNER){
-				turnSpeed = TURN_SPEED;
+				turnSpeed = TOURNAMENT_WIFI;
 				slow = true;
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
@@ -288,7 +293,7 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 				System.out.println("Turn left finished");
 			}else if(getAngle() < turnAngle * DIZZY_SPINNER) {
-				turnSpeed = TURN_SPEED;
+				turnSpeed = TOURNAMENT_WIFI;
 				slow = true;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
@@ -297,7 +302,7 @@ public class Drives extends GenericSubsytem {
 				rightDrives.set(-turnSpeed);
 			}
 			break;
-		case MOVE_FWRD:
+		case MOVE_FRWD:
 			double currentDistance = distance();
 			if (currentDistance > BLERP * moveDist) {
 				stopMotors();
@@ -377,6 +382,16 @@ public class Drives extends GenericSubsytem {
 //			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
 //			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
 
+			break;
+		case MOVE_TIMED:
+			if(Timer.getFPGATimestamp() > timer) {
+				isMoving = false;
+				stopMotors();
+			}else {
+				straightenForward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+			}
 			break;
 		}
 		
@@ -506,10 +521,28 @@ public class Drives extends GenericSubsytem {
 		speedRight = moveSpeed;
 		isMoving = true;
 		if(dist > 0) {
-			changeState(DriveState.MOVE_FWRD);
+			changeState(DriveState.MOVE_FRWD);
 		}else {
 			changeState(DriveState.MOVE_BKWD);
 		}
+	}
+	
+	/**
+	 * Moves for a specified time at given speed
+	 * @param time - time to move in seconds
+	 * @param speed - the speed at which to move the whole time
+	 */
+	public void moveTimed(double time, int speed) {
+		resetGyroAngle();
+		slow = false;
+		rightEnc.reset();
+		leftEnc.reset();
+		timer = time;
+		moveSpeed = speed/100.;
+		speedLeft = moveSpeed;
+		speedRight = moveSpeed;
+		isMoving = true;
+		changeState(DriveState.MOVE_TIMED);
 	}
 
 	/**
@@ -568,7 +601,7 @@ public class Drives extends GenericSubsytem {
 	 * ramps up the motors
 	 * @return - the motor speedf
 	 */
-	public double rampUp() {
+	private double rampUp() {
 		double rampUp = (moveSpeed - DEADPOOL)/(BLEEP * moveDist);
 		return (rampUp * distance()) + DEADPOOL;
 	}
@@ -577,7 +610,7 @@ public class Drives extends GenericSubsytem {
 	 * ramps the motors down
 	 * @return - the motor speed
 	 */
-	public double rampDown() {
+	private double rampDown() {
 		double rampDown = (DEADPOOL - moveSpeed)/(moveDist-BLOOP * moveDist);
 		return (rampDown * (distance() - BLOOP*moveDist)) + moveSpeed;
 	}
@@ -586,7 +619,7 @@ public class Drives extends GenericSubsytem {
 	 * gets the current distance
 	 * @return - the average distance
 	 */
-	public double distance() {
+	private double distance() {
 		rightEnc.calculateSpeed();
 		leftEnc.calculateSpeed();
 		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
