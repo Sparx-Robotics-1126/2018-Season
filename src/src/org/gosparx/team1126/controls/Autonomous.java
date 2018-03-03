@@ -118,7 +118,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_ACQUIRE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 52, 60},
+			{stateToInt(AutoState.DRIVES_TIMED), 3000, 35}, //{stateToInt(AutoState.DRIVES_FORWARD), 52, 60},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_RAISE)},
 			{stateToInt(AutoState.ACQ_DONE)},
@@ -138,7 +138,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 75},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
+			{stateToInt(AutoState.DRIVES_TIMED), 1000, 35}, //stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
 	};
