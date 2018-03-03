@@ -537,7 +537,7 @@ public class Drives extends GenericSubsytem {
 		slow = false;
 		rightEnc.reset();
 		leftEnc.reset();
-		timer = time;
+		timer = time + Timer.getFPGATimestamp();
 		moveSpeed = speed/100.;
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
