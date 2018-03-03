@@ -125,13 +125,13 @@ public class Elevations extends GenericSubsytem {
 					stopAll();
 					break;
 				}
-				else if(floor>height+8)
-				{
-					setMotor(-.2);
-				}
-//				else {
-//					setMotor(-.5);
+//				else if(floor>height+8)
+//				{
+//					setMotor(-.2);
 //				}
+				else {
+					setMotor(-.5);
+				}
 				break;
 		}
 	}
