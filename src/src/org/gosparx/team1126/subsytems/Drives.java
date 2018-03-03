@@ -529,15 +529,15 @@ public class Drives extends GenericSubsytem {
 	
 	/**
 	 * Moves for a specified time at given speed
-	 * @param time - time to move in seconds
+	 * @param time - time to move in milliseconds
 	 * @param speed - the speed at which to move the whole time
 	 */
-	public void moveTimed(double time, int speed) {
+	public void moveTimed(int time, int speed) {
 		resetGyroAngle();
 		slow = false;
 		rightEnc.reset();
 		leftEnc.reset();
-		timer = time + Timer.getFPGATimestamp();
+		timer = time/100.0 + Timer.getFPGATimestamp();
 		moveSpeed = speed/100.;
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;

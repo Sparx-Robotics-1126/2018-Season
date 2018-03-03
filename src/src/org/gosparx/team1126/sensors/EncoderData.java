@@ -159,7 +159,7 @@ public class EncoderData extends SendableBase{
      * @return - the time in milliseconds
      */
     private long getCurrentTime() {
-    	return (long)(Timer.getFPGATimestamp()*(Math.pow(10., -6.)));
+    	return (long)(Timer.getFPGATimestamp()*(Math.pow(10., 4.)));
     }
 
 	@Override
