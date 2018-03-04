@@ -130,7 +130,7 @@ public class Elevations extends GenericSubsytem {
 					setMotor(-.2);
 				}
 				else {
-					setMotor(-.5);
+					setMotor(-.3);
 				}
 				break;
 		}
