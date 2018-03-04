@@ -146,7 +146,7 @@ public class Acquisitions extends GenericSubsytem{
 			
 		case REGULAR_SCORE:
 			lower();
-			if (Timer.getFPGATimestamp() > regScoreTime + 1) {
+			if (Timer.getFPGATimestamp() > regScoreTime + .5) {
 			release();
 			setStandby();
 			}
