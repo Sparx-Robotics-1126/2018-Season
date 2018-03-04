@@ -41,7 +41,7 @@ public class Elevations extends GenericSubsytem {
 	public void init() {
 		top = 95; 
 		middle = 39;
-		floor = 1;
+		floor = 2;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
@@ -111,7 +111,7 @@ public class Elevations extends GenericSubsytem {
 				} 
 				else if(height>middle) //If below go down
 				{
-					setMotor(-.5);
+					setMotor(-.8);
 				}
 				else //If above goes up
 				{
@@ -127,7 +127,7 @@ public class Elevations extends GenericSubsytem {
 				}
 				else if(floor>height+8) 
 				{
-					setMotor(-.2);
+					setMotor(-.8);
 				}
 				else {
 					setMotor(-.3);
