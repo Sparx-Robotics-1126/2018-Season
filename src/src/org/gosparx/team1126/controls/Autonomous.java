@@ -48,14 +48,14 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_LEFT = {
-			{stateToInt(AutoState.BGR_TIMER), 12, 9},
+//			{stateToInt(AutoState.BGR_TIMER), 12, 9},
 			{stateToInt(AutoState.DRIVES_FORWARD), 158, 65},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TIMED), 3000, 35},	//{stateToInt(AutoState.DRIVES_FORWARD), 17, 40},
+			{stateToInt(AutoState.DRIVES_TIMED), 2000, 45},	//{stateToInt(AutoState.DRIVES_FORWARD), 17, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},

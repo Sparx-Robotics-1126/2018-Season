@@ -21,10 +21,10 @@ public class IO {
 	//----------------------------------------------------Sensors----------------------------------------------------------------------
 
 	//FLIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-	public static final int leftDriveEncoderChannel1																	= 12; //CHANNELS SWAPPED ON BOTH
-	public static final int leftDriveEncoderChannel2																	= 13; //CHANGE BACK
-	public static final int rightDriveEncoderChannel1																	= 10; //CHANGE BACK
-	public static final int rightDriveEncoderChannel2																	= 11; //CHANGE BACK
+	public static final int leftDriveEncoderChannel1																	= 13; //CHANNELS SWAPPED ON BOTH
+	public static final int leftDriveEncoderChannel2																	= 12; //CHANGE BACK
+	public static final int rightDriveEncoderChannel1																	= 11; //CHANGE BACK
+	public static final int rightDriveEncoderChannel2																	= 10; //CHANGE BACK
 	//CHANGE BACK
 	public static final int MAGNETICSENSOR																				= 14;
 	public static final int ELEVATIONSENCODER1																			= 22;

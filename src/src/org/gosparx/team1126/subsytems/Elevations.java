@@ -50,7 +50,7 @@ public class Elevations extends GenericSubsytem {
 		motor2.setNeutralMode(NeutralMode.Brake);
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR);
 		rawEnc = new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2);
-		encoder = new EncoderData(rawEnc, 0.0310354993); 
+		encoder = new EncoderData(rawEnc, 0.039); 
 	}
 	
 	/**
