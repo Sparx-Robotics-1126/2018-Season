@@ -80,9 +80,9 @@ public class TeleOP implements Controls{
 			finishedClimbing = true;
 			climbing.climbingLatch(true);
 		}
-		if(isRisingEdgeButton(0)) { //right joystick left button
-			climbing.climbingArms(true);
-		}
+//		if(isRisingEdgeButton(0)) { //right joystick left button
+//			climbing.climbingArms(true);
+//		}
 //		if(isRisingEdgeButton(1)) { //right joystick middle button
 //			System.out.println("right joystick middle button");
 //		}

@@ -244,7 +244,7 @@ public class Elevations extends GenericSubsytem {
 	
 	private void setBrake(boolean power) {
 		if(power){
-			setRawMotor(0.4);
+			setRawMotor(0.48);
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
