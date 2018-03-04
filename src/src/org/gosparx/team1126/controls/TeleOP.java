@@ -192,10 +192,9 @@ public class TeleOP implements Controls{
 //		}
 		//xBox Buttons
 		 
-//		if(isRisingEdgeButton(8)) { //xbox a button
-//			acq.setAcquire(); //acquire
-//			acq.setSpin();
-//		}
+		if(isRisingEdgeButton(8)) { //xbox a button
+			acq.setHome();
+		}
 //		if(isRisingEdgeButton(9)) { //xbox b button
 //			acq.setLaunchScore(); //shoot
 //		}
@@ -283,7 +282,7 @@ public class TeleOP implements Controls{
 //		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
 //		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 		
-//		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
+		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
 //		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
 		buttonStates[10][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X);
 //		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
