@@ -388,6 +388,8 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 				stopMotors();
 			}else {
+				speedLeft = moveSpeed;
+				speedRight = moveSpeed;
 				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
