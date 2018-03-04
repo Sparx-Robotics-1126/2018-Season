@@ -140,7 +140,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TIMED), 1000, 35}, //stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+			{stateToInt(AutoState.ACQ_SPIT)}
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
@@ -365,6 +365,10 @@ public class Autonomous implements Controls {
 				drives.moveTimed(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
+			case 24: //ACQ_SPIT
+				acq.setSpit();
+				autoStep++;
+				break;
 			default:
 				break;
 			}
@@ -459,7 +463,8 @@ public class Autonomous implements Controls {
 		ACQ_LAUNCHSCORE,
 		ACQ_PINCH,
 		ACQ_SPIN,
-		ACQ_LOWLAUNCH;
+		ACQ_LOWLAUNCH,
+		ACQ_SPIT;
 	}
 
 	public int stateToInt(AutoState auto) {
@@ -512,6 +517,8 @@ public class Autonomous implements Controls {
 			return 22;
 		case DRIVES_TIMED:
 			return 23;
+		case ACQ_SPIT:
+			return 24;
 		default:
 			return -999;
 		}
