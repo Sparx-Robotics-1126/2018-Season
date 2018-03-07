@@ -78,7 +78,7 @@ public class TeleOP implements Controls{
 		setJoystickStates();
 		if(!finishedClimbing && drives.hasClimbed()) {
 			finishedClimbing = true;
-			climbing.climbingLatch(true);
+			//climbing.climbingLatch(true);
 		}
 //		if(isRisingEdgeButton(0)) { //right joystick left button
 //			climbing.climbingArms(true);
@@ -86,7 +86,7 @@ public class TeleOP implements Controls{
 //		if(isRisingEdgeButton(1)) { //right joystick middle button
 //			System.out.println("right joystick middle button");
 //		}
-		if(isRisingEdgeButton(1)) { //right joystick middle button
+		if(isRisingEdgeButton(1)) { //right joystick middle button + missile switch
 			finishedClimbing = false;
 			climbing.enableClimbing(true);
 			drives.enableClimb(true);

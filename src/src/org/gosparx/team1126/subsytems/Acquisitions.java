@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import src.org.gosparx.team1126.robot.IO;
@@ -22,6 +24,8 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private Solenoid wrist;
 	
+	private DigitalInput cubeSensor;
+	
 	
 	//Constants
 	private static final boolean PINCHED = false;
@@ -31,6 +35,10 @@ public class Acquisitions extends GenericSubsytem{
 	private static final boolean RAISED = false;
 	
 	private static final boolean LOWERED = !RAISED;
+	
+	private static final boolean SENSED = false;
+	
+	private static final boolean NOT_SENSED = !SENSED;
 	
 	private static final double MOTOR_ON = 0.8;  //TODO get actual power
 	
@@ -84,6 +92,7 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 		pinchPosition = PINCHED;
 		wristPosition = RAISED;
+		cubeSensor = new DigitalInput(IO.ACQ_TOTE_SENSOR);
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
 		wrist = new Solenoid(IO.PNU_WRIST);
@@ -99,16 +108,29 @@ public class Acquisitions extends GenericSubsytem{
 	@Override
 	public void execute() {
 		
+		
+		
+		
 		switch(AcqState){
 		
 		case STANDBY:
+			if(cubeSensor.get()) {
+				System.out.println("This");
+			}
+			
+			else {
+				System.out.println("That");
+			}
 			return;
 		
 		case ACQUIRE:
 			lower();
 			release();
 			rollerAcq();
-			setStandby();
+//			if (cubeDetected) {
+//				setStandby();
+//			}
+			//setStandby();
 			break;
 			
 		case SPIN:

@@ -25,7 +25,7 @@ public class Drives extends GenericSubsytem {
 	private WPI_TalonSRX rightMtr1;
 
 	private WPI_TalonSRX rightMtr2;
-	
+
 	private WPI_TalonSRX rightMtr3;
 
 	private WPI_TalonSRX leftMtr1;
@@ -101,14 +101,14 @@ public class Drives extends GenericSubsytem {
 	private boolean notLeftYet; //for climb init
 
 	private double highestAmp;
-	
+
 	private double climbTimer;
-	
+
 	private boolean climbed;
-	
+
 	private double timer;
-	
-	
+
+
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
 
@@ -178,7 +178,7 @@ public class Drives extends GenericSubsytem {
 		SmartDashboard.putData("Left Drives", leftDrives);
 		SmartDashboard.updateValues();
 	}
-	
+
 	/**
 	 * Deletes all objects from drives and adds to shuffleboard
 	 */
@@ -211,12 +211,12 @@ public class Drives extends GenericSubsytem {
 			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
 				boolean right = false;
 				boolean left = false;
-				if(climbTimer + 3 < Timer.getFPGATimestamp()) {
+				if(climbTimer + 1.25 < Timer.getFPGATimestamp()) {
 					right = isTaught(rightDrives);
 					left = isTaught(leftDrives);
 				}
 				if(!notRightYet && !notLeftYet) {
-					System.out.print(highestAmp);
+					System.out.print("Switching to CLIMB!! Highest amp: " + highestAmp);
 					rightEnc.reset();
 					leftEnc.reset();
 					leftDrives.set(0);
@@ -225,42 +225,47 @@ public class Drives extends GenericSubsytem {
 					changeState(DriveState.CLIMB);
 				}
 				if(!right && notRightYet){
-					rightDrives.set(-.35);
+					rightDrives.set(-.45); 
 				}else {
-					rightDrives.set(0);
+					rightDrives.set(0); 
 					notRightYet = false;
 				}
 				if(!left && notLeftYet){
-					leftDrives.set(-.35);
+					leftDrives.set(-.45);
 				}else {
 					leftDrives.set(0);
 					notLeftYet = false;
 				}
 				System.out.println("Right side: " + (right || !notRightYet));
 				System.out.println("Left side: " + (left || !notLeftYet));
+			} else if(climbTimer + .5 < Timer.getFPGATimestamp()) {
+				rightDrives.set(-.3);
+				leftDrives.set(-.3);
+			} else if(climbTimer + .25 < Timer.getFPGATimestamp()){
+				rightDrives.set(.3);
+				leftDrives.set(.3);
 			}
 			break;
 		case CLIMB:
 			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
 			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
-			//CHANGE THIS BACKKKKKKKK //We flipped code for right and left drives, because right drives effected our left side
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			if(distOff > 0) {
-				print("offsetting right");
-				leftDrives.set(speedRight);
-				if(distOff < -5) {
-					rightDrives.set(0);
-				} else {
-					rightDrives.set(levelOffset);
-				}
-			} else if(distOff < 0) {
 				print("offsetting left");
 				rightDrives.set(speedRight);
 				if(distOff > 5) {
 					leftDrives.set(0);
 				} else {
 					leftDrives.set(levelOffset);
+				}
+			} else if(distOff < 0) {
+				print("offsetting right");
+				leftDrives.set(speedRight);
+				if(distOff < -5) {
+					rightDrives.set(0);
+				} else {
+					rightDrives.set(levelOffset);
 				}
 			}else {
 				rightDrives.set(speedRight);
@@ -353,34 +358,34 @@ public class Drives extends GenericSubsytem {
 			}
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
-//			double currentBackwardDistance = distance();
-//			if (currentBackwardDistance < DIST3 * moveDist) {
-//				stopMotors();
-//				changeState(DriveState.STANDBY);
-//				isMoving = false;
-//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
-//				speedLeft = rampUp();
-//				speedRight = rampUp();
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
-//				speedRight = moveSpeed;
-//				speedLeft = moveSpeed;
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
-//				//				System.out.println("D3333333333333333333333333");
-//				speedLeft = rampDown();
-//				speedRight = rampDown();
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//				slow = true;
-//			}
-//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
+			//			double currentBackwardDistance = distance();
+			//			if (currentBackwardDistance < DIST3 * moveDist) {
+			//				stopMotors();
+			//				changeState(DriveState.STANDBY);
+			//				isMoving = false;
+			//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
+			//				speedLeft = rampUp();
+			//				speedRight = rampUp();
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
+			//				speedRight = moveSpeed;
+			//				speedLeft = moveSpeed;
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
+			//				//				System.out.println("D3333333333333333333333333");
+			//				speedLeft = rampDown();
+			//				speedRight = rampDown();
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//				slow = true;
+			//			}
+			//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
 
 			break;
 		case MOVE_TIMED:
@@ -396,8 +401,8 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		}
-		
-}
+
+	}
 
 	/**
 	 * Changes state to teleop
@@ -454,7 +459,7 @@ public class Drives extends GenericSubsytem {
 	public boolean hasClimbed() {
 		return climbed;
 	}
-	
+
 	/**
 	 * moves right motors to joystick value, -1 to 1
 	 * @param speedR - the right joystick speed
@@ -528,7 +533,7 @@ public class Drives extends GenericSubsytem {
 			changeState(DriveState.MOVE_BKWD);
 		}
 	}
-	
+
 	/**
 	 * Moves for a specified time at given speed
 	 * @param time - time to move in milliseconds
