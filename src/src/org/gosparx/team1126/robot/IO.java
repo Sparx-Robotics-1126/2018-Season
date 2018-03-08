@@ -31,6 +31,8 @@ public class IO {
 	public static final int ELEVATIONSENCODER2																			= 23;	
 	public static final int ACQ_TOTE_SENSOR                                                                             = 18;
 	
+	public static final int ACQ_CUBE_SENSOR																				= 0;
+	
 	//--------------------------------------------------Pneumatics---------------------------------------------------------------------
 	
 

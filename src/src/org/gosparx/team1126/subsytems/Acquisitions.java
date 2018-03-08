@@ -1,7 +1,7 @@
 package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import src.org.gosparx.team1126.robot.IO;
@@ -24,7 +24,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private Solenoid wrist;
 	
-	private DigitalInput cubeSensor;
+	private AnalogInput cubeSensor;
 	
 	
 	//Constants
@@ -36,11 +36,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final boolean SENSED = false;
-	
-	private static final boolean NOT_SENSED = !SENSED;
-	
-	private static final double MOTOR_ON = 0.8;  //TODO get actual power
+	private static final double MOTOR_ON = 0.8; 
 	
 	private static final double MOTOR_STOP = 0.0;
 	
@@ -81,7 +77,8 @@ public class Acquisitions extends GenericSubsytem{
 		HOME,
 		SPIN,
 		SPIT,
-		LOW_LAUNCH;
+		LOW_LAUNCH,
+		WAIT_FOR_CUBE;
 	}
 	
 	
@@ -92,7 +89,7 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 		pinchPosition = PINCHED;
 		wristPosition = RAISED;
-		cubeSensor = new DigitalInput(IO.ACQ_TOTE_SENSOR);
+		cubeSensor = new AnalogInput(IO.ACQ_TOTE_SENSOR);
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
 		wrist = new Solenoid(IO.PNU_WRIST);
@@ -114,23 +111,13 @@ public class Acquisitions extends GenericSubsytem{
 		switch(AcqState){
 		
 		case STANDBY:
-			if(cubeSensor.get()) {
-				System.out.println("This");
-			}
-			
-			else {
-				System.out.println("That");
-			}
 			return;
 		
 		case ACQUIRE:
 			lower();
 			release();
 			rollerAcq();
-//			if (cubeDetected) {
-//				setStandby();
-//			}
-			//setStandby();
+			setWaitForCube();
 			break;
 			
 		case SPIN:
@@ -143,7 +130,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + 1){ //TODO get actual time
+			if (Timer.getFPGATimestamp() > pinchTime + 1){
 				stopRollers();
 				raise();
 				setStandby();
@@ -187,6 +174,12 @@ public class Acquisitions extends GenericSubsytem{
 			release();
 			stopRollers();
 			break;
+			
+		case WAIT_FOR_CUBE:
+			if(cubeSensor.getVoltage() > 1.75) {
+				setRaise();
+			}
+			
 			
 		default:
 			log("STATE ERROR");
@@ -305,6 +298,16 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.SPIT) {
 			AcqState = State.SPIT;
 			spitTime = Timer.getFPGATimestamp();
+		}
+	}
+	
+	/**
+	 * Sets acquisition state to waiting for cube.
+	 */
+	public void setWaitForCube() {
+		if (AcqState != State.WAIT_FOR_CUBE){
+			AcqState = State.WAIT_FOR_CUBE;
+			log("State set to WAIT_FOR_CUBE");
 		}
 	}
 	

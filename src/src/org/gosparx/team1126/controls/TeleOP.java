@@ -15,7 +15,7 @@ public class TeleOP implements Controls{
 	private Climbing climbing;
 	private Elevations ele;
 	
-	private boolean finishedClimbing;
+	private boolean climbingActivated;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -61,11 +61,11 @@ public class TeleOP implements Controls{
 	 * @param climb - an instance of Climbing created by RobotSystem.
 	 */
 	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb) {
+		climbingActivated = false;
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
 		climbing = climb;
-		finishedClimbing = false;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
@@ -76,10 +76,6 @@ public class TeleOP implements Controls{
 	public void execute() {
 		//Joystick Buttons Left
 		setJoystickStates();
-		if(!finishedClimbing && drives.hasClimbed()) {
-			finishedClimbing = true;
-			//climbing.climbingLatch(true);
-		}
 //		if(isRisingEdgeButton(0)) { //right joystick left button
 //			climbing.climbingArms(true);
 //		}
@@ -87,13 +83,12 @@ public class TeleOP implements Controls{
 //			System.out.println("right joystick middle button");
 //		}
 		if(isRisingEdgeButton(1)) { //right joystick middle button + missile switch
-			finishedClimbing = false;
 			climbing.enableClimbing(true);
 			drives.enableClimb(true);
+			climbingActivated = true;
 		}
 		if(isFallingEdgeButton(1)) {
-			climbing.enableClimbing(false);
-			drives.enableClimb(false);
+			climbingActivated = false;
 		}
 		if(isRisingEdgeButton(2)) { //right joystick right button
 			climbing.climbingLatch(!climbing.getClimbingLatch());
@@ -139,9 +134,14 @@ public class TeleOP implements Controls{
 //		if(isRisingEdgePOV(3)) { //right joystick pov left
 //			System.out.println("right joystick pov left");
 //		}
-//		//Joystick Buttons Right
-//		if(isRisingEdgeButton(4)) { //left joystick left button
-//			System.out.println("left joystick left button");
+		//Joystick Buttons Right
+		if(isRisingEdgeButton(4)) { //left joystick left button	
+			if(climbingActivated = false) {
+				climbing.enableClimbing(false);
+				drives.enableClimb(false);
+			}
+		}
+			System.out.println("left joystick left button");
 //		}
 //		if(isRisingEdgeButton(5)) { //left joystick middle button
 //			isClimbing = true;
@@ -277,7 +277,7 @@ public class TeleOP implements Controls{
 		buttonStates[1][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
 		buttonStates[2][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
 //		buttonStates[3][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_TRIGGER);
-//		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK2, CtrlMap.JOY_LEFT);
+		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
 		buttonStates[5][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
 //		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
 //		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
