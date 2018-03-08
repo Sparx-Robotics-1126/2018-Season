@@ -29,7 +29,6 @@ public class IO {
 	public static final int MAGNETICSENSOR																				= 14;
 	public static final int ELEVATIONSENCODER1																			= 22;
 	public static final int ELEVATIONSENCODER2																			= 23;	
-	public static final int ACQ_TOTE_SENSOR                                                                             = 18;
 	
 	public static final int ACQ_CUBE_SENSOR																				= 0;
 	

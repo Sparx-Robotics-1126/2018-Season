@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import src.org.gosparx.team1126.robot.IO;
+import src.org.gosparx.team1126.sensors.AnalogSensor;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
 
@@ -24,7 +25,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private Solenoid wrist;
 	
-	private AnalogInput cubeSensor;
+	private AnalogSensor cubeSensor;
 	
 	
 	//Constants
@@ -36,9 +37,11 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = 0.8; 
+	private static final double MOTOR_ON = 1; 
 	
 	private static final double MOTOR_STOP = 0.0;
+	
+	private static final double CUBE_SENSOR_THRESHOLD = 2;
 	
 	
 	//Variables
@@ -89,7 +92,7 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 		pinchPosition = PINCHED;
 		wristPosition = RAISED;
-		cubeSensor = new AnalogInput(IO.ACQ_TOTE_SENSOR);
+		cubeSensor = new AnalogSensor(IO.ACQ_CUBE_SENSOR, CUBE_SENSOR_THRESHOLD);
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
 		wrist = new Solenoid(IO.PNU_WRIST);
@@ -104,7 +107,6 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	@Override
 	public void execute() {
-		
 		
 		
 		
@@ -130,7 +132,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + 1){
+			if (Timer.getFPGATimestamp() > pinchTime + .5){
 				stopRollers();
 				raise();
 				setStandby();
@@ -176,10 +178,10 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case WAIT_FOR_CUBE:
-			if(cubeSensor.getVoltage() > 1.75) {
+			if(cubeSensor.get()) {
 				setRaise();
 			}
-			
+			break;
 			
 		default:
 			log("STATE ERROR");

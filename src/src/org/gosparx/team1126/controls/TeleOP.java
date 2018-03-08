@@ -141,7 +141,6 @@ public class TeleOP implements Controls{
 				drives.enableClimb(false);
 			}
 		}
-			System.out.println("left joystick left button");
 //		}
 //		if(isRisingEdgeButton(5)) { //left joystick middle button
 //			isClimbing = true;
