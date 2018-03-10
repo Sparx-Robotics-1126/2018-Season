@@ -337,56 +337,36 @@ public class Drives extends GenericSubsytem {
 			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "CurrentDistance: " + currentDistance);
 			break;
 		case MOVE_BKWD:
-			leftEnc.calculateSpeed();
-			rightEnc.calculateSpeed();
-			if(moveDist > (rightEnc.getDistance() + leftEnc.getDistance())/2) {
+			double curentDistance = distance();
+			if (curentDistance < BLERP * moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			}else if((moveDist*EVERYTHING) > (rightEnc.getDistance() + leftEnc.getDistance())/2){
-				moveSpeed = SCHOOL_WIFI;
-				slow = true;
+			} else if (BLEEP * moveDist < curentDistance) { //ramp up
+				speedLeft = -rampUp();
+				speedRight = -rampUp();
+				straightenBackward();
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
+			} else if (BLOOP * moveDist < curentDistance) {  //hold speed
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
-				rightDrives.set(-speedRight);
-				leftDrives.set(-speedLeft);
-			}else {
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
+			} else if (BLERP * moveDist < curentDistance) {  //ramp down
+				speedLeft = -rampDown();
+				speedRight = -rampDown();
 				straightenBackward();
-				leftDrives.set(-speedLeft);
-				rightDrives.set(-speedRight);
+				leftDrives.set(speedLeft);
+				rightDrives.set(speedRight);
+				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
+				slow = true;
 			}
-			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
-			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
-			//			double currentBackwardDistance = distance();
-			//			if (currentBackwardDistance < DIST3 * moveDist) {
-			//				stopMotors();
-			//				changeState(DriveState.STANDBY);
-			//				isMoving = false;
-			//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
-			//				speedLeft = rampUp();
-			//				speedRight = rampUp();
-			//				straightenBackward();
-			//				leftDrives.set(speedLeft);
-			//				rightDrives.set(speedRight);
-			//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
-			//				speedRight = moveSpeed;
-			//				speedLeft = moveSpeed;
-			//				straightenBackward();
-			//				leftDrives.set(speedLeft);
-			//				rightDrives.set(speedRight);
-			//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
-			//				//				System.out.println("D3333333333333333333333333");
-			//				speedLeft = rampDown();
-			//				speedRight = rampDown();
-			//				straightenBackward();
-			//				leftDrives.set(speedLeft);
-			//				rightDrives.set(speedRight);
-			//				slow = true;
-			//			}
-			//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
-
+			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "CurrentDistance: " + curentDistance);
 			break;
 		case MOVE_TIMED:
 			if(Timer.getFPGATimestamp() > timer) {
@@ -573,17 +553,12 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenBackward() {
-		if(getAngle() > UNFORTUNATE_FEW) {
-			speedLeft = moveSpeed * KEVIN;
-			speedRight = moveSpeed;
+		if(getAngle() < UNFORTUNATE_FEW) {
+			speedRight *= KEVIN;
 			return true;
-		}else if(getAngle() < -UNFORTUNATE_FEW) {
-			speedRight = moveSpeed * KEVIN;
-			speedLeft = moveSpeed;
+		}else if(getAngle() > -UNFORTUNATE_FEW) {
+			speedLeft *= KEVIN;
 			return true;
-		}else {
-			speedLeft = moveSpeed;
-			speedRight = moveSpeed;
 		}
 		return false;
 	}
@@ -606,7 +581,7 @@ public class Drives extends GenericSubsytem {
 
 	/**
 	 * ramps up the motors
-	 * @return - the motor speedf
+	 * @return - the motor speed
 	 */
 	private double rampUp() {
 		double rampUp = (moveSpeed - DEADPOOL)/(BLEEP * moveDist);

@@ -237,9 +237,12 @@ public class TeleOP implements Controls{
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_X)) {
 //			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}
-//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y)) {
-//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
-//		}
+		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y)) {
+				ele.trim(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+		} else{
+			ele.trim(0);
+		}
+			
 //		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2)) {
 //			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
 //		}

@@ -31,7 +31,7 @@ public class Climbing extends GenericSubsytem
 		climbingSoul = new Solenoid(IO.PTO_ELE);
 		climbingArms = new Solenoid(IO.CLIMBINGARMS);
 		climbingLatch = new Solenoid(IO.CLIMBINGLATCH);
-		SmartDashboard.putData("ClimbPTO", climbingSoul);
+		//SmartDashboard.putData("ClimbPTO", climbingSoul);
 	}
 
 	@Override

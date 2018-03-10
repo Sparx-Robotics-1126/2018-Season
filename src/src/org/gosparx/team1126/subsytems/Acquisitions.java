@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.AnalogSensor;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -37,11 +38,11 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = 1; 
+	private static final double MOTOR_ON = .8; 
 	
 	private static final double MOTOR_STOP = 0.0;
 	
-	private static final double CUBE_SENSOR_THRESHOLD = 2;
+	private static final double CUBE_SENSOR_THRESHOLD = 2.3;
 	
 	
 	//Variables
@@ -100,6 +101,7 @@ public class Acquisitions extends GenericSubsytem{
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
 		log("Successfully INITIALIZED");
+		SmartDashboard.putBoolean("Arms", pinchPosition);
 	}
 	
 	/**
@@ -371,8 +373,8 @@ public class Acquisitions extends GenericSubsytem{
 	 * Reverses the intake motors to score the cube at half speed.
 	 */
 	private void lowLaunch() {
-		rightMotorPower = -0.65;
-		leftMotorPower = -0.65;
+		rightMotorPower = -1;
+		leftMotorPower = -1;
 	}
 	
 	/**
