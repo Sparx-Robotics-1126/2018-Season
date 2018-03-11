@@ -109,8 +109,8 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	@Override
 	public void execute() {
-		
-		
+				
+		SmartDashboard.updateValues();
 		
 		switch(AcqState){
 		
