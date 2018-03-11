@@ -202,6 +202,23 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
+	
+	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_MIDDLE = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 50, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 15, 60},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_SWITCH)},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 92, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.ACQ_REGSCORE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 105, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 15, 50}
+	};
 
 	public Autonomous(Drives drives, Acquisitions acq, Elevations ele) {
 		autoStep = 0;
@@ -223,7 +240,7 @@ public class Autonomous implements Controls {
 		autoChooser.addObject("Score The Scale", AutoSelected.SCALE);
 		autoChooser.addObject("Score The Scale + Switch", AutoSelected.SWITCHSCALE);
 		autoChooser.addObject("Score The Double Scale", AutoSelected.DOUBLESCALE);
-
+		
 		posChooser = new SendableChooser<PositionSelected>();
 		
 		posChooser.addDefault("Start from Left", PositionSelected.LEFT);
@@ -397,7 +414,7 @@ public class Autonomous implements Controls {
 			currentAuto = DEFAULT_AUTO;
 			return;
 		}
-		if(selectedPosition == PositionSelected.MIDDLE || selectedAuto == AutoSelected.CROSSBORDER) {
+		if(selectedAuto == AutoSelected.CROSSBORDER) {
 			currentAuto = CROSS_AUTO_LINE;
 			return;
 		}
@@ -447,6 +464,8 @@ public class Autonomous implements Controls {
 			}
 			currentAuto = CROSS_AUTO_LINE;
 			break;
+		case MIDDLE:
+			currentAuto = CUBE_ON_LEFT_SWITCH_FROM_MIDDLE;
 		default:
 			System.out.println("Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
 			break;

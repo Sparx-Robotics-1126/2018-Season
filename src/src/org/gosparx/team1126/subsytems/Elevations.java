@@ -23,7 +23,7 @@ public class Elevations extends GenericSubsytem {
 	private State state;
 	private boolean isMoving = false;
 	private boolean finishedInit = false; 
-	private double trimValue;
+//	private double trimValue;
 
 	public Elevations() {
 		super("Elevations");
@@ -43,7 +43,7 @@ public class Elevations extends GenericSubsytem {
 		top = 95; 
 		middle = 39;
 		floor = 2;
-		trimValue = 0;
+//		trimValue = 0;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
@@ -69,7 +69,7 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		//		System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
 		switch(state)
 		{
 
@@ -90,7 +90,7 @@ public class Elevations extends GenericSubsytem {
 		case MOVEUP: //while in moveUp, elevator goes up to the top
 			if(top<height)
 			{
-				state = State.TRIM;
+				state = State.STANDBY;
 				stopAll();
 				break;
 			} 
@@ -123,7 +123,7 @@ public class Elevations extends GenericSubsytem {
 		case MOVEDOWN: //while in moveDown, elevator goes down
 			if(floor>height)
 			{
-				state = State.TRIM;
+				state = State.STANDBY;
 				stopAll();
 				break;
 			}
@@ -136,12 +136,13 @@ public class Elevations extends GenericSubsytem {
 			}
 			break;
 		case TRIM:
-			if(trimValue > 0 && height < top)
-				setMotor(trimValue);
-			else if(trimValue < 0 && height > top)
-				setMotor(trimValue);
-			else
-				setMotor(0);
+//			if(trimValue > 0 && height < top)
+//				setMotor(trimValue);
+//			else if(trimValue < 0 && height > top)
+//				setMotor(trimValue);
+//			else
+//				setMotor(0);
+			state = State.STANDBY;
 			break;
 		}
 	}
@@ -182,110 +183,110 @@ public class Elevations extends GenericSubsytem {
 	 * @param joystickInput - x-box joystick
 	 */
 	public void trim(double joystickInput){
-		if(joystickInput > 0){
-			trimValue = joystickInput/2. + 0.5; //Slows down max speed you can move by /2, adding .48 to make sure it doesn't fall
-		} else{
-			trimValue = joystickInput/2.; //Slows down max speed by /2 
-		}
-		}
+//		if(joystickInput > 0){
+//			trimValue = joystickInput/2. + 0.5; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
+//		} else{
+//			trimValue = joystickInput/2.; //Slows down max speed by /2 
+//		}
+	}
 
-		//Methods called to control elevator movement
-		public boolean goSwitch() //Goes top
+	//Methods called to control elevator movement
+	public boolean goSwitch() //Goes top
+	{
+		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
-			if(state!=State.INIT) //To make sure init is not messed up by inputs
-			{
-				isMoving = true;
-				state = State.MOVEMIDDLE;
-				return true;
-			}else {return false;}
-		}
-
-		public void startInit() {
-			if(!finishedInit) {
-				state = State.INIT;
-				finishedInit = true;
-			}
-		}
-
-		public boolean goScale() //Exe goes middle, state = moveMiddle
-		{
-			if(state!=State.INIT) //To make sure init is not messed up by inputs
-			{
-				isMoving = true;
-				state = State.MOVEUP; 
-				return true;
-			}else {return false;}
-		}
-
-		public boolean goFloor() //Exe goes bottom, state = moveDown
-		{
-			if(state!=State.INIT) //To make sure init is not messed up by inputs
-			{
-				isMoving = true;
-				state = State.MOVEDOWN;
-				return true;
-			}else {return false;}
-		}
-
-
-		public boolean stopAll() //Stops all motors and state to standby 
-		{
-			if(state!=State.INIT) //To make sure init is not messed up by inputs
-			{
-				state = State.STANDBY;
-				motor1.set(-.1);
-				motor2.set(-.1);
-				setBrake(false);
-				isMoving = false;
-				System.out.println("stopped");
-				return true;
-			}else {return false;}
-		}
-
-		@Override
-		public void forceStandby() { //Use sparingly, might break init
-			motor1.stopMotor();
-			motor2.stopMotor();
-			setBrake(false);
-		}
-
-		private void setMotor(double speed)
-		{
-			//System.out.println("Set motors with "+speed);
-			if(!isMoving){
-				setBrake(true);
-				isMoving = true;
-			}		
-			setRawMotor(speed);
-		}
-
-		private void setRawMotor(double speed) {
-			motor1.set(-speed);
-			motor2.set(-speed);
-		}
-
-		private void setBrake(boolean power) {
-			if(power){
-				setRawMotor(0.5);
-				try {
-					Thread.sleep(300);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		@Override
-		public boolean isDone() {
-			if(isMoving){
-				return false;
-			}
+			isMoving = true;
+			state = State.MOVEMIDDLE;
 			return true;
-		}
+		}else {return false;}
+	}
 
-		@Override
-		public long sleepTime() {
-			return 20;
+	public void startInit() {
+		if(!finishedInit) {
+			state = State.INIT;
+			finishedInit = true;
 		}
 	}
+
+	public boolean goScale() //Exe goes middle, state = moveMiddle
+	{
+		if(state!=State.INIT) //To make sure init is not messed up by inputs
+		{
+			isMoving = true;
+			state = State.MOVEUP; 
+			return true;
+		}else {return false;}
+	}
+
+	public boolean goFloor() //Exe goes bottom, state = moveDown
+	{
+		if(state!=State.INIT) //To make sure init is not messed up by inputs
+		{
+			isMoving = true;
+			state = State.MOVEDOWN;
+			return true;
+		}else {return false;}
+	}
+
+
+	public boolean stopAll() //Stops all motors and state to standby 
+	{
+		if(state!=State.INIT) //To make sure init is not messed up by inputs
+		{
+			state = State.STANDBY;
+			motor1.set(-.1);
+			motor2.set(-.1);
+			setBrake(false);
+			isMoving = false;
+			System.out.println("stopped");
+			return true;
+		}else {return false;}
+	}
+
+	@Override
+	public void forceStandby() { //Use sparingly, might break init
+		motor1.stopMotor();
+		motor2.stopMotor();
+		setBrake(false);
+	}
+
+	private void setMotor(double speed)
+	{
+		//System.out.println("Set motors with "+speed);
+		if(!isMoving){
+			setBrake(true);
+			isMoving = true;
+		}		
+		setRawMotor(speed);
+	}
+
+	private void setRawMotor(double speed) {
+		motor1.set(-speed);
+		motor2.set(-speed);
+	}
+
+	private void setBrake(boolean power) {
+		if(power){
+			setRawMotor(0.45);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean isDone() {
+		if(isMoving){
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public long sleepTime() {
+		return 20;
+	}
+}

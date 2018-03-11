@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
@@ -18,7 +19,7 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Climbing extends GenericSubsytem
 {
 	private Solenoid climbingSoul;
-	private WPI_TalonSRX latchServoLeft;
+	private Servo latchServoLeft;
 	private WPI_TalonSRX latchServoRight;
 	private Solenoid climbingArms;
 	private Solenoid climbingLatch;
@@ -36,11 +37,10 @@ public class Climbing extends GenericSubsytem
 		climbingSoul = new Solenoid(IO.PTO_ELE);
 		climbingArms = new Solenoid(IO.CLIMBINGARMS);
 		climbingLatch = new Solenoid(IO.CLIMBINGLATCH);
-		latchServoRight = new WPI_TalonSRX(0);
-		latchServoLeft = new WPI_TalonSRX(10);
-		
-		latchServoRight.set(ControlMode.Position,0);
-		latchServoLeft.set(ControlMode.Position,0);
+//		latchServoRight = new WPI_TalonSRX(0);
+		latchServoLeft = new Servo(IO.leftClimbServo);
+		SmartDashboard.putData("Left Servo", latchServoLeft);
+//		latchServoRight.set(ControlMode.Position,0);
 		//SmartDashboard.putData("ClimbPTO", climbingSoul);
 	}
 
@@ -87,7 +87,15 @@ public class Climbing extends GenericSubsytem
 	
 	public void latch() 
 	{
-		latchServoRight.set(ControlMode.Position,90);
-		latchServoLeft.set(ControlMode.Position,90);
+//		latchServoRight.set(ControlMode.Position,90);
+		System.out.println("Setting servo to open");
+		latchServoLeft.set(.35);
+	}
+
+	public void latchClose() 
+	{
+//		latchServoRight.set(ControlMode.Position,90);
+		System.out.println("Setting servo to close");
+		latchServoLeft.set(.8);
 	}
 }

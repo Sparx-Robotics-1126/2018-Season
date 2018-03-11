@@ -101,7 +101,7 @@ public class Acquisitions extends GenericSubsytem{
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
 		log("Successfully INITIALIZED");
-		SmartDashboard.putBoolean("Arms", pinchPosition);
+		SmartDashboard.putBoolean("Arms", !pinchPosition);
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class Acquisitions extends GenericSubsytem{
 	@Override
 	public void execute() {
 				
-		SmartDashboard.updateValues();
+		SmartDashboard.putBoolean("Arms", !pinchPosition);
 		
 		switch(AcqState){
 		
