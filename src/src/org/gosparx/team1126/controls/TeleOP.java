@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.controls;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.Joystick;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
@@ -142,11 +144,9 @@ public class TeleOP implements Controls{
 			}
 		}
 //		}
-//		if(isRisingEdgeButton(5)) { //left joystick middle button
-//			isClimbing = true;
-//			climbing.enableClimbing(isClimbing);
-//			drives.enableClimb(isClimbing);
-//		}
+		if(isRisingEdgeButton(5)) { //left joystick middle button
+			climbing.latch();
+		}
 //		if(isFallingEdgeButton(5)) {
 //			System.out.println("its falling");
 //			isClimbing = false;
