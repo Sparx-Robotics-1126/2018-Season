@@ -141,7 +141,7 @@ public class Elevations extends GenericSubsytem {
 //			else if(trimValue < 0 && height > top)
 //				setMotor(trimValue);
 //			else
-//				setMotor(0);
+//				setBrake(true);
 			state = State.STANDBY;
 			break;
 		}
