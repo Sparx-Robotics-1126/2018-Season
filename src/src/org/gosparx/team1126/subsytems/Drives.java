@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -25,7 +26,7 @@ public class Drives extends GenericSubsytem {
 	private WPI_TalonSRX rightMtr1;
 
 	private WPI_TalonSRX rightMtr2;
-	
+
 	private WPI_TalonSRX rightMtr3;
 
 	private WPI_TalonSRX leftMtr1;
@@ -49,6 +50,11 @@ public class Drives extends GenericSubsytem {
 	private MotorGroup rightDrives;
 
 	private Solenoid drivesPTO;
+
+//	private DigitalInput limitSwitchRight;
+
+//private DigitalInput limitSwitchLeft;
+
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
@@ -101,9 +107,9 @@ public class Drives extends GenericSubsytem {
 	private boolean notLeftYet; //for climb init
 
 	private double highestAmp;
-	
+
 	private double climbTimer;
-	
+
 	private boolean climbed;
 
 	//---------------------------------------------------------Code---------------------------------------------------------------
@@ -125,6 +131,8 @@ public class Drives extends GenericSubsytem {
 		rightEnc = new EncoderData(rawRightEnc, 0.033860431);
 		gyro = new AHRS(SerialPort.Port.kUSB);
 		drivesPTO = new Solenoid(IO.PTO_PNU);
+	//	limitSwitchLeft = new DigitalInput(IO.LIMITSWITCHLEFT);
+	//	limitSwitchRight = new DigitalInput(IO.LIMITSWITCHRIGHT);
 		isMoving = false;
 		speedRight = 0;
 		speedLeft = 0;
@@ -153,7 +161,6 @@ public class Drives extends GenericSubsytem {
 	public enum DriveState{
 		STANDBY,
 		TELEOP,
-		CLIMB_INIT,
 		CLIMB,
 		MOVE_FWRD,
 		MOVE_BKWD,
@@ -173,7 +180,7 @@ public class Drives extends GenericSubsytem {
 		SmartDashboard.putData("Left Drives", leftDrives);
 		SmartDashboard.updateValues();
 	}
-	
+
 	/**
 	 * Deletes all objects from drives and adds to shuffleboard
 	 */
@@ -202,69 +209,14 @@ public class Drives extends GenericSubsytem {
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
 			break;
-		case CLIMB_INIT:
-			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
-				boolean right = false;
-				boolean left = false;
-				if(climbTimer + 3 < Timer.getFPGATimestamp()) {
-					right = isTaught(rightDrives);
-					left = isTaught(leftDrives);
-				}
-				if(!notRightYet && !notLeftYet) {
-					System.out.print(highestAmp);
-					rightEnc.reset();
-					leftEnc.reset();
-					leftDrives.set(0);
-					rightDrives.set(0);
-					enablePTO(false);
-					changeState(DriveState.CLIMB);
-				}
-				if(!right && notRightYet){
-					rightDrives.set(-.35);
-				}else {
-					rightDrives.set(0);
-					notRightYet = false;
-				}
-				if(!left && notLeftYet){
-					leftDrives.set(-.35);
-				}else {
-					leftDrives.set(0);
-					notLeftYet = false;
-				}
-				System.out.println("Right side: " + (right || !notRightYet));
-				System.out.println("Left side: " + (left || !notLeftYet));
-			}
-			break;
+
 		case CLIMB:
-			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
-			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
-			//CHANGE THIS BACKKKKKKKK //We flipped code for right and left drives, because right drives effected our left side
-			leftEnc.calculateSpeed();
-			rightEnc.calculateSpeed();
-			if(distOff > 0) {
-				print("offsetting right");
-				leftDrives.set(speedRight);
-				if(distOff < -5) {
-					rightDrives.set(0);
-				} else {
-					rightDrives.set(levelOffset);
-				}
-			} else if(distOff < 0) {
-				print("offsetting left");
-				rightDrives.set(speedRight);
-				if(distOff > 5) {
-					leftDrives.set(0);
-				} else {
-					leftDrives.set(levelOffset);
-				}
-			}else {
-				rightDrives.set(speedRight);
-				leftDrives.set(speedRight);
+			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
+//				if(!limitSwitchLeft.get())
+					leftDrives.set(speedLeft);
+//				if(!limitSwitchRight.get())
+					rightDrives.set(speedRight);
 			}
-			if(distance() < -340)
-				climbed = true;
-			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
-			break;
 		case TURN_R:
 			if(getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
@@ -348,39 +300,39 @@ public class Drives extends GenericSubsytem {
 			}
 			//print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance());
 			//print("Speed left: " + speedLeft + " Speed right: " + speedRight);
-//			double currentBackwardDistance = distance();
-//			if (currentBackwardDistance < DIST3 * moveDist) {
-//				stopMotors();
-//				changeState(DriveState.STANDBY);
-//				isMoving = false;
-//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
-//				speedLeft = rampUp();
-//				speedRight = rampUp();
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
-//				speedRight = moveSpeed;
-//				speedLeft = moveSpeed;
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
-//				//				System.out.println("D3333333333333333333333333");
-//				speedLeft = rampDown();
-//				speedRight = rampDown();
-//				straightenBackward();
-//				leftDrives.set(speedLeft);
-//				rightDrives.set(speedRight);
-//				slow = true;
-//			}
-//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
-//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
+			//			double currentBackwardDistance = distance();
+			//			if (currentBackwardDistance < DIST3 * moveDist) {
+			//				stopMotors();
+			//				changeState(DriveState.STANDBY);
+			//				isMoving = false;
+			//			} else if (DIST1 * moveDist < currentBackwardDistance) { //ramp up
+			//				speedLeft = rampUp();
+			//				speedRight = rampUp();
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//			} else if (DIST2 * moveDist < currentBackwardDistance) {  //hold speed
+			//				speedRight = moveSpeed;
+			//				speedLeft = moveSpeed;
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//			} else if (DIST3 * moveDist < currentBackwardDistance) {  //ramp down
+			//				//				System.out.println("D3333333333333333333333333");
+			//				speedLeft = rampDown();
+			//				speedRight = rampDown();
+			//				straightenBackward();
+			//				leftDrives.set(speedLeft);
+			//				rightDrives.set(speedRight);
+			//				slow = true;
+			//			}
+			//			//			print("Right speed: " + speedRight + " Left speed: " + speedLeft);
+			//			print("Left Distance: " + leftEnc.getDistance() + " Right Distance: " + rightEnc.getDistance() + " Gyro: " + getAngle() + "currentBackwardDistance: " + currentBackwardDistance);
 
 			break;
 		}
-		
-}
+
+	}
 
 	/**
 	 * Changes state to teleop
@@ -437,7 +389,7 @@ public class Drives extends GenericSubsytem {
 	public boolean hasClimbed() {
 		return climbed;
 	}
-	
+
 	/**
 	 * moves right motors to joystick value, -1 to 1
 	 * @param speedR - the right joystick speed
@@ -483,7 +435,7 @@ public class Drives extends GenericSubsytem {
 			notRightYet = true;
 			highestAmp = 0.0;
 			climbTimer = Timer.getFPGATimestamp();
-			changeState(DriveState.CLIMB_INIT);
+			changeState(DriveState.CLIMB);
 		}else {
 			enablePTO(false);
 			changeState(DriveState.TELEOP);

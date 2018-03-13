@@ -65,7 +65,7 @@ public class TeleOP implements Controls{
 		this.acq = acq;
 		this.ele = ele;
 		climbing = climb;
-		finishedClimbing = false;
+		finishedClimbing = true;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 

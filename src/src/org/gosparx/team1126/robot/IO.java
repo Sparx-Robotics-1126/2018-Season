@@ -28,7 +28,11 @@ public class IO {
 	//CHANGE BACK
 	public static final int MAGNETICSENSOR																				= 14;
 	public static final int ELEVATIONSENCODER1																			= 22;
-	public static final int ELEVATIONSENCODER2																			= 23;	
+	public static final int ELEVATIONSENCODER2																			= 23;
+	
+	public static final int LIMITSWITCHRIGHT																			= 0;
+	public static final int LIMITSWITCHLEFT																			= 0;
+	
 
 	//--------------------------------------------------Pneumatics---------------------------------------------------------------------
 	
