@@ -1,7 +1,5 @@
 package src.org.gosparx.team1126.controls;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.Joystick;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
@@ -17,7 +15,6 @@ public class TeleOP implements Controls{
 	private Climbing climbing;
 	private Elevations ele;
 	
-	private boolean alternator;
 	private boolean climbingActivated;
 
 	private boolean[][] buttonStates =
@@ -70,7 +67,6 @@ public class TeleOP implements Controls{
 		this.ele = ele;
 		climbing = climb;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
-		alternator = false;
 	}
 
 	/**
@@ -86,7 +82,7 @@ public class TeleOP implements Controls{
 		//		if(isRisingEdgeButton(1)) { //right joystick middle button
 		//			System.out.println("right joystick middle button");
 		//		}
-		if(isRisingEdgeButton(1)) { //right joystick middle button + missile switch
+		if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
 			climbing.latch();
 			climbing.enableClimbing(true);
 			drives.enableClimb(true);
@@ -99,9 +95,7 @@ public class TeleOP implements Controls{
 			climbing.climbingLatch(!climbing.getClimbingLatch());
 		}
 		//		if(buttonStates[3][0]) { //right joystick trigger
-		//			isClimbing = true;
-		//		} else {
-		//			isClimbing = false;
+		//
 		//		}
 		//		climbing.enableClimbing(isClimbing);
 		//Axis Left
@@ -113,19 +107,6 @@ public class TeleOP implements Controls{
 		} else {
 			drives.joystickLeft(0);
 		}
-		//		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
-		//			if(!isClimbing) {
-		//				drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		//			} else {
-		//				drives.joystickLeft(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		//				drives.joystickRight(-getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		//			}
-		//		} else {
-		//			if(isClimbing) {
-		//				drives.joystickRight(0);
-		//			}
-		//			drives.joystickLeft(0);
-		//		}	
 		//		//POV Left
 		//		if(isRisingEdgePOV(0)) { //right joystick pov up
 		//			System.out.println("right joystick pov up");
@@ -141,21 +122,16 @@ public class TeleOP implements Controls{
 		//		}
 		//Joystick Buttons Right
 		if(isRisingEdgeButton(4)) { //left joystick left button	
-			if(climbingActivated = false) {
-				climbing.latchClose();
+			if(!climbingActivated) {
 				climbing.enableClimbing(false);
 				drives.enableClimb(false);
+				climbing.latchClose();
 			}
 		}
 		//		}
 		//if(isRisingEdgeButton(5)) { //left joystick middle button
 		//}
 		//		if(isFallingEdgeButton(5)) {
-		//			System.out.println("its falling");
-		//			isClimbing = false;
-		//			climbing.enableClimbing(isClimbing);
-		//			drives.enableClimb(isClimbing);
-		//		}
 		//		}
 		//		if(isRisingEdgeButton(6)) { //left joystick right button
 		//			System.out.println("left joystick right button");
