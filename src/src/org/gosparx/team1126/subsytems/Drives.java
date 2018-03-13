@@ -212,11 +212,14 @@ public class Drives extends GenericSubsytem {
 
 		case CLIMB:
 			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
+				System.out.println("SpeedLeft: " + speedLeft);
 //				if(!limitSwitchLeft.get())
 					leftDrives.set(speedLeft);
 //				if(!limitSwitchRight.get())
+					System.out.println("SpeedRight: " + speedRight);
 					rightDrives.set(speedRight);
 			}
+			break;
 		case TURN_R:
 			if(getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
 				stopMotors();
