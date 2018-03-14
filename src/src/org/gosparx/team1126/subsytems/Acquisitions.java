@@ -13,7 +13,9 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 /**
  * This class allows for the control of the acquisitions subsystem.
  * @author Aidan Cheeseman (cheesemanaidan@gmail.com)
- * @author Andrew Thompson (andrewt015@gmail.com)
+ * @author Andrew Thompson (an
+ * 
+ * drewt015@gmail.com)
  */
 public class Acquisitions extends GenericSubsytem{
 
@@ -38,7 +40,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = .8; 
+	private static final double MOTOR_ON = .9; 
 	
 	private static final double MOTOR_STOP = 0.0;
 	
