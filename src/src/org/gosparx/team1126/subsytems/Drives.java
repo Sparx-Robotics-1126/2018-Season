@@ -507,7 +507,7 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
-		if(dist > 0) {
+		if(speed > 0) {
 			changeState(DriveState.MOVE_FRWD);
 		}else {
 			changeState(DriveState.MOVE_BKWD);

@@ -158,7 +158,7 @@ public class TeleOP implements Controls{
 		//		if(axisStates[3][0]) {
 		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		//		}
-		if(axisStates[4][0]) {
+		if(axisStates[3][0]) {
 			drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		} else {
 			drives.joystickRight(0);
@@ -229,7 +229,7 @@ public class TeleOP implements Controls{
 		//			//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS);
 		//		}
 		if(axisStates[7][0]) {
-			ele.trim(getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS));
+			ele.trim(getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y));
 		} else if(isFallingEdgeAxis(7)){
 			ele.trim(0);
 		}
@@ -372,9 +372,6 @@ public class TeleOP implements Controls{
 	 * @return the specified axis's current position (between -1 and 1; inverted).
 	 */
 	public double getAxis(int joy, int axis) {
-		if(joy == CtrlMap.XBOXCONTROLLER) {
-			return joysticks[joy].getRawAxis(axis);
-		}
 		return -joysticks[joy].getRawAxis(axis);
 	}
 

@@ -23,7 +23,7 @@ public class Elevations extends GenericSubsytem {
 	private State state;
 	private boolean isMoving = false;
 	private boolean finishedInit = false; 
-//	private double trimValue;
+	private double trimValue;
 
 	
 	
@@ -138,12 +138,12 @@ public class Elevations extends GenericSubsytem {
 			}
 			break;
 		case TRIM:
-//			if(trimValue > 0)
-//				setMotor(-0.4);
-//			else if(trimValue < 0)
-//				setMotor(0.3);
-//			else
-//				stopAll();
+			if(trimValue > 0)
+				setMotor(0.4);
+			else if(trimValue < 0)
+				setMotor(-0.3);
+			else
+				stopAll();
 			state = State.STANDBY;
 			break;
 		}
@@ -186,10 +186,9 @@ public class Elevations extends GenericSubsytem {
 	 */
 	public void trim(double joystickInput){
 		if(state != State.INIT){
-//			trimValue = joystickInput; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
-			
+			trimValue = joystickInput; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
 //			if(joystickInput > 0){
-//				trimValue = joystickInput/2. + 0.5; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
+//				trimValue = joystickInput/2. + 0.2; //Slows down max speed you can move by /2, adding .2 to make sure it doesn't fall
 //			} else{
 //				trimValue = joystickInput/2.; //Slows down max speed by /2 
 //			}

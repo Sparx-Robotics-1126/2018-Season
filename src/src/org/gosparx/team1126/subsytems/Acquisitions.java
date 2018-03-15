@@ -44,7 +44,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double MOTOR_STOP = 0.0;
 	
-	private static final double CUBE_SENSOR_THRESHOLD = 2.3;
+	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
 	
 	//Variables
@@ -367,8 +367,8 @@ public class Acquisitions extends GenericSubsytem{
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){
-		rightMotorPower = -MOTOR_ON;
-		leftMotorPower = -MOTOR_ON;
+		rightMotorPower = -0.7;
+		leftMotorPower = -0.7;
 	}
 	
 	/**
