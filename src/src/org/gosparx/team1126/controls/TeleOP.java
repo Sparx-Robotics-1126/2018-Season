@@ -139,6 +139,12 @@ public class TeleOP implements Controls{
 				climbing.latchClose();
 			}
 		}
+		if(isRisingEdgeButton(5)) {
+			climbing.latch();
+		}
+		if(isFallingEdgeButton(5)) {
+			climbing.latchClose();
+		}
 		//		}
 		//if(isRisingEdgeButton(5)) { //left joystick middle button
 		//}
