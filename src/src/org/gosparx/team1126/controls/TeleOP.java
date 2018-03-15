@@ -94,7 +94,6 @@ public class TeleOP implements Controls{
 		//			System.out.println("right joystick middle button");
 		//		}
 		if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
-			climbing.latch();
 			climbing.enableClimbing(true);
 			drives.enableClimb(true);
 			climbingActivated = true;
@@ -136,7 +135,6 @@ public class TeleOP implements Controls{
 			if(!climbingActivated) {
 				climbing.enableClimbing(false);
 				drives.enableClimb(false);
-				climbing.latchClose();
 			}
 		}
 		if(isRisingEdgeButton(5)) {
