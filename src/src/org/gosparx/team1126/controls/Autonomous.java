@@ -87,7 +87,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LOWLAUNCH)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
 			{stateToInt(AutoState.ELE_FLOOR)},
@@ -114,11 +114,12 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ACQ_LOWLAUNCH)},
+			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
-			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 140, 65},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_ACQUIRE)},
@@ -389,15 +390,11 @@ public class Autonomous implements Controls {
 				acq.setSpin();
 				autoStep++;
 				break;
-			case 22:
-				acq.setLowLaunch();
-				autoStep++;
-				break;
-			case 23: //DRIVES_TIMED
+			case 22: //DRIVES_TIMED
 				drives.moveTimed(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
-			case 24: //ACQ_SPIT
+			case 23: //ACQ_SPIT
 				acq.setSlowSpit();
 				autoStep++;
 				break;
@@ -497,7 +494,6 @@ public class Autonomous implements Controls {
 		ACQ_LAUNCHSCORE,
 		ACQ_PINCH,
 		ACQ_SPIN,
-		ACQ_LOWLAUNCH,
 		ACQ_SPIT;
 	}
 
@@ -547,12 +543,10 @@ public class Autonomous implements Controls {
 			return 20;
 		case ACQ_SPIN:
 			return 21;
-		case ACQ_LOWLAUNCH:
-			return 22;
 		case DRIVES_TIMED:
-			return 23;
+			return 22;
 		case ACQ_SPIT:
-			return 24;
+			return 23;
 		default:
 			return -999;
 		}

@@ -85,7 +85,6 @@ public class Acquisitions extends GenericSubsytem{
 		HOME,
 		SPIN,
 		SPIT,
-		LOW_LAUNCH,
 		SLOW_SPIT,
 		WAIT_FOR_CUBE;
 	}
@@ -147,16 +146,8 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case LAUNCH_SCORE:
-				rollerScore();
-				if (Timer.getFPGATimestamp() > scoreTime + 1) {
-					stopRollers();
-					setStandby();
-				}
-			break;
-			
-		case LOW_LAUNCH:
 			lowLaunch();
-			if(Timer.getFPGATimestamp() > lowTime + 1) {
+			if(Timer.getFPGATimestamp() > scoreTime + 1) {
 				release();
 				setStandby();
 			}
@@ -284,16 +275,6 @@ public class Acquisitions extends GenericSubsytem{
 			AcqState = State.REGULAR_SCORE;
 			regScoreTime = Timer.getFPGATimestamp();
 			log("State set to REGULAR_SCORE");
-		}
-	}
-	
-	/**
-	 * Sets acquisition state to low launch.
-	 */
-	public void setLowLaunch() {
-		if (AcqState != State.LOW_LAUNCH) {
-			AcqState = State.LOW_LAUNCH;
-			lowTime = Timer.getFPGATimestamp();
 		}
 	}
 	
