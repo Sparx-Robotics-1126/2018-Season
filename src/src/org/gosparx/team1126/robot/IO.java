@@ -18,8 +18,8 @@ public class IO {
 	public static final int leftDriveCIM2																				= 11;	//motor 1 back
 	public static final int leftDriveCIM3																				= 12;	//motor 2 front
 	
-	public static final int leftClimbServo																				= 0;
-	public static final int rightClimbServo																				= 1;
+	public static final int leftClimbServo																				= 15;
+	public static final int rightClimbServo																				= 14;
 	
 	//----------------------------------------------------Sensors----------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ public class IO {
 	public static final int ELEVATIONSENCODER1																			= 22;
 	public static final int ELEVATIONSENCODER2																			= 23;	
 	
-	public static final int ACQ_CUBE_SENSOR																				= 3;
+	public static final int ACQ_CUBE_SENSOR																				= 6;
 	
 	//--------------------------------------------------Pneumatics---------------------------------------------------------------------
 	
