@@ -43,7 +43,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CROSS_AUTO_LINE = {
-			{stateToInt(AutoState.DRIVES_BACKWARD), 128, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 128, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	

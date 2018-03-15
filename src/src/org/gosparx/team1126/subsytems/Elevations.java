@@ -71,7 +71,7 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+//		System.out.println("Encoder value "+height+ " Raw Enc: " + rawEnc.get() + " Limit "+limitSwitch.get());
 		switch(state)
 		{
 
@@ -139,11 +139,11 @@ public class Elevations extends GenericSubsytem {
 			break;
 		case TRIM:
 //			if(trimValue > 0)
-//				setMotor(0.4);
+//				setMotor(-0.4);
 //			else if(trimValue < 0)
-//				setMotor(-0.3);
+//				setMotor(0.3);
 //			else
-//				setBrake();
+//				stopAll();
 			state = State.STANDBY;
 			break;
 		}
