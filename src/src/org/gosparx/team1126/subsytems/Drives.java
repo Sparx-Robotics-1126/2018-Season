@@ -204,6 +204,9 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
+			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
 			break;
@@ -338,25 +341,25 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_BKWD:
 			double curentDistance = distance();
-			if (curentDistance < BLERP * moveDist) {
+			if (curentDistance < BLERP * -moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			} else if (BLEEP * moveDist < curentDistance) { //ramp up
+			} else if (BLEEP * -moveDist < curentDistance) { //ramp up
 				speedLeft = -rampUp();
 				speedRight = -rampUp();
 				straightenBackward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
-			} else if (BLOOP * moveDist < curentDistance) {  //hold speed
+			} else if (BLOOP * -moveDist < curentDistance) {  //hold speed
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
-			} else if (BLERP * moveDist < curentDistance) {  //ramp down
+			} else if (BLERP * -moveDist < curentDistance) {  //ramp down
 				speedLeft = -rampDown();
 				speedRight = -rampDown();
 				straightenBackward();
@@ -431,7 +434,7 @@ public class Drives extends GenericSubsytem {
 			highestAmp = motor1Amp;
 		if(motor2Amp > highestAmp)
 			highestAmp = motor2Amp;
-		if(motor1Amp > 6 || motor2Amp > 6)
+		if(motor1Amp > 4 || motor2Amp > 4)
 			return true;
 		return false;
 	}
@@ -584,7 +587,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	private double rampUp() {
-		double rampUp = (moveSpeed - DEADPOOL)/(BLEEP * moveDist);
+		double rampUp = (Math.abs(moveSpeed) - DEADPOOL)/(BLEEP * Math.abs(moveDist));
 		return (rampUp * distance()) + DEADPOOL;
 	}
 

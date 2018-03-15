@@ -162,6 +162,7 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case SPIT:
+			System.out.println("Starting spit");
 			lower();
 			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
 				rollerScore();
@@ -169,8 +170,10 @@ public class Acquisitions extends GenericSubsytem{
 			}
 			break;
 		case SLOW_SPIT:
+			System.out.println("Starting slow spit");
 			lower();
 			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
+				System.out.println("iteration++");
 				slowRollerScore();
 				setStandby();
 			}
