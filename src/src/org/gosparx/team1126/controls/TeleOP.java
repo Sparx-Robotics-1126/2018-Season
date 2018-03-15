@@ -52,6 +52,17 @@ public class TeleOP implements Controls{
 				{false, false},  //XBOX_RIGHT
 				{false, false},  //XBOX_DOWN
 				{false, false}};  //XBOX_LEFT
+	
+	private boolean[][] axisStates = 
+		{{false, false}, //RIGHTJOY_X
+			{false, false}, //RIGHTJOY_Y
+			{false, false}, //LEFTJOY_X
+			{false, false}, //LEFTJOY_Y
+			{false, false}, //XBOX_LEFT_X
+			{false, false}, //XBOX_LEFT_Y
+			{false, false}, //XBOX_RIGHT_X
+			{false, false}, //XBOX_RIGHT_Y
+		};
 
 	/**
 	 * Initializes stuff in TeleOP
@@ -99,10 +110,10 @@ public class TeleOP implements Controls{
 		//		}
 		//		climbing.enableClimbing(isClimbing);
 		//Axis Left
-		//		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
+		//		if(axisStates[0][0]) {
 		//			getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		//		}
-		if(isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+		if(axisStates[1][0]) {
 			drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		} else {
 			drives.joystickLeft(0);
@@ -140,10 +151,10 @@ public class TeleOP implements Controls{
 		//			System.out.println("left joystick trigger button");
 		//		}
 		//		//Axis Right
-		//		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS)) {
+		//		if(axisStates[3][0]) {
 		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
 		//		}
-		if(isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS)) {
+		if(axisStates[4][0]) {
 			drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
 		} else {
 			drives.joystickRight(0);
@@ -207,40 +218,30 @@ public class TeleOP implements Controls{
 		//			System.out.println("xbox R3 button");
 		//		}
 		//		//xBox Axis
-		//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_X)) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
+		//		if(axisStates[5][0]) {
+		//			//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_X_AXIS);
 		//		}
-		//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_Y)) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+		//		if(axisStates[6][0]) {
+		//			//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS);
 		//		}
-		//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_X)) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
-		//		}
-		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y)) {
-			ele.trim(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		} else{
+		if(axisStates[7][0]) {
+			ele.trim(getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS));
+		} else if(isFallingEdgeAxis(7)){
 			ele.trim(0);
 		}
-
-		//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2)) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
-		//		}
-		//		if(isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R2)) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
-		//		}
 		//		//xbox POV
-		//		 */
+		//		 
 		if(isRisingEdgePOV(8)) { //xbox pov up
-			ele.goScale();
+			ele.setScale();
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
-			ele.goSwitch();
+			ele.setSwitch();
 		}
 		if(isRisingEdgePOV(10)) { //xbox pov down
-			ele.goFloor();
+			ele.setFloor();
 		}
 		if(isRisingEdgePOV(11)) { //xbox pov left
-			ele.goSwitch();
+			ele.setSwitch();
 		}
 	}
 
@@ -251,9 +252,12 @@ public class TeleOP implements Controls{
 		for(boolean buttons[]: buttonStates) {
 			buttons[1] = buttons[0];
 		}
-		//		for(boolean povs[]: povStates) {
-		//			povs[1] = povs[0];
-		//		}
+		for(boolean povs[]: povStates) {
+			povs[1] = povs[0];
+		}
+		for(boolean axis[]: axisStates) {
+			axis[1] = axis[0];
+		}
 		buttonStates[0][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_LEFT);
 		buttonStates[1][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
 		buttonStates[2][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
@@ -289,6 +293,15 @@ public class TeleOP implements Controls{
 		povStates[9][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_RIGHT);
 		povStates[10][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_DOWN);
 		povStates[11][0] = isPressedPOV(CtrlMap.XBOXCONTROLLER, CtrlMap.POV_LEFT);
+//		axisStates[0][0] = isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
+		axisStates[1][0] = isOffZeroAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//		axisStates[2][0] = isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
+		axisStates[3][0] = isOffZeroAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS);
+//		axisStates[4][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_X);
+//		axisStates[5][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_X);
+//		axisStates[6][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_Y);
+		axisStates[7][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y);
+		
 	}
 
 	/**
@@ -355,6 +368,9 @@ public class TeleOP implements Controls{
 	 * @return the specified axis's current position (between -1 and 1; inverted).
 	 */
 	public double getAxis(int joy, int axis) {
+		if(joy == CtrlMap.XBOXCONTROLLER) {
+			return joysticks[joy].getRawAxis(axis);
+		}
 		return -joysticks[joy].getRawAxis(axis);
 	}
 
@@ -366,6 +382,14 @@ public class TeleOP implements Controls{
 	 */
 	public boolean isOffZeroAxis(int joy, int axis) {
 		return getAxis(joy, axis) > CtrlMap.DEADBAND || getAxis(joy, axis) < -CtrlMap.DEADBAND;
+	}
+	
+	public boolean isRisingEdgeAxis(int pos) {
+		return axisStates[pos][0] && !axisStates[pos][1];
+	}
+	
+	public boolean isFallingEdgeAxis(int pos) {
+		return !axisStates[pos][0] && axisStates[pos][1];
 	}
 
 }

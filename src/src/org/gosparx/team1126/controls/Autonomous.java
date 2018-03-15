@@ -340,15 +340,15 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 9: //ELE_SWITCH
-				ele.goSwitch();
+				ele.setSwitch();
 				autoStep++;
 				break;
 			case 10: //ELE_SCALE
-				ele.goScale();
+				ele.setScale();
 				autoStep++;
 				break;
 			case 11: //ELE_FLOOR
-				ele.goFloor();
+				ele.setFloor();
 				autoStep++;
 				break;
 			case 12: //ELE_DONE
