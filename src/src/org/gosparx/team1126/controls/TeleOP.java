@@ -192,11 +192,11 @@ public class TeleOP implements Controls{
 		//			acq.setLaunchScore(); //shoot
 		//		}
 		if(isRisingEdgeButton(10)) { //xbox x button
-			acq.setSpit();
+			acq.setSlowSpit();
 		}
 		//		if(isRisingEdgeButton(11)) { //xbox y button
 		//			acq.setRaise(); //raise
-		//		}
+		//}
 		if(isRisingEdgeButton(12)) { //xbox L1 button
 			acq.setLaunchScore();
 		}

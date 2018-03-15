@@ -44,6 +44,8 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double MOTOR_STOP = 0.0;
 	
+	private static final double MOTOR_LOW = .7;
+	
 	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
 	
@@ -84,6 +86,7 @@ public class Acquisitions extends GenericSubsytem{
 		SPIN,
 		SPIT,
 		LOW_LAUNCH,
+		SLOW_SPIT,
 		WAIT_FOR_CUBE;
 	}
 	
@@ -174,7 +177,13 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-			
+		case SLOW_SPIT:
+			lower();
+			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
+				slowRollerScore();
+				setStandby();
+			}
+			break;
 		case HOME:
 			raise();
 			release();
@@ -307,6 +316,13 @@ public class Acquisitions extends GenericSubsytem{
 		}
 	}
 	
+	public void setSlowSpit() {
+		if (AcqState != State.SLOW_SPIT) {
+			AcqState = State.SLOW_SPIT;
+			spitTime = Timer.getFPGATimestamp();
+		}
+	}
+	
 	/**
 	 * Sets acquisition state to waiting for cube.
 	 */
@@ -367,8 +383,15 @@ public class Acquisitions extends GenericSubsytem{
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){
-		rightMotorPower = -0.7;
-		leftMotorPower = -0.7;
+		rightMotorPower = -MOTOR_ON;
+		leftMotorPower = -MOTOR_ON;
+	}
+	/**
+	 * Reverses the intake motors to score the cube but slow
+	 */
+	private void slowRollerScore() {
+		rightMotorPower = -MOTOR_LOW;
+		leftMotorPower = -MOTOR_LOW;
 	}
 	
 	/**

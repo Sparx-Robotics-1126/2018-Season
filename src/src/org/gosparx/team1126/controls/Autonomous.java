@@ -57,7 +57,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_TIMED), 1000, 45},	//{stateToInt(AutoState.DRIVES_FORWARD), 17, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -182,7 +182,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -398,7 +398,7 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 24: //ACQ_SPIT
-				acq.setSpit();
+				acq.setSlowSpit();
 				autoStep++;
 				break;
 			default:
