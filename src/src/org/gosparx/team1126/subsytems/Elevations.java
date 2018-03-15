@@ -71,13 +71,13 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		System.out.println("Encoder value "+height+ " Raw Enc: " + rawEnc.get() + " Limit "+limitSwitch.get());
+		//System.out.println("Encoder value "+height+ " Raw Enc: " + rawEnc.get() + " Limit "+limitSwitch.get());
 		switch(state)
 		{
 
 		case INIT:
 			setMotor(-.2);
-			if(limitSwitch.get())
+			if(!limitSwitch.get())
 			{
 				System.out.println("Home found");
 				motor1.stopMotor();
