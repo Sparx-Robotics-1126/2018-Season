@@ -34,7 +34,7 @@ public class Climbing extends GenericSubsytem
 		climbingSoul = new Solenoid(IO.PTO_ELE);
 		climbingArms = new Solenoid(IO.CLIMBINGARMS);
 		climbingLatch = new Solenoid(IO.CLIMBINGLATCH);
-		//		latchServoRight = new Servo(IO.rightClimbServo);
+		latchServoRight = new Servo(IO.rightClimbServo);
 		latchServoLeft = new Servo(IO.leftClimbServo);
 		//		SmartDashboard.putData("Left Servo", latchServoLeft);
 		//		SmartDashboard.putData("Right Servo", latchServoRight);
@@ -87,7 +87,7 @@ public class Climbing extends GenericSubsytem
 	{
 		System.out.println("Setting servo to open");
 		latchServoLeft.set(.35);
-		//		latchServoRight.set(.35);
+		latchServoRight.set(.35);
 	}
 
 	public void latchClose() 

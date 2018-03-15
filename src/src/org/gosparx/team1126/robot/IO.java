@@ -19,6 +19,7 @@ public class IO {
 	public static final int leftDriveCIM3																				= 12;	//motor 2 front
 	
 	public static final int leftClimbServo																				= 0;
+	public static final int rightClimbServo																				= 1;
 	
 	//----------------------------------------------------Sensors----------------------------------------------------------------------
 
