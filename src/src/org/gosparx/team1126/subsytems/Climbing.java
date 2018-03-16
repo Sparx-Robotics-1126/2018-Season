@@ -87,8 +87,8 @@ public class Climbing extends GenericSubsytem
 	public void latch() 
 	{
 		System.out.println("Setting servo to open");
-		latchServoLeft.set(.35);
-		latchServoRight.set(.8);
+		latchServoLeft.set(.35); //possibly change to 0
+		latchServoRight.set(.8); //possibly change to 1
 	}
 
 	public void latchClose() 
