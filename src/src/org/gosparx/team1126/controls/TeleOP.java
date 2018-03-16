@@ -1,6 +1,8 @@
 package src.org.gosparx.team1126.controls;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
 import src.org.gosparx.team1126.subsytems.Drives;
@@ -85,6 +87,15 @@ public class TeleOP implements Controls{
 	 */
 	@Override
 	public void execute() {
+		if(DriverStation.getInstance().getMatchTime() > 45) {
+			SmartDashboard.putBoolean("climbingTime", false);
+		} else {
+			if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
+				SmartDashboard.putBoolean("climbingTime", false);
+			} else {
+				SmartDashboard.putBoolean("climbingTime", true);
+			}
+		}
 		//Joystick Buttons Left
 		setJoystickStates();
 		//		if(isRisingEdgeButton(0)) { //right joystick left button
@@ -100,6 +111,8 @@ public class TeleOP implements Controls{
 		}
 		if(isFallingEdgeButton(1)) {
 			climbingActivated = false;
+			//climbing.enableClimbing(false);
+			//drives.enableClimb(false);
 		}
 		if(isRisingEdgeButton(2)) { //right joystick right button
 			climbing.climbingLatch(!climbing.getClimbingLatch());
@@ -203,9 +216,9 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(13)) { //xbox R1 button
 			acq.setRaise();
 		}
-		//		if(isRisingEdgeButton(14)) { //xbox back button
-		//			acq.setSpit();
-		//		}
+//				if(isRisingEdgeButton(14)) { //xbox back button
+//					acq.setSpit();
+//				}   
 		if(isRisingEdgeButton(15)) { //xbox start button
 			climbing.climbingArms(true);
 		}
@@ -216,6 +229,9 @@ public class TeleOP implements Controls{
 			acq.setAcquire();
 		}
 		//		if(isRisingEdgeButton(18)) { //xbox L3 button
+//		climbing.enableClimbing(true);
+//		drives.enableClimb(true);
+//		climbingActivated = true;
 		//			System.out.println("xbox L3 button");
 		//		}
 		//		if(isRisingEdgeButton(19)) { //xbox R3 button

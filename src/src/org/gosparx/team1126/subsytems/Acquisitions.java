@@ -40,7 +40,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = .9; 
+	private static final double MOTOR_ON = .8; //originally 0.9 
 	
 	private static final double MOTOR_STOP = 0.0;
 	
@@ -105,7 +105,7 @@ public class Acquisitions extends GenericSubsytem{
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
 		log("Successfully INITIALIZED");
-		SmartDashboard.putBoolean("Arms", !pinchPosition);
+		SmartDashboard.putBoolean("Arms", pinchPosition);
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class Acquisitions extends GenericSubsytem{
 	@Override
 	public void execute() {
 				
-		SmartDashboard.putBoolean("Arms", !pinchPosition);
+		SmartDashboard.putBoolean("Arms", pinchPosition);
 		
 		switch(AcqState){
 		

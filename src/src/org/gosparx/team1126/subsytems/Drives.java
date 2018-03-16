@@ -145,7 +145,7 @@ public class Drives extends GenericSubsytem {
 		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
-		addObjectsToShuffleboard();
+		//addObjectsToShuffleboard();
 	}
 
 	/**
