@@ -607,12 +607,9 @@ public class Drives extends GenericSubsytem {
 	private double distance() {
 		rightEnc.calculateSpeed();
 		leftEnc.calculateSpeed();
-		if(leftEnc.getDistance() == 0) {
-			return rightEnc.getDistance();
-		} else if(rightEnc.getDistance() == 0) {
-			return leftEnc.getDistance();
-		}
-		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
+		double rightDist = rightEnc.getDistance();
+		double leftDist = leftEnc.getDistance();
+		return (rightDist > leftDist) ? rightDist : leftDist;
 	}
 
 	@Override
