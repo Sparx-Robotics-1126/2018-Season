@@ -1,6 +1,7 @@
 package src.org.gosparx.team1126.controls;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
@@ -89,6 +90,11 @@ public class TeleOP implements Controls{
 		if(DriverStation.getInstance().getMatchTime() > 45) {
 			SmartDashboard.putBoolean("climbingTime", false);
 		} else {
+			if(DriverStation.getInstance().getMatchTime() > 40) {
+				joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
+			} else {
+				joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
+			}
 			if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
 				SmartDashboard.putBoolean("climbingTime", false);
 			} else {

@@ -74,7 +74,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 44, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -88,7 +88,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
 			{stateToInt(AutoState.ELE_FLOOR)},
@@ -115,7 +115,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 140, 65},
@@ -173,7 +173,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_FORWARD), 44, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+			{stateToInt(AutoState.ACQ_SPIT)}
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_RIGHT = {
@@ -200,7 +200,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 43, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
