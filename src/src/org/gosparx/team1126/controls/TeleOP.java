@@ -37,7 +37,6 @@ public class TeleOP implements Controls{
 				{false, false},  //XBOX_BACK
 				{false, false},  //XBOX_START
 				{false, false},  //XBOX_L2
-				{false, false},  //XBOX_L2
 				{false, false},  //XBOX_L3
 				{false, false}};  //XBOX_R3
 
@@ -220,7 +219,7 @@ public class TeleOP implements Controls{
 //					acq.setSpit();
 //				}   
 		if(isRisingEdgeButton(15)) { //xbox start button
-			climbing.climbingArms(true);
+			acq.setSlowLaunchScore();
 		}
 		if(isRisingEdgeButton(16)) { //xbox L2 button
 			acq.setRegScore();

@@ -81,6 +81,7 @@ public class Acquisitions extends GenericSubsytem{
 		RAISE,
 		ACQUIRE,
 		LAUNCH_SCORE,
+		SLOW_LAUNCH_SCORE,
 		REGULAR_SCORE,
 		HOME,
 		SPIN,
@@ -152,7 +153,13 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-			
+		case SLOW_LAUNCH_SCORE:
+			slowRollerScore();
+			if(Timer.getFPGATimestamp() > scoreTime + 1) {
+				release();
+				setStandby();
+			}
+			break;
 		case REGULAR_SCORE:
 			lower();
 			if (Timer.getFPGATimestamp() > regScoreTime + .5) {
@@ -189,7 +196,6 @@ public class Acquisitions extends GenericSubsytem{
 				setRaise();
 			}
 			break;
-			
 		default:
 			log("STATE ERROR");
 			break;
@@ -269,6 +275,18 @@ public class Acquisitions extends GenericSubsytem{
 			log("State set to LAUNCH_SCORE");
 		}
 	}
+	
+	/**
+	 * sets acquisition state to slow launching score
+	 */
+	public void setSlowLaunchScore() {
+		if (AcqState != State.SLOW_LAUNCH_SCORE){
+			AcqState = State.SLOW_LAUNCH_SCORE;
+			scoreTime = Timer.getFPGATimestamp();
+			log("State set to SLOW_LAUNCH_SCORE");
+		}
+	}
+	
 	
 	/**
 	 * Set acquisitions state to regular score

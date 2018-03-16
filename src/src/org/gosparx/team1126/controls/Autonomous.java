@@ -71,7 +71,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_STOP)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 43, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 44, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
@@ -170,7 +170,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 36, 35},
+			{stateToInt(AutoState.DRIVES_FORWARD), 44, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
@@ -386,7 +386,7 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 19: //ACQ_LAUNCHSCORE
-				acq.setLaunchScore();
+				acq.setSlowLaunchScore();
 				autoStep++;
 				break;
 			case 21: //ACQ_SPIN
