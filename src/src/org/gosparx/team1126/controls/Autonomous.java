@@ -32,6 +32,7 @@ public class Autonomous implements Controls {
 	private boolean firstRun;
 
 	private int autoStep;
+	private int prevAutoStep;
 
 	private SendableChooser<AutoSelected> autoChooser;
 	private SendableChooser<PositionSelected> posChooser;
@@ -232,6 +233,8 @@ public class Autonomous implements Controls {
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
+		
+		prevAutoStep = 0;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
 

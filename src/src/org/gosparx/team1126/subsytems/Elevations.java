@@ -139,9 +139,9 @@ public class Elevations extends GenericSubsytem {
 			break;
 		case TRIM:
 			if(trimValue > 0)
-				setMotor(0.4);
+				setMotor(0.3);
 			else if(trimValue < 0)
-				setMotor(-0.3);
+				setMotor(-0.2);
 			else
 				stopAll();
 			state = State.STANDBY;

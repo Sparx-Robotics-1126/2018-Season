@@ -58,7 +58,7 @@ public class Drives extends GenericSubsytem {
 
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
 
-	private final double TOURNAMENT_WIFI = .40;		//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 
@@ -145,6 +145,7 @@ public class Drives extends GenericSubsytem {
 		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -206,7 +207,6 @@ public class Drives extends GenericSubsytem {
 		case TELEOP:
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
 			break;
@@ -254,18 +254,18 @@ public class Drives extends GenericSubsytem {
 			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			if(distOff > 0) {
+			if(distOff < 0) {
 				print("offsetting left");
 				rightDrives.set(speedRight);
-				if(distOff > 5) {
+				if(distOff < -5) {
 					leftDrives.set(0);
 				} else {
 					leftDrives.set(levelOffset);
 				}
-			} else if(distOff < 0) {
+			} else if(distOff > 0) {
 				print("offsetting right");
 				leftDrives.set(speedRight);
-				if(distOff < -5) {
+				if(distOff > 5) {
 					rightDrives.set(0);
 				} else {
 					rightDrives.set(levelOffset);
@@ -434,7 +434,7 @@ public class Drives extends GenericSubsytem {
 			highestAmp = motor1Amp;
 		if(motor2Amp > highestAmp)
 			highestAmp = motor2Amp;
-		if(motor1Amp > 4 || motor2Amp > 4)
+		if(motor1Amp > 6 || motor2Amp > 6)
 			return true;
 		return false;
 	}
@@ -607,6 +607,11 @@ public class Drives extends GenericSubsytem {
 	private double distance() {
 		rightEnc.calculateSpeed();
 		leftEnc.calculateSpeed();
+		if(leftEnc.getDistance() == 0) {
+			return rightEnc.getDistance();
+		} else if(rightEnc.getDistance() == 0) {
+			return leftEnc.getDistance();
+		}
 		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
 	}
 
