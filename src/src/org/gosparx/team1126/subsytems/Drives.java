@@ -412,6 +412,10 @@ public class Drives extends GenericSubsytem {
 	private void changeState(DriveState st) {
 		state = st;
 	}
+	
+	public DriveState getDriveState() {
+		return state;
+	}
 
 	/**
 	 * Disables or enables PTO that controls drives
@@ -448,7 +452,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speedR - the right joystick speed
 	 */
 	public void joystickRight(double speedR) {
-		speedRight = speedR;
+		if(state.equals(DriveState.TELEOP)){
+			speedRight = speedR;
+		}
 	}
 
 	/**
@@ -456,7 +462,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speedL - the left joystick speed
 	 */
 	public void joystickLeft(double speedL) {
-		speedLeft = speedL;
+		if(state.equals(DriveState.TELEOP)) {
+			speedLeft = speedL;
+		}
 	}
 
 	/**

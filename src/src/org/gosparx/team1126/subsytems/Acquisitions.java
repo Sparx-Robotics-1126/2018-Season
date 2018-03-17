@@ -40,7 +40,9 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = .8; //originally 0.9 
+	private static final double MOTOR_ACQ = .7; //originally 0.9 
+	
+	private static final double MOTOR_LAUNCH = .8;
 	
 	private static final double MOTOR_STOP = 0.0;
 	
@@ -63,9 +65,7 @@ public class Acquisitions extends GenericSubsytem{
 	private double regScoreTime;
 	
 	private double spitTime;
-	
-	private double lowTime;
-		
+
 	private boolean pinchPosition;  //true = pinched 
 	
 	private boolean wristPosition;  //true = lowered
@@ -139,7 +139,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + .5){
+			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
 				stopRollers();
 				raise();
 				setStandby();
@@ -169,7 +169,6 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case SPIT:
-			System.out.println("Starting spit");
 			lower();
 			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
 				rollerScore();
@@ -177,7 +176,6 @@ public class Acquisitions extends GenericSubsytem{
 			}
 			break;
 		case SLOW_SPIT:
-			System.out.println("Starting slow spit");
 			lower();
 			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
 				System.out.println("iteration++");
@@ -221,8 +219,8 @@ public class Acquisitions extends GenericSubsytem{
 		pincher.set(pinchPosition);
 		double startingTime = Timer.getFPGATimestamp();
 		while(startingTime + 3 > Timer.getFPGATimestamp()){
-			rightMotorPower = MOTOR_ON;
-			leftMotorPower = MOTOR_ON;
+			rightMotorPower = MOTOR_ACQ;
+			leftMotorPower = MOTOR_ACQ;
 			rightIntake.set(rightMotorPower);
 			leftIntake.set(-leftMotorPower);	
 		}
@@ -264,7 +262,7 @@ public class Acquisitions extends GenericSubsytem{
 			log("State set to RAISE");
 		}
 	}
-	
+
 	/**
 	 * Sets acquisition state to launching score.
 	 */
@@ -313,6 +311,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setSpit() {
 		if (AcqState != State.SPIT) {
+			System.out.println("Starting spit");
 			AcqState = State.SPIT;
 			spitTime = Timer.getFPGATimestamp();
 		}
@@ -320,6 +319,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	public void setSlowSpit() {
 		if (AcqState != State.SLOW_SPIT) {
+			System.out.println("Starting slow spit");
 			AcqState = State.SLOW_SPIT;
 			spitTime = Timer.getFPGATimestamp();
 		}
@@ -385,8 +385,8 @@ public class Acquisitions extends GenericSubsytem{
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){
-		rightMotorPower = -MOTOR_ON;
-		leftMotorPower = -MOTOR_ON;
+		rightMotorPower = -MOTOR_LAUNCH;
+		leftMotorPower = -MOTOR_LAUNCH;
 	}
 	/**
 	 * Reverses the intake motors to score the cube but slow
@@ -397,27 +397,27 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
-	 * Reverses the intake motors to score the cube at half speed.
+	 * Reverses the intake motors to score the cube at launching speed.
 	 */
 	private void lowLaunch() {
-		rightMotorPower = -1;
-		leftMotorPower = -1;
+		rightMotorPower = -MOTOR_LAUNCH;
+		leftMotorPower = -MOTOR_LAUNCH;
 	}
 	
 	/**
 	 * Turns intake motors on to acquire cube
 	 */
 	private void rollerAcq(){
-		rightMotorPower = MOTOR_ON;
-		leftMotorPower = MOTOR_ON;
+		rightMotorPower = MOTOR_ACQ;
+		leftMotorPower = MOTOR_ACQ;
 	}
 	
 	/**
 	 * Turns intake motors in a certain direction to acquire
 	 */
 	private void spin() {
-		rightMotorPower = MOTOR_ON;
-		leftMotorPower = MOTOR_ON/2;
+		rightMotorPower = MOTOR_ACQ;
+		leftMotorPower = MOTOR_ACQ/2;
 	}
 	
 	/**
