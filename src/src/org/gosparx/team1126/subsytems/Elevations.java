@@ -24,7 +24,7 @@ public class Elevations extends GenericSubsytem {
 	private boolean isMoving = false;
 	private boolean finishedInit = false; 
 	private double trimValue;
-
+	private boolean slowSpeed;
 	
 	
 	public Elevations() {
@@ -44,8 +44,9 @@ public class Elevations extends GenericSubsytem {
 	public void init() {
 		top = 95; 
 		middle = 39;
-		floor = 2;
+		floor = 1;
 //		trimValue = 0;
+		slowSpeed = false;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
@@ -275,12 +276,30 @@ public class Elevations extends GenericSubsytem {
 
 	private void setMotor(double speed)
 	{
-		motor1.set(-speed);
-		motor2.set(-speed);
+		if(!slowSpeed || state == State.TRIM) {
+			motor1.set(-speed);
+			motor2.set(-speed);
+			return;
+		}
+		if(speed > 0) {
+			motor1.set(-0.5);
+			motor2.set(-0.5);
+		} else if(speed < 0){
+			motor1.set(-speed);
+			motor2.set(-speed);
+		} else {
+			motor1.set(-0.1);
+			motor2.set(-0.1);
+		}
 	}
 
 	private void setBrake() {
-		setMotor(0.1); //0.2, try if this doesnt work
+		motor1.set(-0.1);
+		motor2.set(-0.1); //0.2, try if this doesnt work
+	}
+	
+	public void setSlowSpeed(boolean slow) {
+		slowSpeed = slow;
 	}
 
 	@Override

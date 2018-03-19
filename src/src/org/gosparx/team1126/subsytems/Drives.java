@@ -52,11 +52,11 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
+	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (Replaced by bleep bloop blurp)
 
 	private final double DIZZY_SPINNER = .3;		//What decimal part of the way through a turn we start moving at slow speed (turn)
 
-	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
 	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
 
@@ -452,7 +452,7 @@ public class Drives extends GenericSubsytem {
 	 * @param speedR - the right joystick speed
 	 */
 	public void joystickRight(double speedR) {
-		if(state.equals(DriveState.TELEOP)){
+		if(!state.equals(DriveState.MOVE_FRWD)){
 			speedRight = speedR;
 		}
 	}
@@ -462,7 +462,7 @@ public class Drives extends GenericSubsytem {
 	 * @param speedL - the left joystick speed
 	 */
 	public void joystickLeft(double speedL) {
-		if(state.equals(DriveState.TELEOP)) {
+		if(!state.equals(DriveState.MOVE_FRWD)) {
 			speedLeft = speedL;
 		}
 	}
