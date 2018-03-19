@@ -32,6 +32,7 @@ public class Autonomous implements Controls {
 	private boolean firstRun;
 
 	private int autoStep;
+	private int prevAutoStep;
 
 	private SendableChooser<AutoSelected> autoChooser;
 	private SendableChooser<PositionSelected> posChooser;
@@ -43,7 +44,7 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CROSS_AUTO_LINE = {
-			{stateToInt(AutoState.DRIVES_BACKWARD), 128, 40},
+			{stateToInt(AutoState.DRIVES_FORWARD), 128, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)}
 	};
 	
@@ -57,7 +58,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_TIMED), 1000, 45},	//{stateToInt(AutoState.DRIVES_FORWARD), 17, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -70,10 +71,10 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_STOP)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.DRIVES_TURNRIGHT), 43, 50},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 44, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -87,7 +88,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LOWLAUNCH)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
 			{stateToInt(AutoState.ELE_FLOOR)},
@@ -114,11 +115,12 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ACQ_LOWLAUNCH)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)},
-			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 140, 65},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_ACQUIRE)},
@@ -168,10 +170,10 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 28, 35},
+			{stateToInt(AutoState.DRIVES_FORWARD), 44, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)}
+			{stateToInt(AutoState.ACQ_SPIT)}
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_RIGHT = {
@@ -182,7 +184,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -197,8 +199,10 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 43, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 5, 45},
+			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_LAUNCHSCORE)},
+			{stateToInt(AutoState.ACQ_SPIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
@@ -231,6 +235,8 @@ public class Autonomous implements Controls {
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
+		
+		prevAutoStep = 0;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
 
@@ -340,15 +346,15 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 9: //ELE_SWITCH
-				ele.goSwitch();
+				ele.setSwitch();
 				autoStep++;
 				break;
 			case 10: //ELE_SCALE
-				ele.goScale();
+				ele.setScale();
 				autoStep++;
 				break;
 			case 11: //ELE_FLOOR
-				ele.goFloor();
+				ele.setFloor();
 				autoStep++;
 				break;
 			case 12: //ELE_DONE
@@ -382,23 +388,19 @@ public class Autonomous implements Controls {
 				autoStep++;
 				break;
 			case 19: //ACQ_LAUNCHSCORE
-				acq.setLaunchScore();
+				acq.setSlowLaunchScore();
 				autoStep++;
 				break;
 			case 21: //ACQ_SPIN
 				acq.setSpin();
 				autoStep++;
 				break;
-			case 22:
-				acq.setLowLaunch();
-				autoStep++;
-				break;
-			case 23: //DRIVES_TIMED
+			case 22: //DRIVES_TIMED
 				drives.moveTimed(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
-			case 24: //ACQ_SPIT
-				acq.setSpit();
+			case 23: //ACQ_SPIT
+				acq.setSlowSpit();
 				autoStep++;
 				break;
 			default:
@@ -497,7 +499,6 @@ public class Autonomous implements Controls {
 		ACQ_LAUNCHSCORE,
 		ACQ_PINCH,
 		ACQ_SPIN,
-		ACQ_LOWLAUNCH,
 		ACQ_SPIT;
 	}
 
@@ -547,12 +548,10 @@ public class Autonomous implements Controls {
 			return 20;
 		case ACQ_SPIN:
 			return 21;
-		case ACQ_LOWLAUNCH:
-			return 22;
 		case DRIVES_TIMED:
-			return 23;
+			return 22;
 		case ACQ_SPIT:
-			return 24;
+			return 23;
 		default:
 			return -999;
 		}

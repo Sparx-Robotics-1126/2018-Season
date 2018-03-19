@@ -18,21 +18,22 @@ public class IO {
 	public static final int leftDriveCIM2																				= 11;	//motor 1 back
 	public static final int leftDriveCIM3																				= 12;	//motor 2 front
 	
-	public static final int leftClimbServo																				= 0;
+	public static final int leftClimbServo																				= 15;
+	public static final int rightClimbServo																				= 14;
 	
 	//----------------------------------------------------Sensors----------------------------------------------------------------------
 
 	//FLIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-	public static final int leftDriveEncoderChannel1																	= 13; //CHANNELS SWAPPED ON BOTH
-	public static final int leftDriveEncoderChannel2																	= 12; //CHANGE BACK
-	public static final int rightDriveEncoderChannel1																	= 11; //CHANGE BACK
-	public static final int rightDriveEncoderChannel2																	= 10; //CHANGE BACK
+	public static final int leftDriveEncoderChannel1																	= 12; //CHANNELS SWAPPED ON BOTH
+	public static final int leftDriveEncoderChannel2																	= 13; //CHANGE BACK
+	public static final int rightDriveEncoderChannel1																	= 10; //CHANGE BACK
+	public static final int rightDriveEncoderChannel2																	= 11; //CHANGE BACK
 	//CHANGE BACK
 	public static final int MAGNETICSENSOR																				= 14;
 	public static final int ELEVATIONSENCODER1																			= 22;
 	public static final int ELEVATIONSENCODER2																			= 23;	
 	
-	public static final int ACQ_CUBE_SENSOR																				= 3;
+	public static final int ACQ_CUBE_SENSOR																				= 6;
 	
 	//--------------------------------------------------Pneumatics---------------------------------------------------------------------
 	

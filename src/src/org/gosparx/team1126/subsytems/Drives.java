@@ -52,13 +52,13 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (move)
+	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (Replaced by bleep bloop blurp)
 
 	private final double DIZZY_SPINNER = .3;		//What decimal part of the way through a turn we start moving at slow speed (turn)
 
-	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (turn+move)
+	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
-	private final double TOURNAMENT_WIFI = .40;		//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
 
 	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 
@@ -145,6 +145,7 @@ public class Drives extends GenericSubsytem {
 		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
+		//addObjectsToShuffleboard();
 	}
 
 	/**
@@ -204,6 +205,8 @@ public class Drives extends GenericSubsytem {
 		case STANDBY:  
 			break;
 		case TELEOP:
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
 			break;
@@ -251,18 +254,18 @@ public class Drives extends GenericSubsytem {
 			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			if(distOff > 0) {
+			if(distOff < 0) {
 				print("offsetting left");
 				rightDrives.set(speedRight);
-				if(distOff > 5) {
+				if(distOff < -5) {
 					leftDrives.set(0);
 				} else {
 					leftDrives.set(levelOffset);
 				}
-			} else if(distOff < 0) {
+			} else if(distOff > 0) {
 				print("offsetting right");
 				leftDrives.set(speedRight);
-				if(distOff < -5) {
+				if(distOff > 5) {
 					rightDrives.set(0);
 				} else {
 					rightDrives.set(levelOffset);
@@ -338,25 +341,25 @@ public class Drives extends GenericSubsytem {
 			break;
 		case MOVE_BKWD:
 			double curentDistance = distance();
-			if (curentDistance < BLERP * moveDist) {
+			if (curentDistance < BLERP * -moveDist) {
 				stopMotors();
 				changeState(DriveState.STANDBY);
 				isMoving = false;
-			} else if (BLEEP * moveDist < curentDistance) { //ramp up
+			} else if (BLEEP * -moveDist < curentDistance) { //ramp up
 				speedLeft = -rampUp();
 				speedRight = -rampUp();
 				straightenBackward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
-			} else if (BLOOP * moveDist < curentDistance) {  //hold speed
+			} else if (BLOOP * -moveDist < curentDistance) {  //hold speed
 				speedRight = moveSpeed;
 				speedLeft = moveSpeed;
 				straightenBackward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 				System.out.println("Right speed: " + speedRight + ", Left speed: " + speedLeft);
-			} else if (BLERP * moveDist < curentDistance) {  //ramp down
+			} else if (BLERP * -moveDist < curentDistance) {  //ramp down
 				speedLeft = -rampDown();
 				speedRight = -rampDown();
 				straightenBackward();
@@ -409,6 +412,10 @@ public class Drives extends GenericSubsytem {
 	private void changeState(DriveState st) {
 		state = st;
 	}
+	
+	public DriveState getDriveState() {
+		return state;
+	}
 
 	/**
 	 * Disables or enables PTO that controls drives
@@ -445,7 +452,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speedR - the right joystick speed
 	 */
 	public void joystickRight(double speedR) {
-		speedRight = speedR;
+		if(!state.equals(DriveState.MOVE_FRWD)){
+			speedRight = speedR;
+		}
 	}
 
 	/**
@@ -453,7 +462,9 @@ public class Drives extends GenericSubsytem {
 	 * @param speedL - the left joystick speed
 	 */
 	public void joystickLeft(double speedL) {
-		speedLeft = speedL;
+		if(!state.equals(DriveState.MOVE_FRWD)) {
+			speedLeft = speedL;
+		}
 	}
 
 	/**
@@ -507,7 +518,7 @@ public class Drives extends GenericSubsytem {
 		speedLeft = moveSpeed;
 		speedRight = moveSpeed;
 		isMoving = true;
-		if(dist > 0) {
+		if(speed > 0) {
 			changeState(DriveState.MOVE_FRWD);
 		}else {
 			changeState(DriveState.MOVE_BKWD);
@@ -584,7 +595,7 @@ public class Drives extends GenericSubsytem {
 	 * @return - the motor speed
 	 */
 	private double rampUp() {
-		double rampUp = (moveSpeed - DEADPOOL)/(BLEEP * moveDist);
+		double rampUp = (Math.abs(moveSpeed) - DEADPOOL)/(BLEEP * Math.abs(moveDist));
 		return (rampUp * distance()) + DEADPOOL;
 	}
 
@@ -604,7 +615,9 @@ public class Drives extends GenericSubsytem {
 	private double distance() {
 		rightEnc.calculateSpeed();
 		leftEnc.calculateSpeed();
-		return (rightEnc.getDistance() + leftEnc.getDistance())/2;
+		double rightDist = rightEnc.getDistance();
+		double leftDist = leftEnc.getDistance();
+		return (rightDist > leftDist) ? rightDist : leftDist;
 	}
 
 	@Override

@@ -23,8 +23,10 @@ public class Elevations extends GenericSubsytem {
 	private State state;
 	private boolean isMoving = false;
 	private boolean finishedInit = false; 
-//	private double trimValue;
-
+	private double trimValue;
+	private boolean slowSpeed;
+	
+	
 	public Elevations() {
 		super("Elevations");
 	}
@@ -42,8 +44,9 @@ public class Elevations extends GenericSubsytem {
 	public void init() {
 		top = 95; 
 		middle = 39;
-		floor = 2;
+		floor = 1;
 //		trimValue = 0;
+		slowSpeed = false;
 		state = State.STANDBY;
 		height = 0; //height is not actually 0 yet, it will be at end of init
 		motor1 = new WPI_TalonSRX(IO.ELEVATIONSRIGHT); 
@@ -69,13 +72,13 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		//System.out.println("Encoder value "+height+" Limit "+limitSwitch.get());
+		//System.out.println("Encoder value "+height+ " Raw Enc: " + rawEnc.get() + " Limit "+limitSwitch.get());
 		switch(state)
 		{
 
 		case INIT:
 			setMotor(-.2);
-			if(limitSwitch.get())
+			if(!limitSwitch.get())
 			{
 				System.out.println("Home found");
 				motor1.stopMotor();
@@ -129,19 +132,19 @@ public class Elevations extends GenericSubsytem {
 			}
 			else if(floor>height-8) 
 			{
-				setMotor(-.3);
+				setMotor(-.2);
 			}
 			else {
-				setMotor(-.8);
+				setMotor(-.7);
 			}
 			break;
 		case TRIM:
-//			if(trimValue > 0 && height < top)
-//				setMotor(trimValue);
-//			else if(trimValue < 0 && height > top)
-//				setMotor(trimValue);
-//			else
-//				setBrake(true);
+			if(trimValue > 0)
+				setMotor(0.45);
+			else if(trimValue < 0)
+				setMotor(-0.1);
+			else
+				stopAll();
 			state = State.STANDBY;
 			break;
 		}
@@ -183,15 +186,39 @@ public class Elevations extends GenericSubsytem {
 	 * @param joystickInput - x-box joystick
 	 */
 	public void trim(double joystickInput){
-//		if(joystickInput > 0){
-//			trimValue = joystickInput/2. + 0.5; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
-//		} else{
-//			trimValue = joystickInput/2.; //Slows down max speed by /2 
-//		}
+		if(state != State.INIT){
+			trimValue = joystickInput; //Slows down max speed you can move by /2, adding .5 to make sure it doesn't fall
+//			if(joystickInput > 0){
+//				trimValue = joystickInput/2. + 0.2; //Slows down max speed you can move by /2, adding .2 to make sure it doesn't fall
+//			} else{
+//				trimValue = joystickInput/2.; //Slows down max speed by /2 
+//			}
+			setTrim();
+		}
 	}
 
+	public boolean setTrim() {
+		if(state != State.TRIM) {
+			isMoving = true;
+			state = State.TRIM;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean setStandby() {
+		if(state != State.STANDBY) {
+			isMoving = false;
+			state = State.STANDBY;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	//Methods called to control elevator movement
-	public boolean goSwitch() //Goes top
+	public boolean setSwitch() //Goes top
 	{
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
@@ -208,7 +235,7 @@ public class Elevations extends GenericSubsytem {
 		}
 	}
 
-	public boolean goScale() //Exe goes middle, state = moveMiddle
+	public boolean setScale() //Exe goes middle, state = moveMiddle
 	{
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
@@ -218,7 +245,7 @@ public class Elevations extends GenericSubsytem {
 		}else {return false;}
 	}
 
-	public boolean goFloor() //Exe goes bottom, state = moveDown
+	public boolean setFloor() //Exe goes bottom, state = moveDown
 	{
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
@@ -228,15 +255,12 @@ public class Elevations extends GenericSubsytem {
 		}else {return false;}
 	}
 
-
 	public boolean stopAll() //Stops all motors and state to standby 
 	{
 		if(state!=State.INIT) //To make sure init is not messed up by inputs
 		{
 			state = State.STANDBY;
-			motor1.set(-.1);
-			motor2.set(-.1);
-			setBrake(false);
+			setBrake();
 			isMoving = false;
 			System.out.println("stopped");
 			return true;
@@ -245,36 +269,37 @@ public class Elevations extends GenericSubsytem {
 
 	@Override
 	public void forceStandby() { //Use sparingly, might break init
-		motor1.stopMotor();
-		motor2.stopMotor();
-		setBrake(false);
+		isMoving = false;
+		setBrake();
+		state = State.STANDBY;
 	}
 
 	private void setMotor(double speed)
 	{
-		//System.out.println("Set motors with "+speed);
-		if(!isMoving){
-			setBrake(true);
-			isMoving = true;
-		}		
-		setRawMotor(speed);
-	}
-
-	private void setRawMotor(double speed) {
-		motor1.set(-speed);
-		motor2.set(-speed);
-	}
-
-	private void setBrake(boolean power) {
-		if(power){
-			setRawMotor(0.45);
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(!slowSpeed || state == State.TRIM) {
+			motor1.set(-speed);
+			motor2.set(-speed);
+			return;
 		}
+		if(speed > 0) {
+			motor1.set(-0.5);
+			motor2.set(-0.5);
+		} else if(speed < 0){
+			motor1.set(-speed);
+			motor2.set(-speed);
+		} else {
+			motor1.set(-0.1);
+			motor2.set(-0.1);
+		}
+	}
+
+	private void setBrake() {
+		motor1.set(-0.1);
+		motor2.set(-0.1); //0.2, try if this doesnt work
+	}
+	
+	public void setSlowSpeed(boolean slow) {
+		slowSpeed = slow;
 	}
 
 	@Override

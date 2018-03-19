@@ -40,11 +40,15 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ON = .9; 
+	private static final double MOTOR_ACQ = .7; //originally 0.9 
+	
+	private static final double MOTOR_LAUNCH = .8;
 	
 	private static final double MOTOR_STOP = 0.0;
 	
-	private static final double CUBE_SENSOR_THRESHOLD = 2.3;
+	private static final double MOTOR_LOW = .7;
+	
+	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
 	
 	//Variables
@@ -61,9 +65,7 @@ public class Acquisitions extends GenericSubsytem{
 	private double regScoreTime;
 	
 	private double spitTime;
-	
-	private double lowTime;
-		
+
 	private boolean pinchPosition;  //true = pinched 
 	
 	private boolean wristPosition;  //true = lowered
@@ -79,11 +81,12 @@ public class Acquisitions extends GenericSubsytem{
 		RAISE,
 		ACQUIRE,
 		LAUNCH_SCORE,
+		SLOW_LAUNCH_SCORE,
 		REGULAR_SCORE,
 		HOME,
 		SPIN,
 		SPIT,
-		LOW_LAUNCH,
+		SLOW_SPIT,
 		WAIT_FOR_CUBE;
 	}
 	
@@ -103,7 +106,7 @@ public class Acquisitions extends GenericSubsytem{
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
 		log("Successfully INITIALIZED");
-		SmartDashboard.putBoolean("Arms", !pinchPosition);
+		SmartDashboard.putBoolean("Arms", pinchPosition);
 	}
 	
 	/**
@@ -112,7 +115,7 @@ public class Acquisitions extends GenericSubsytem{
 	@Override
 	public void execute() {
 				
-		SmartDashboard.putBoolean("Arms", !pinchPosition);
+		SmartDashboard.putBoolean("Arms", pinchPosition);
 		
 		switch(AcqState){
 		
@@ -136,7 +139,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + .5){
+			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
 				stopRollers();
 				raise();
 				setStandby();
@@ -144,21 +147,19 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 			
 		case LAUNCH_SCORE:
-				rollerScore();
-				if (Timer.getFPGATimestamp() > scoreTime + 1) {
-					stopRollers();
-					setStandby();
-				}
-			break;
-			
-		case LOW_LAUNCH:
 			lowLaunch();
-			if(Timer.getFPGATimestamp() > lowTime + 1) {
+			if(Timer.getFPGATimestamp() > scoreTime + 1) {
 				release();
 				setStandby();
 			}
 			break;
-			
+		case SLOW_LAUNCH_SCORE:
+			slowRollerScore();
+			if(Timer.getFPGATimestamp() > scoreTime + 1) {
+				release();
+				setStandby();
+			}
+			break;
 		case REGULAR_SCORE:
 			lower();
 			if (Timer.getFPGATimestamp() > regScoreTime + .5) {
@@ -174,7 +175,14 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-			
+		case SLOW_SPIT:
+			lower();
+			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
+				System.out.println("iteration++");
+				slowRollerScore();
+				setStandby();
+			}
+			break;
 		case HOME:
 			raise();
 			release();
@@ -186,7 +194,6 @@ public class Acquisitions extends GenericSubsytem{
 				setRaise();
 			}
 			break;
-			
 		default:
 			log("STATE ERROR");
 			break;
@@ -212,8 +219,8 @@ public class Acquisitions extends GenericSubsytem{
 		pincher.set(pinchPosition);
 		double startingTime = Timer.getFPGATimestamp();
 		while(startingTime + 3 > Timer.getFPGATimestamp()){
-			rightMotorPower = MOTOR_ON;
-			leftMotorPower = MOTOR_ON;
+			rightMotorPower = MOTOR_ACQ;
+			leftMotorPower = MOTOR_ACQ;
 			rightIntake.set(rightMotorPower);
 			leftIntake.set(-leftMotorPower);	
 		}
@@ -255,7 +262,7 @@ public class Acquisitions extends GenericSubsytem{
 			log("State set to RAISE");
 		}
 	}
-	
+
 	/**
 	 * Sets acquisition state to launching score.
 	 */
@@ -268,6 +275,18 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
+	 * sets acquisition state to slow launching score
+	 */
+	public void setSlowLaunchScore() {
+		if (AcqState != State.SLOW_LAUNCH_SCORE){
+			AcqState = State.SLOW_LAUNCH_SCORE;
+			scoreTime = Timer.getFPGATimestamp();
+			log("State set to SLOW_LAUNCH_SCORE");
+		}
+	}
+	
+	
+	/**
 	 * Set acquisitions state to regular score
 	 */
 	public void setRegScore() {
@@ -275,16 +294,6 @@ public class Acquisitions extends GenericSubsytem{
 			AcqState = State.REGULAR_SCORE;
 			regScoreTime = Timer.getFPGATimestamp();
 			log("State set to REGULAR_SCORE");
-		}
-	}
-	
-	/**
-	 * Sets acquisition state to low launch.
-	 */
-	public void setLowLaunch() {
-		if (AcqState != State.LOW_LAUNCH) {
-			AcqState = State.LOW_LAUNCH;
-			lowTime = Timer.getFPGATimestamp();
 		}
 	}
 	
@@ -302,7 +311,16 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setSpit() {
 		if (AcqState != State.SPIT) {
+			System.out.println("Starting spit");
 			AcqState = State.SPIT;
+			spitTime = Timer.getFPGATimestamp();
+		}
+	}
+	
+	public void setSlowSpit() {
+		if (AcqState != State.SLOW_SPIT) {
+			System.out.println("Starting slow spit");
+			AcqState = State.SLOW_SPIT;
 			spitTime = Timer.getFPGATimestamp();
 		}
 	}
@@ -367,32 +385,39 @@ public class Acquisitions extends GenericSubsytem{
 	 * Reverses the intake motors to score the cube
 	 */
 	private void rollerScore(){
-		rightMotorPower = -MOTOR_ON;
-		leftMotorPower = -MOTOR_ON;
+		rightMotorPower = -MOTOR_LAUNCH;
+		leftMotorPower = -MOTOR_LAUNCH;
+	}
+	/**
+	 * Reverses the intake motors to score the cube but slow
+	 */
+	private void slowRollerScore() {
+		rightMotorPower = -MOTOR_LOW;
+		leftMotorPower = -MOTOR_LOW;
 	}
 	
 	/**
-	 * Reverses the intake motors to score the cube at half speed.
+	 * Reverses the intake motors to score the cube at launching speed.
 	 */
 	private void lowLaunch() {
-		rightMotorPower = -1;
-		leftMotorPower = -1;
+		rightMotorPower = -MOTOR_LAUNCH;
+		leftMotorPower = -MOTOR_LAUNCH;
 	}
 	
 	/**
 	 * Turns intake motors on to acquire cube
 	 */
 	private void rollerAcq(){
-		rightMotorPower = MOTOR_ON;
-		leftMotorPower = MOTOR_ON;
+		rightMotorPower = MOTOR_ACQ;
+		leftMotorPower = MOTOR_ACQ;
 	}
 	
 	/**
 	 * Turns intake motors in a certain direction to acquire
 	 */
 	private void spin() {
-		rightMotorPower = MOTOR_ON;
-		leftMotorPower = MOTOR_ON/2;
+		rightMotorPower = MOTOR_ACQ;
+		leftMotorPower = MOTOR_ACQ/2;
 	}
 	
 	/**
