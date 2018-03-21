@@ -22,9 +22,11 @@ public class Autonomous implements Controls {
 	private boolean isRightScale;
 	private boolean isRightOpponentSwitch;
 
-	private double startingTime;
+	private double startingBackgroundTime;
 	private boolean isBackgroundTimer;
 	private int timerStep;
+	
+	private double startingTime;
 	
 	private AutoSelected selectedAuto;
 	private PositionSelected selectedPosition;
@@ -32,7 +34,6 @@ public class Autonomous implements Controls {
 	private boolean firstRun;
 
 	private int autoStep;
-	private int prevAutoStep;
 
 	private SendableChooser<AutoSelected> autoChooser;
 	private SendableChooser<PositionSelected> posChooser;
@@ -57,9 +58,11 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_TIMED), 1000, 45},	//{stateToInt(AutoState.DRIVES_FORWARD), 17, 40},
-			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.DRIVES_WAIT)},			
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
@@ -74,9 +77,12 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 44, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)}
+
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SWITCH = {
@@ -88,8 +94,10 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)},
 			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 145, 65},
@@ -101,8 +109,10 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ACQ_RAISE)},
 			{stateToInt(AutoState.ELE_SWITCH)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 3, 31}
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 3, 31},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)}
 	};
 	
 	private final int[][] CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SCALE = {
@@ -115,16 +125,19 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_SLOW)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)},
+			{stateToInt(AutoState.ACQ_DONE)},			
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 140, 65},
 			{stateToInt(AutoState.DRIVES_SLOW)},
 			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_ACQUIRE)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 46, 50}, 
+			{stateToInt(AutoState.DRIVES_FORWARD), 51, 50}, 
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_RAISE)},
 			{stateToInt(AutoState.ACQ_DONE)},
@@ -134,9 +147,60 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.ELE_DONE)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 40, 65},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)},
+			{stateToInt(AutoState.ACQ_DONE)},			
+			{stateToInt(AutoState.ELE_FLOOR)},
+			{stateToInt(AutoState.DRIVES_BACKWARD), 30, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 85, 60},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 70, 50}
+	};
+	
+	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT_AND_SCALE = {
+			{stateToInt(AutoState.DRIVES_FORWARD), 226, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 90, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 194, 70},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 50},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 44, 35},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_HOME)},		
+			{stateToInt(AutoState.DRIVES_TURNLEFT), 170, 80},
+			{stateToInt(AutoState.DRIVES_SLOW)},
+			{stateToInt(AutoState.ELE_FLOOR)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_ACQUIRE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 51, 50}, 
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_RAISE)},
+			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ELE_SCALE)},
+			{stateToInt(AutoState.DRIVES_TURNRIGHT), 170, 95},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ELE_DONE)},
+			{stateToInt(AutoState.DRIVES_FORWARD), 40, 65},
+			{stateToInt(AutoState.DRIVES_WAIT)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_HOME)},
+			{stateToInt(AutoState.ACQ_DONE)},			
 			{stateToInt(AutoState.ELE_FLOOR)},
 			{stateToInt(AutoState.DRIVES_BACKWARD), 30, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
@@ -157,7 +221,11 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TIMED), 1000, 35}, //stateToInt(AutoState.DRIVES_FORWARD), 14, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.ACQ_SPIT)}
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT = {
@@ -173,7 +241,11 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_FORWARD), 44, 35},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)}
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_HOME)}
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_RIGHT = {
@@ -184,10 +256,12 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_TURNLEFT), 90, 55},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)}
-	};
+		};
 	
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_RIGHT = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 280, 95},
@@ -202,10 +276,12 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_FORWARD), 5, 45},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ACQ_DONE)},
-			{stateToInt(AutoState.ACQ_SPIT)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_LOWER)},
+			{stateToInt(AutoState.TIMER), 500},
+			{stateToInt(AutoState.ACQ_SLOW_SPIT)},
+			{stateToInt(AutoState.TIMER), 500},
 			{stateToInt(AutoState.ACQ_HOME)}
-	};
+		};
 	
 	private final int[][] CUBE_ON_LEFT_SWITCH_FROM_MIDDLE = {
 			{stateToInt(AutoState.DRIVES_FORWARD), 50, 50},
@@ -217,8 +293,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_FORWARD), 92, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},
-			{stateToInt(AutoState.ACQ_REGSCORE)},
-			{stateToInt(AutoState.ACQ_DONE)},
+			{stateToInt(AutoState.ACQ_SCORE)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 105, 50},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_FORWARD), 15, 50}
@@ -236,7 +311,7 @@ public class Autonomous implements Controls {
 		this.acq = acq;
 		this.ele = ele;
 		
-		prevAutoStep = 0;
+		startingTime = -1;
 		
 		autoChooser = new SendableChooser<AutoSelected>();
 
@@ -294,14 +369,14 @@ public class Autonomous implements Controls {
 			setAuto();
 			System.out.println("Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
 			firstRun = true;
-			startingTime = Timer.getFPGATimestamp();
+			startingBackgroundTime = Timer.getFPGATimestamp();
 		} else {
 			runAuto();
 		}
 	} 
 
 	private void runAuto() {
-		if(isBackgroundTimer && startingTime + currentAuto[timerStep][1] < Timer.getFPGATimestamp()) {
+		if(isBackgroundTimer && startingBackgroundTime + currentAuto[timerStep][1] < Timer.getFPGATimestamp()) {
 			autoStep = currentAuto[timerStep][2];
 			isBackgroundTimer = false;
 		}
@@ -341,66 +416,72 @@ public class Autonomous implements Controls {
 				acq.setRaise();
 				autoStep++;
 				break;
-			case 8: //ACQ_SCORE
-				acq.setRegScore();
+			case 8: //ACQ_LOWER
+				acq.setLower();
 				autoStep++;
 				break;
-			case 9: //ELE_SWITCH
+			case 9: //ACQ_SCORE
+				acq.setScore();
+				autoStep++;
+				break;
+			case 10: //ELE_SWITCH
 				ele.setSwitch();
 				autoStep++;
 				break;
-			case 10: //ELE_SCALE
+			case 11: //ELE_SCALE
 				ele.setScale();
 				autoStep++;
 				break;
-			case 11: //ELE_FLOOR
+			case 12: //ELE_FLOOR
 				ele.setFloor();
 				autoStep++;
 				break;
-			case 12: //ELE_DONE
+			case 13: //ELE_DONE
 				if(ele.isDone()){
 					autoStep++;
 				}
 				break;
-			case 13: //ACQ_HOME
+			case 14: //ACQ_HOME
 				acq.setHome();
 				autoStep++;
 				break;
-			case 14: //ACQ_DONE
+			case 15: //ACQ_DONE
 				if(acq.isDone()){
 					autoStep++;
 				}
 				break;
-			case 15: //TIMER
+			case 16: //TIMER
+				if(startingTime < 0) {
+					startingTime = Timer.getFPGATimestamp() * 1000;
+				} else if(startingTime + currentAuto[autoStep][1] < Timer.getFPGATimestamp()*1000) {
+					autoStep++;
+					startingTime = -1;
+				}
 				break;
-			case 16: //BGR_TIMER
+			case 17: //BGR_TIMER
 				isBackgroundTimer = true;
 				timerStep = autoStep;
 				autoStep++;
 				break;
-			case 17: //DRIVES_SLOW
+			case 18: //DRIVES_SLOW
 				if(drives.driveSlow()) {
 					autoStep++;
 				}
 				break;
-			case 18: //ACQ_REGSCORE
-				acq.setRegScore();
+			case 19: //ACQ_REGSCORE
+				acq.setScore();
 				autoStep++;
 				break;
-			case 19: //ACQ_LAUNCHSCORE
-				acq.setSlowLaunchScore();
+			case 20: //ACQ_SLOW_SPIT
+				acq.setSlowSpit();
 				autoStep++;
 				break;
-			case 21: //ACQ_SPIN
-				acq.setSpin();
-				autoStep++;
-				break;
-			case 22: //DRIVES_TIMED
+			case 21: //DRIVES_TIMED
 				drives.moveTimed(currentAuto[autoStep][1], currentAuto[autoStep][2]);
 				autoStep++;
 				break;
-			case 23: //ACQ_SPIT
-				acq.setSlowSpit();
+			case 22: //ACQ_SPIT
+				acq.setSpit();
 				autoStep++;
 				break;
 			default:
@@ -442,7 +523,7 @@ public class Autonomous implements Controls {
 				return;
 			case DOUBLESCALE:
 				if(isRightScale) {
-					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT;
+					currentAuto = CUBE_ON_RIGHT_SCALE_FROM_LEFT_AND_SCALE;
 				} else {
 					currentAuto = CUBE_ON_LEFT_SCALE_FROM_LEFT_AND_SCALE;
 				}
@@ -485,6 +566,7 @@ public class Autonomous implements Controls {
 		DRIVES_STOP,
 		ACQ_ACQUIRE,
 		ACQ_RAISE,
+		ACQ_LOWER,
 		ACQ_SCORE,
 		ELE_SWITCH,
 		ELE_SCALE,
@@ -497,8 +579,7 @@ public class Autonomous implements Controls {
 		DRIVES_SLOW,
 		ACQ_REGSCORE,
 		ACQ_LAUNCHSCORE,
-		ACQ_PINCH,
-		ACQ_SPIN,
+		ACQ_SLOW_SPIT,
 		ACQ_SPIT;
 	}
 
@@ -520,38 +601,36 @@ public class Autonomous implements Controls {
 			return 6;
 		case ACQ_RAISE:
 			return 7;
-		case ACQ_SCORE:
+		case ACQ_LOWER:
 			return 8;
-		case ELE_SWITCH:
+		case ACQ_SCORE:
 			return 9;
-		case ELE_SCALE:
+		case ELE_SWITCH:
 			return 10;
-		case ELE_FLOOR:
+		case ELE_SCALE:
 			return 11;
-		case ELE_DONE:
+		case ELE_FLOOR:
 			return 12;
-		case ACQ_HOME:
+		case ELE_DONE:
 			return 13;
-		case ACQ_DONE:
+		case ACQ_HOME:
 			return 14;
-		case TIMER:
+		case ACQ_DONE:
 			return 15;
-		case BGR_TIMER:
+		case TIMER:
 			return 16;
-		case DRIVES_SLOW:
+		case BGR_TIMER:
 			return 17;
-		case ACQ_REGSCORE:
+		case DRIVES_SLOW:
 			return 18;
-		case ACQ_LAUNCHSCORE:
+		case ACQ_REGSCORE:
 			return 19;
-		case ACQ_PINCH:
+		case ACQ_SLOW_SPIT:
 			return 20;
-		case ACQ_SPIN:
-			return 21;
 		case DRIVES_TIMED:
-			return 22;
+			return 21;
 		case ACQ_SPIT:
-			return 23;
+			return 22;
 		default:
 			return -999;
 		}

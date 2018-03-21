@@ -59,12 +59,8 @@ public class Acquisitions extends GenericSubsytem{
 	private double leftMotorPower;
 	
 	private double pinchTime;
-	
-	private double scoreTime;
-	
+		
 	private double regScoreTime;
-	
-	private double spitTime;
 
 	private boolean pinchPosition;  //true = pinched 
 	
@@ -80,14 +76,12 @@ public class Acquisitions extends GenericSubsytem{
 		STANDBY,
 		RAISE,
 		ACQUIRE,
-		LAUNCH_SCORE,
-		SLOW_LAUNCH_SCORE,
-		REGULAR_SCORE,
+		SCORE,
 		HOME,
-		SPIN,
 		SPIT,
 		SLOW_SPIT,
-		WAIT_FOR_CUBE;
+		WAIT_FOR_CUBE,
+		WRIST_LOWER;
 	}
 	
 	
@@ -128,14 +122,6 @@ public class Acquisitions extends GenericSubsytem{
 			rollerAcq();
 			setWaitForCube();
 			break;
-			
-		case SPIN:
-			lower();
-			release();
-			spin();
-			setStandby();
-			break;
-			
 		case RAISE:
 			pinch();
 			rollerAcq();
@@ -145,48 +131,31 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-			
-		case LAUNCH_SCORE:
-			lowLaunch();
-			if(Timer.getFPGATimestamp() > scoreTime + 1) {
-				release();
-				setStandby();
-			}
-			break;
-		case SLOW_LAUNCH_SCORE:
-			slowRollerScore();
-			if(Timer.getFPGATimestamp() > scoreTime + 1) {
-				release();
-				setStandby();
-			}
-			break;
-		case REGULAR_SCORE:
-			lower();
-			if (Timer.getFPGATimestamp() > regScoreTime + .5) {
+		case SCORE:
 			release();
-			setStandby();
+			if (Timer.getFPGATimestamp() > regScoreTime + .5) {
+				raise();
+				setStandby();
 			}
 			break;
 			
 		case SPIT:
-			lower();
-			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
-				rollerScore();
-				setStandby();
-			}
+			rollerScore();
+			setStandby();
 			break;
 		case SLOW_SPIT:
+			slowRollerScore();
+			setStandby();
+			break;
+		case WRIST_LOWER:
 			lower();
-			if (Timer.getFPGATimestamp() > spitTime + 0.5) {
-				System.out.println("iteration++");
-				slowRollerScore();
-				setStandby();
-			}
+			setStandby();
 			break;
 		case HOME:
 			raise();
-			release();
+			pinch();
 			stopRollers();
+			setStandby();
 			break;
 			
 		case WAIT_FOR_CUBE:
@@ -243,16 +212,6 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
-	 * Sets acquisition state to spin.
-	 */
-	public void setSpin() {
-		if (AcqState != State.SPIN){
-			AcqState = State.SPIN;
-			log("State set to SPIN");
-		}
-	}
-	
-	/**
 	 * Sets acquisition state to raise.
 	 */
 	public void setRaise() {
@@ -262,39 +221,20 @@ public class Acquisitions extends GenericSubsytem{
 			log("State set to RAISE");
 		}
 	}
-
-	/**
-	 * Sets acquisition state to launching score.
-	 */
-	public void setLaunchScore() {
-		if (AcqState != State.LAUNCH_SCORE){
-			AcqState = State.LAUNCH_SCORE;
-			scoreTime = Timer.getFPGATimestamp();
-			log("State set to LAUNCH_SCORE");
-		}
-	}
-	
-	/**
-	 * sets acquisition state to slow launching score
-	 */
-	public void setSlowLaunchScore() {
-		if (AcqState != State.SLOW_LAUNCH_SCORE){
-			AcqState = State.SLOW_LAUNCH_SCORE;
-			scoreTime = Timer.getFPGATimestamp();
-			log("State set to SLOW_LAUNCH_SCORE");
-		}
-	}
-	
 	
 	/**
 	 * Set acquisitions state to regular score
 	 */
-	public void setRegScore() {
-		if (AcqState != State.REGULAR_SCORE) {
-			AcqState = State.REGULAR_SCORE;
+	public void setScore() {
+		if (AcqState != State.SCORE) {
+			AcqState = State.SCORE;
 			regScoreTime = Timer.getFPGATimestamp();
-			log("State set to REGULAR_SCORE");
+			log("State set to SCORE");
 		}
+	}
+	
+	public void setLower() {
+		AcqState = State.WRIST_LOWER;
 	}
 	
 	/**
@@ -313,7 +253,6 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.SPIT) {
 			System.out.println("Starting spit");
 			AcqState = State.SPIT;
-			spitTime = Timer.getFPGATimestamp();
 		}
 	}
 	
@@ -321,7 +260,6 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.SLOW_SPIT) {
 			System.out.println("Starting slow spit");
 			AcqState = State.SLOW_SPIT;
-			spitTime = Timer.getFPGATimestamp();
 		}
 	}
 	
@@ -397,27 +335,11 @@ public class Acquisitions extends GenericSubsytem{
 	}
 	
 	/**
-	 * Reverses the intake motors to score the cube at launching speed.
-	 */
-	private void lowLaunch() {
-		rightMotorPower = -MOTOR_LAUNCH;
-		leftMotorPower = -MOTOR_LAUNCH;
-	}
-	
-	/**
 	 * Turns intake motors on to acquire cube
 	 */
 	private void rollerAcq(){
 		rightMotorPower = MOTOR_ACQ;
 		leftMotorPower = MOTOR_ACQ;
-	}
-	
-	/**
-	 * Turns intake motors in a certain direction to acquire
-	 */
-	private void spin() {
-		rightMotorPower = MOTOR_ACQ;
-		leftMotorPower = MOTOR_ACQ/2;
 	}
 	
 	/**

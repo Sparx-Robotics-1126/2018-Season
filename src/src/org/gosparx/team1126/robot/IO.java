@@ -23,15 +23,14 @@ public class IO {
 	
 	//----------------------------------------------------Sensors----------------------------------------------------------------------
 
-	//FLIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-	public static final int leftDriveEncoderChannel1																	= 12; //CHANNELS SWAPPED ON BOTH
-	public static final int leftDriveEncoderChannel2																	= 13; //CHANGE BACK
 	public static final int rightDriveEncoderChannel1																	= 10; //CHANGE BACK
 	public static final int rightDriveEncoderChannel2																	= 11; //CHANGE BACK
-	//CHANGE BACK
+	public static final int leftDriveEncoderChannel1																	= 12; //CHANNELS SWAPPED ON BOTH
+	public static final int leftDriveEncoderChannel2																	= 13; //CHANGE BACK
+	
 	public static final int MAGNETICSENSOR																				= 14;
-	public static final int ELEVATIONSENCODER1																			= 22;
-	public static final int ELEVATIONSENCODER2																			= 23;	
+	public static final int ELEVATIONSENCODER1																			= 23;
+	public static final int ELEVATIONSENCODER2																			= 22;	
 	
 	public static final int ACQ_CUBE_SENSOR																				= 6;
 	

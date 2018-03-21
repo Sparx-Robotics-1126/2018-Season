@@ -19,7 +19,7 @@ public class TeleOP implements Controls{
 	private Elevations ele;
 
 	private boolean climbingActivated;
-	
+
 	private double startTime;
 
 	private boolean[][] buttonStates =
@@ -131,7 +131,7 @@ public class TeleOP implements Controls{
 		if(drives.getDriveState().equals(Drives.DriveState.STANDBY)) {
 			drives.toTeleop();
 		}
-		
+
 		//		climbing.enableClimbing(isClimbing);
 		//Axis Left
 		//		if(axisStates[0][0]) {
@@ -162,14 +162,14 @@ public class TeleOP implements Controls{
 				drives.enableClimb(false);
 			}
 		}
-//		if(isRisingEdgeButton(5)) {
-//			climbing.latchClose();
-//			ele.setSlowSpeed(true);
-//		}
-//		if(isFallingEdgeButton(5)) {
-//			climbing.latch();
-//			ele.setSlowSpeed(false);
-//		}
+		//		if(isRisingEdgeButton(5)) {
+		//			climbing.latchClose();
+		//			ele.setSlowSpeed(true);
+		//		}
+		//		if(isFallingEdgeButton(5)) {
+		//			climbing.latch();
+		//			ele.setSlowSpeed(false);
+		//		}
 		//		}
 		//if(isRisingEdgeButton(5)) { //left joystick middle button
 		//}
@@ -215,21 +215,22 @@ public class TeleOP implements Controls{
 		if(isRisingEdgeButton(8)) { //xbox a button
 			acq.setHome();
 		}
-				if(isRisingEdgeButton(9)) { //xbox b button
-					climbing.latchClose();
-					ele.setSlowSpeed(true);
-				}
-				if(isFallingEdgeButton(9)) {
-					climbing.latch();
-				}
+		if(isRisingEdgeButton(9)) { //xbox b button
+			climbing.latchClose();
+			ele.setSlowSpeed(true);
+		}
+		if(isFallingEdgeButton(9)) {
+			climbing.latch();
+		}
 		if(isRisingEdgeButton(10)) { //xbox x button
-			acq.setSlowSpit();
+			acq.setSpit();
 		}
 		//		if(isRisingEdgeButton(11)) { //xbox y button
 		//			acq.setRaise(); //raise
 		//}
 		if(isRisingEdgeButton(12)) { //xbox L1 button
-			acq.setLaunchScore();
+			acq.setLower();
+			//check with field team
 		}
 		if(isRisingEdgeButton(13)) { //xbox R1 button
 			acq.setRaise();
@@ -238,10 +239,12 @@ public class TeleOP implements Controls{
 		//					acq.setSpit();
 		//				}   
 		if(isRisingEdgeButton(15)) { //xbox start button
-			acq.setSlowLaunchScore();
+			acq.setSlowSpit();
+			//check with field team
 		}
 		if(isRisingEdgeButton(16)) { //xbox L2 button
-			acq.setRegScore();
+			acq.setScore();
+			//check with field team
 		}
 		if(isRisingEdgeButton(17)) { //xbox R2 button
 			acq.setAcquire();
@@ -306,7 +309,7 @@ public class TeleOP implements Controls{
 		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 
 		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
-				buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
+		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
 		buttonStates[10][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X);
 		//		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
 

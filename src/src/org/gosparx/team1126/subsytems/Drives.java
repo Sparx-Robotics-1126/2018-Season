@@ -145,7 +145,7 @@ public class Drives extends GenericSubsytem {
 		climbed = false;
 		lastAngle = 0;
 		highestAmp = 0;
-		//addObjectsToShuffleboard();
+		addObjectsToShuffleboard();
 	}
 
 	/**
@@ -475,7 +475,7 @@ public class Drives extends GenericSubsytem {
 	public void turn(int degree, int speed) {
 		resetGyroAngle();
 		slow = false;
-		System.out.println("Gyro angle after zeroYaw: " + getAngle());
+		System.out.println("Turn Started: Gyro angle after zeroYaw: " + getAngle());
 		turnAngle = degree;
 		turnSpeed = speed/100.;
 		isMoving = true;

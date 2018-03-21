@@ -72,7 +72,6 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		//System.out.println("Encoder value "+height+ " Raw Enc: " + rawEnc.get() + " Limit "+limitSwitch.get());
 		switch(state)
 		{
 
