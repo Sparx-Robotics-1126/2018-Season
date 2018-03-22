@@ -129,9 +129,9 @@ public class Elevations extends GenericSubsytem {
 				stopAll();
 				break;
 			}
-			else if(floor>height-8) 
+			else if(floor>height-12) 
 			{
-				setMotor(-.2);
+				setMotor(-.1);
 			}
 			else {
 				setMotor(-.7);
@@ -139,7 +139,7 @@ public class Elevations extends GenericSubsytem {
 			break;
 		case TRIM:
 			if(trimValue > 0)
-				setMotor(0.45);
+				setMotor(0.55);
 			else if(trimValue < 0)
 				setMotor(-0.1);
 			else
@@ -293,8 +293,8 @@ public class Elevations extends GenericSubsytem {
 	}
 
 	private void setBrake() {
-		motor1.set(-0.1);
-		motor2.set(-0.1); //0.2, try if this doesnt work
+		motor1.set(-0.2);
+		motor2.set(-0.2); //0.2, try if this doesnt work
 	}
 	
 	public void setSlowSpeed(boolean slow) {

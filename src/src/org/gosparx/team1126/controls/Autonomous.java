@@ -90,7 +90,7 @@ public class Autonomous implements Controls {
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.DRIVES_TURNRIGHT), 17, 40},
 			{stateToInt(AutoState.DRIVES_WAIT)},
-			{stateToInt(AutoState.DRIVES_FORWARD), 120, 60},
+			{stateToInt(AutoState.DRIVES_FORWARD), 120, 80},
 			{stateToInt(AutoState.ELE_SCALE)},
 			{stateToInt(AutoState.DRIVES_WAIT)},
 			{stateToInt(AutoState.ELE_DONE)},

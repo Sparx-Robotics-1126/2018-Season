@@ -115,7 +115,6 @@ public class Acquisitions extends GenericSubsytem{
 		
 		case STANDBY:
 			return;
-		
 		case ACQUIRE:
 			lower();
 			release();
@@ -138,7 +137,6 @@ public class Acquisitions extends GenericSubsytem{
 				setStandby();
 			}
 			break;
-			
 		case SPIT:
 			rollerScore();
 			setStandby();
@@ -152,10 +150,13 @@ public class Acquisitions extends GenericSubsytem{
 			setStandby();
 			break;
 		case HOME:
+			release();
 			raise();
-			pinch();
 			stopRollers();
 			setStandby();
+			//raise();
+			//stopRollers();
+			//setStandby();
 			break;
 			
 		case WAIT_FOR_CUBE:

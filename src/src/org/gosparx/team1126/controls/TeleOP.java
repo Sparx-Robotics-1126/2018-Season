@@ -229,7 +229,7 @@ public class TeleOP implements Controls{
 		//			acq.setRaise(); //raise
 		//}
 		if(isRisingEdgeButton(12)) { //xbox L1 button
-			acq.setLower();
+			acq.setScore();
 			//check with field team
 		}
 		if(isRisingEdgeButton(13)) { //xbox R1 button
@@ -243,7 +243,7 @@ public class TeleOP implements Controls{
 			//check with field team
 		}
 		if(isRisingEdgeButton(16)) { //xbox L2 button
-			acq.setScore();
+			acq.setLower();
 			//check with field team
 		}
 		if(isRisingEdgeButton(17)) { //xbox R2 button
