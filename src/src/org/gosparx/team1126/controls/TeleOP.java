@@ -19,6 +19,7 @@ public class TeleOP implements Controls{
 	private Elevations ele;
 
 	private boolean climbingActivated;
+	private boolean latched;
 
 	private double startTime;
 
@@ -171,10 +172,14 @@ public class TeleOP implements Controls{
 		//			ele.setSlowSpeed(false);
 		//		}
 		//		}
-		//if(isRisingEdgeButton(5)) { //left joystick middle button
-		//}
-		//		if(isFallingEdgeButton(5)) {
-		//		}
+		if(isRisingEdgeButton(5)) { //left joystick middle button
+			climbing.latchClose();
+			ele.setSlowSpeed(true);
+		}
+		if(isFallingEdgeButton(5)) {
+			climbing.latch();
+			ele.setSlowSpeed(false);
+		}
 		//		if(isRisingEdgeButton(6)) { //left joystick right button
 		//			System.out.println("left joystick right button");
 		//		}
@@ -212,16 +217,31 @@ public class TeleOP implements Controls{
 		//		}
 		//xBox Buttons
 
+		/*
+		 * A - acq upright, open
+		 * X - exchange (spit)
+		 * R2 - Acquire
+		 * R1 - Clamp, pull up (Raise)
+		 * L2 - move claw down (dont open)
+		 * L1 - Open, place
+		 * Right joystick - trim
+		 * elevator
+		 * "buddy arms" -> start/select
+		 * RS - Climbing
+		 * LS - hooks (down/mid -> fast speeds?)
+		 */
 		if(isRisingEdgeButton(8)) { //xbox a button
 			acq.setHome();
 		}
-		if(isRisingEdgeButton(9)) { //xbox b button
-			climbing.latchClose();
-			ele.setSlowSpeed(true);
-		}
-		if(isFallingEdgeButton(9)) {
-			climbing.latch();
-		}
+//		if(isRisingEdgeButton(9)) { //xbox b button
+//			climbing.latchClose();
+//			ele.setSlowSpeed(true);
+//			latched = true;
+//		}
+//		if(isFallingEdgeButton(9)) {
+//			climbing.latch();
+//			latched = false;
+//		}
 		if(isRisingEdgeButton(10)) { //xbox x button
 			acq.setSpit();
 		}
@@ -277,9 +297,17 @@ public class TeleOP implements Controls{
 		}
 		if(isRisingEdgePOV(9)) { //xbox pov right
 			ele.setSwitch();
+			if(latched) {
+			ele.setSlowSpeed(false);
+			climbing.latch();
+			}
 		}
 		if(isRisingEdgePOV(10)) { //xbox pov down
 			ele.setFloor();
+			if(latched) {
+			ele.setSlowSpeed(false);
+			climbing.latch();
+			}
 		}
 		if(isRisingEdgePOV(11)) { //xbox pov left
 			ele.setSwitch();
