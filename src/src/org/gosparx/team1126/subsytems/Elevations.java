@@ -110,7 +110,7 @@ public class Elevations extends GenericSubsytem {
 			break;
 		case MOVECLIMB:
 			if(climbingLocation<height+1 
-					&& middle>height-1)
+					&& climbingLocation>height-1)
 			{
 				state = State.STANDBY;
 				stopAll();
