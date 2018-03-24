@@ -378,7 +378,6 @@ public class Drives extends GenericSubsytem {
 			}else {
 				speedLeft = moveSpeed;
 				speedRight = moveSpeed;
-				straightenForward();
 				leftDrives.set(speedLeft);
 				rightDrives.set(speedRight);
 			}
@@ -564,10 +563,10 @@ public class Drives extends GenericSubsytem {
 	 * @return a boolean, true if robot was straightened
 	 */
 	private boolean straightenBackward() {
-		if(getAngle() < UNFORTUNATE_FEW) {
+		if(getAngle() > UNFORTUNATE_FEW) {
 			speedRight *= KEVIN;
 			return true;
-		}else if(getAngle() > -UNFORTUNATE_FEW) {
+		}else if(getAngle() < -UNFORTUNATE_FEW) {
 			speedLeft *= KEVIN;
 			return true;
 		}
