@@ -45,7 +45,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
-		climbingLocation = 50; //TODO: change
+		climbingLocation = 70; //TODO: change
 		middle = 39;
 		floor = 1;
 //		trimValue = 0;
