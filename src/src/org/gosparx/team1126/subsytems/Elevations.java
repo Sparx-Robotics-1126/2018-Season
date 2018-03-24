@@ -13,6 +13,7 @@ public class Elevations extends GenericSubsytem {
 
 	private double height; //Height of elevator
 	private int top;
+	private int climbingLocation;
 	private int middle;
 	private int floor; 
 	private WPI_TalonSRX motor1; 
@@ -35,6 +36,7 @@ public class Elevations extends GenericSubsytem {
 		INIT, 
 		STANDBY, 
 		MOVEMIDDLE,
+		MOVECLIMB,
 		MOVEUP, //Go to the top
 		MOVEDOWN, //Go to the bottom
 		TRIM;
@@ -43,6 +45,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void init() {
 		top = 95; 
+		climbingLocation = 50; //TODO: change
 		middle = 39;
 		floor = 1;
 //		trimValue = 0;
@@ -102,6 +105,23 @@ public class Elevations extends GenericSubsytem {
 			}
 			else 
 			{	
+				setMotor(1);
+			}
+			break;
+		case MOVECLIMB:
+			if(climbingLocation<height+1 
+					&& middle>height-1)
+			{
+				state = State.STANDBY;
+				stopAll();
+				break;
+			} 
+			else if(height>climbingLocation) //If below go down
+			{
+				setMotor(-.85);
+			}
+			else //If above goes up
+			{
 				setMotor(1);
 			}
 			break;
@@ -240,6 +260,16 @@ public class Elevations extends GenericSubsytem {
 		{
 			isMoving = true;
 			state = State.MOVEUP; 
+			return true;
+		}else {return false;}
+	}
+	
+	public boolean setClimb()
+	{
+		if(state!=State.INIT) //To make sure init is not messed up by inputs
+		{
+			isMoving = true;
+			state = State.MOVECLIMB; 
 			return true;
 		}else {return false;}
 	}
