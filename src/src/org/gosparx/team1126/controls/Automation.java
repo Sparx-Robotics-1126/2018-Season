@@ -55,8 +55,9 @@ public class Automation {
 		ELE_CLIMB(21),
 		ELE_DONE(22),
 		CLIMBING_PTO(23),
-		TIMER(24),
-		BGR_TIMER(25);
+		CLIMBING_ARMS(24),
+		TIMER(25),
+		BGR_TIMER(26);
 		
 		private final int value;
 		private AutoState(int val) {
@@ -205,7 +206,11 @@ public class Automation {
 					climb.enableClimbing(currentAuto[autoStep][1] == 1 ? true : false);
 					autoStep++;
 					break;
-				case 24: //TIMER
+				case 24:
+					climb.climbingArms(currentAuto[autoStep][1] == 1 ? true : false);
+					autoStep++;
+					break;
+				case 25: //TIMER
 					if(startingTime < 0) {
 						startingTime = Timer.getFPGATimestamp() * 1000;
 					} else if(startingTime + currentAuto[autoStep][1] < Timer.getFPGATimestamp()*1000) {
@@ -213,7 +218,7 @@ public class Automation {
 						startingTime = -1;
 					}
 					break;
-				case 25: //BGR_TIMER
+				case 26: //BGR_TIMER
 					isBackgroundTimer = true;
 					timerStep = autoStep;
 					autoStep++;

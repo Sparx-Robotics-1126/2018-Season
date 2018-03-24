@@ -16,6 +16,8 @@ public class TeleAutomation {
 			{AutoState.ELE_DONE.toInt()},
 			{AutoState.ELE_FLOOR.toInt()},
 			{AutoState.ELE_DONE.toInt()},
+			{AutoState.DRIVES_WAIT.toInt()},
+			{AutoState.CLIMBING_ARMS.toInt()},
 			{AutoState.CLIMBING_PTO.toInt(), 1},
 			{AutoState.DRIVES_CLIMB.toInt(), 1}
 	};
