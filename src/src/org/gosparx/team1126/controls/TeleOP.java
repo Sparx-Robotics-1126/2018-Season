@@ -12,17 +12,20 @@ import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class TeleOP implements Controls{
 
-	private static Joystick[] joysticks;
+	private Joystick[] joysticks;
 
 	private Drives drives;
 	private Acquisitions acq;
 	private Climbing climbing;
 	private Elevations ele;
+	private TeleAutomation teleauto;
 
 	private boolean climbingActivated;
 	private boolean latched;
 
 	private double startTime;
+	
+	private State state;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -77,12 +80,14 @@ public class TeleOP implements Controls{
 	 * @param ele - an instance of Elevations created by RobotSystem.
 	 * @param climb - an instance of Climbing created by RobotSystem.
 	 */
-	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb) {
+	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb, Automation automation) {
 		climbingActivated = false;
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
-		climbing = climb;
+		this.climbing = climb;
+		this.teleauto = new TeleAutomation(automation);
+		state = State.TELEOP;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
 
@@ -91,227 +96,199 @@ public class TeleOP implements Controls{
 	 */
 	@Override
 	public void execute() {
-		if(DriverStation.getInstance().getMatchTime() > 45) {
-			SmartDashboard.putBoolean("climbingTime", false);
-		} else {
-			if(DriverStation.getInstance().getMatchTime() > 40) {
-				joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
-			} else {
-				joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
-			}
-			if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
+		setJoystickStates();
+		switch(state) {
+		case TELEOP:
+			if(DriverStation.getInstance().getMatchTime() > 45) {
 				SmartDashboard.putBoolean("climbingTime", false);
 			} else {
-				SmartDashboard.putBoolean("climbingTime", true);
+				if(DriverStation.getInstance().getMatchTime() > 40) {
+					joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
+				} else {
+					joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
+				}
+				if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
+					SmartDashboard.putBoolean("climbingTime", false);
+				} else {
+					SmartDashboard.putBoolean("climbingTime", true);
+				}
 			}
-		}
-		//Joystick Buttons Left
-		setJoystickStates();
-		//		if(isRisingEdgeButton(0)) { //right joystick left button
-		//			climbing.climbingArms(true);
-		//		}
-		//		if(isRisingEdgeButton(1)) { //right joystick middle button
-		//			System.out.println("right joystick middle button");
-		//		}
-		if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
-			climbing.enableClimbing(true);
-			drives.enableClimb(true);
-			climbingActivated = true;
-		}
-		if(isFallingEdgeButton(1)) {
-			climbingActivated = false;
-			//climbing.enableClimbing(false);
-			//drives.enableClimb(false);
-		}
-		if(isRisingEdgeButton(2)) { //right joystick right button
-			climbing.climbingLatch(!climbing.getClimbingLatch());
-		}
-		if(buttonStates[3][0]) { //right joystick trigger
-			drives.toAuto();
-			drives.move(8, 35);	
-		}
-		if(drives.getDriveState().equals(Drives.DriveState.STANDBY)) {
-			drives.toTeleop();
-		}
-
-		//		climbing.enableClimbing(isClimbing);
-		//Axis Left
-		//		if(axisStates[0][0]) {
-		//			getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
-		//		}
-		if(axisStates[1][0]) {
-			drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		} else {
-			drives.joystickLeft(0);
-		}
-		//		//POV Left
-		//		if(isRisingEdgePOV(0)) { //right joystick pov up
-		//			System.out.println("right joystick pov up");
-		//		}
-		//		if(isRisingEdgePOV(1)) { //right joystick pov right
-		//			System.out.println("right joystick pov right");
-		//		}
-		//		if(isRisingEdgePOV(2)) { //right joystick pov down
-		//			System.out.println("right joystick pov down");
-		//		}
-		//		if(isRisingEdgePOV(3)) { //right joystick pov left
-		//			System.out.println("right joystick pov left");
-		//		}
-		//Joystick Buttons Right
-		if(isRisingEdgeButton(4)) { //left joystick left button	
-			if(!climbingActivated) {
+//			Joystick Buttons Left
+//			if(isRisingEdgeButton(0)) { //right joystick left button
+//				climbing.climbingArms(true);
+//			}
+//			if(isRisingEdgeButton(1)) { //right joystick middle button
+//				System.out.println("right joystick middle button");
+//			}
+			if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
+				state = State.TELEAUTO;
+				teleauto.init();
+				return;
+			}
+			if(!buttonStates[1][0] && buttonStates[4][0]) {
 				climbing.enableClimbing(false);
 				drives.enableClimb(false);
 			}
-		}
-		//		if(isRisingEdgeButton(5)) {
-		//			climbing.latchClose();
-		//			ele.setSlowSpeed(true);
-		//		}
-		//		if(isFallingEdgeButton(5)) {
-		//			climbing.latch();
-		//			ele.setSlowSpeed(false);
-		//		}
-		//		}
-		if(isRisingEdgeButton(5)) { //left joystick middle button
-			climbing.latchClose();
-			ele.setSlowSpeed(true);
-		}
-		if(isFallingEdgeButton(5)) {
-			climbing.latch();
-			ele.setSlowSpeed(false);
-		}
-		//		if(isRisingEdgeButton(6)) { //left joystick right button
-		//			System.out.println("left joystick right button");
-		//		}
-		//		if(isRisingEdgeButton(7)) { //left joystick trigger
-		//			System.out.println("left joystick trigger button");
-		//		}
-		//		//Axis Right
-		//		if(axisStates[3][0]) {
-		//			//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
-		//		}
-		if(axisStates[3][0]) {
-			drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		} else {
-			drives.joystickRight(0);
-		}
-		//		if(!isClimbing) {
-		//			drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		//		} else {
-		//			drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
-		//		}
-
-
-		//POV Right
-		//		if(isRisingEdgePOV(4)) { //left joystick pov up
-		//			System.out.println("left joystick pov up");
-		//		}
-		//		if(isRisingEdgePOV(5)) { //left joystick pov right
-		//			System.out.println("left joystick pov right");
-		//		}
-		//		if(isRisingEdgePOV(6)) { //left joystick pov down
-		//			System.out.println("left joystick pov down");
-		//		}
-		//		if(isRisingEdgePOV(7)) { //left joystick pov left
-		//			System.out.println("left joystick pov left");
-		//		}
-		//xBox Buttons
-
-		/*
-		 * A - acq upright, open
-		 * X - exchange (spit)
-		 * R2 - Acquire
-		 * R1 - Clamp, pull up (Raise)
-		 * L2 - move claw down (dont open)
-		 * L1 - Open, place
-		 * Right joystick - trim
-		 * elevator
-		 * "buddy arms" -> start/select
-		 * RS - Climbing
-		 * LS - hooks (down/mid -> fast speeds?)
-		 */
-		if(isRisingEdgeButton(8)) { //xbox a button
-			acq.setHome();
-		}
-//		if(isRisingEdgeButton(9)) { //xbox b button
-//			climbing.latchClose();
-//			ele.setSlowSpeed(true);
-//			latched = true;
-//		}
-//		if(isFallingEdgeButton(9)) {
-//			climbing.latch();
-//			latched = false;
-//		}
-		if(isRisingEdgeButton(10)) { //xbox x button
-			acq.setSpit();
-		}
-		//		if(isRisingEdgeButton(11)) { //xbox y button
-		//			acq.setRaise(); //raise
-		//}
-		if(isRisingEdgeButton(12)) { //xbox L1 button
-			acq.setScore();
-			//check with field team
-		}
-		if(isRisingEdgeButton(13)) { //xbox R1 button
-			acq.setRaise();
-		}
-		//				if(isRisingEdgeButton(14)) { //xbox back button
-		//					acq.setSpit();
-		//				}   
-		if(isRisingEdgeButton(15)) { //xbox start button
-			acq.setSlowSpit();
-			//check with field team
-		}
-		if(isRisingEdgeButton(16)) { //xbox L2 button
-			acq.setLower();
-			//check with field team
-		}
-		if(isRisingEdgeButton(17)) { //xbox R2 button
-			acq.setAcquire();
-		}
-		//		if(isRisingEdgeButton(18)) { //xbox L3 button
-		//		climbing.enableClimbing(true);
-		//		drives.enableClimb(true);
-		//		climbingActivated = true;
-		//			System.out.println("xbox L3 button");
-		//		}
-		//		if(isRisingEdgeButton(19)) { //xbox R3 button
-		//			System.out.println("xbox R3 button");
-		//		}
-		//		//xBox Axis
-		//		if(axisStates[5][0]) {
-		//			//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_X_AXIS);
-		//		}
-		//		if(axisStates[6][0]) {
-		//			//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS);
-		//		}
-		if(axisStates[7][0]) {
-			ele.trim(getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y));
-		} else if(isFallingEdgeAxis(7)){
-			ele.trim(0);
-		}
-		//		//xbox POV
-		//		 
-		if(isRisingEdgePOV(8)) { //xbox pov up
-			ele.setScale();
-		}
-		if(isRisingEdgePOV(9)) { //xbox pov right
-			ele.setSwitch();
-			if(latched) {
-			ele.setSlowSpeed(false);
-			climbing.latch();
+			if(isRisingEdgeButton(2)) { //right joystick right button
+				climbing.climbingLatch(!climbing.getClimbingLatch());
 			}
-		}
-		if(isRisingEdgePOV(10)) { //xbox pov down
-			ele.setFloor();
-			if(latched) {
-			ele.setSlowSpeed(false);
-			climbing.latch();
+			if(buttonStates[3][0]) { //right joystick trigger
+				drives.toAuto();
+				drives.move(8, 35);	
 			}
-		}
-		if(isRisingEdgePOV(11)) { //xbox pov left
-			ele.setSwitch();
+			if(drives.getDriveState().equals(Drives.DriveState.STANDBY)) {
+				drives.toTeleop();
+			}
+
+			//		climbing.enableClimbing(isClimbing);
+			//Axis Left
+			//		if(axisStates[0][0]) {
+			//			getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_X_AXIS);
+			//		}
+			if(axisStates[1][0]) {
+				drives.joystickLeft(getAxis(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			} else {
+				drives.joystickLeft(0);
+			}
+//			//POV Left
+//			if(isRisingEdgePOV(0)) { //right joystick pov up
+//				System.out.println("right joystick pov up");
+//			}
+//			if(isRisingEdgePOV(1)) { //right joystick pov right
+//				System.out.println("right joystick pov right");
+//			}
+//			if(isRisingEdgePOV(2)) { //right joystick pov down
+//				System.out.println("right joystick pov down");
+//			}
+//			if(isRisingEdgePOV(3)) { //right joystick pov left
+//				System.out.println("right joystick pov left");
+//			}
+			//Joystick Buttons Right
+//			if(isRisingEdgeButton(4)) { //left joystick left button	
+//				
+//			}
+//			if(isRisingEdgeButton(5)) {
+//
+//			}
+//			if(isFallingEdgeButton(5)) {
+//
+//			}
+//			if(isRisingEdgeButton(5)) { //left joystick middle button
+//
+//			}
+//			if(isFallingEdgeButton(5)) {
+//
+//			}
+//			if(isRisingEdgeButton(6)) { //left joystick right button
+//				System.out.println("left joystick right button");
+//			}
+//			if(isRisingEdgeButton(7)) { //left joystick trigger
+//				System.out.println("left joystick trigger button");
+//			}
+//			//Axis Right
+//			if(axisStates[3][0]) {
+//				//getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_X_AXIS);
+//			}
+			if(axisStates[3][0]) {
+				drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+			} else {
+				drives.joystickRight(0);
+			}
+//			if(!isClimbing) {
+//				drives.joystickRight(getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			} else {
+//				drives.joystickRight(-getAxis(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_Y_AXIS));
+//			}
+			//POV Right
+//			if(isRisingEdgePOV(4)) { //left joystick pov up
+//				System.out.println("left joystick pov up");
+//			}
+//			if(isRisingEdgePOV(5)) { //left joystick pov right
+//				System.out.println("left joystick pov right");
+//			}
+//			if(isRisingEdgePOV(6)) { //left joystick pov down
+//				System.out.println("left joystick pov down");
+//			}
+//			if(isRisingEdgePOV(7)) { //left joystick pov left
+//				System.out.println("left joystick pov left");
+//			}
+			//xBox Buttons
+			if(isRisingEdgeButton(8)) { //xbox a button
+				acq.setHome();
+			}
+//			if(isRisingEdgeButton(9)) { //xbox b button
+//				
+//			}
+//			if(isFallingEdgeButton(9)) {
+//				
+//			}
+			if(isRisingEdgeButton(10)) { //xbox x button
+				acq.setSpit();
+			}
+//			if(isRisingEdgeButton(11)) { //xbox y button
+//				acq.setRaise(); //raise
+//			}
+			if(isRisingEdgeButton(12)) { //xbox L1 button
+				acq.setScore();
+			}
+			if(isRisingEdgeButton(13)) { //xbox R1 button
+				acq.setRaise();
+			}
+			if(isRisingEdgeButton(14)) { //xbox back button
+				ele.setClimb();
+			}   
+			if(isRisingEdgeButton(15)) { //xbox start button
+				acq.setSlowSpit();
+			}
+			if(isRisingEdgeButton(16)) { //xbox L2 button
+				acq.setLower();
+			}
+			if(isRisingEdgeButton(17)) { //xbox R2 button
+				acq.setAcquire();
+			}
+//			if(isRisingEdgeButton(18)) { //xbox L3 button
+//	
+//			}
+//			if(isRisingEdgeButton(19)) { //xbox R3 button
+//	
+//			}
+//			//xBox Axis
+//			if(axisStates[5][0]) {
+//				//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_X_AXIS);
+//			}	
+//			if(axisStates[6][0]) {
+//				//getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.JOY_Y_AXIS);
+//			}
+			if(axisStates[7][0]) {
+				ele.trim(getAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y));
+			} else if(isFallingEdgeAxis(7)){
+				ele.trim(0);
+			}
+			//xbox POV		 
+			if(isRisingEdgePOV(8)) { //xbox pov up
+				ele.setScale();
+			}
+			if(isRisingEdgePOV(9)) { //xbox pov right
+				ele.setSwitch();
+			}
+			if(isRisingEdgePOV(10)) { //xbox pov down
+				ele.setFloor();
+			}
+			if(isRisingEdgePOV(11)) { //xbox pov left
+				ele.setSwitch();
+			}
+			break;
+		case TELEAUTO:
+			if(!buttonStates[1][0] && buttonStates[4][0] || teleauto.getState() == TeleAutomation.State.STANDBY) {
+				state = State.TELEOP;
+				if(!buttonStates[1][0] && buttonStates[4][0]) {
+					climbing.enableClimbing(false);
+					drives.enableClimb(false);
+				}
+			} else {
+				teleauto.execute();
+			}
+			break;	
 		}
 	}
 
@@ -344,7 +321,7 @@ public class TeleOP implements Controls{
 
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
-		//		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
+				buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
 		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);
 		buttonStates[16][0] = isPressedTrigger(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2);
 		buttonStates[17][0] = isPressedTrigger(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R2);
@@ -372,6 +349,11 @@ public class TeleOP implements Controls{
 		//		axisStates[6][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_LEFT_Y);
 		axisStates[7][0] = isOffZeroAxis(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_RIGHT_Y);
 
+	}
+	
+	public enum State {
+		TELEOP,
+		TELEAUTO;
 	}
 
 	/**
@@ -459,8 +441,8 @@ public class TeleOP implements Controls{
 		return !axisStates[pos][0] && axisStates[pos][1];
 	}
 	
-	public static void rumbleXbox(double rumble) {
+	public void rumbleXbox(double rumble) {
 		joysticks[2].setRumble(RumbleType.kLeftRumble, rumble);
 	}
-
+	
 }

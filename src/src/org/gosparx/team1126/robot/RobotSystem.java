@@ -5,8 +5,10 @@ import java.util.Arrays;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import src.org.gosparx.team1126.controls.Automation;
 import src.org.gosparx.team1126.controls.Autonomous;
 import src.org.gosparx.team1126.controls.Controls;
+import src.org.gosparx.team1126.controls.TeleAutomation;
 import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
@@ -24,10 +26,11 @@ public class RobotSystem extends Thread{
 	private Elevations ele;
 	private Climbing climb;
 	
+	private Automation automation;
 	private Controls currentControl;
 	private TeleOP teleopControl;
 	private Autonomous autoControl;
-
+	
 	public RobotSystem(){
 		//ALL THE SUBSYSTEMS
 		drives = new Drives();
@@ -39,8 +42,9 @@ public class RobotSystem extends Thread{
 		ele.init();
 		climb.init();
 		currentState = RobotState.STANDBY;
-		autoControl = new Autonomous(drives, acq, ele);
-		teleopControl = new TeleOP(drives, acq, ele, climb);
+		automation = new Automation(drives, acq, ele, climb);
+		autoControl = new Autonomous(automation);
+		teleopControl = new TeleOP(drives, acq, ele, climb, automation);
 		currentControl = null;
 		Compressor compress = new Compressor(0);
 		compress.setClosedLoopControl(true);
