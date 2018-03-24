@@ -3,6 +3,7 @@ package src.org.gosparx.team1126.controls;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
@@ -11,7 +12,7 @@ import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class TeleOP implements Controls{
 
-	private Joystick[] joysticks;
+	private static Joystick[] joysticks;
 
 	private Drives drives;
 	private Acquisitions acq;
@@ -456,6 +457,10 @@ public class TeleOP implements Controls{
 
 	public boolean isFallingEdgeAxis(int pos) {
 		return !axisStates[pos][0] && axisStates[pos][1];
+	}
+	
+	public static void rumbleXbox(double rumble) {
+		joysticks[2].setRumble(RumbleType.kLeftRumble, rumble);
 	}
 
 }

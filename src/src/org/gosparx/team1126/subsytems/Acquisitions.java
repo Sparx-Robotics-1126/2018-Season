@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.AnalogSensor;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -50,6 +52,8 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
+
+	
 	
 	//Variables
 	private State AcqState;
@@ -65,6 +69,8 @@ public class Acquisitions extends GenericSubsytem{
 	private boolean pinchPosition;  //true = pinched 
 	
 	private boolean wristPosition;  //true = lowered
+	
+	private boolean rumble;
 		
 	
 	public Acquisitions() {
@@ -78,6 +84,7 @@ public class Acquisitions extends GenericSubsytem{
 		ACQUIRE,
 		SCORE,
 		HOME,
+		GOT_CUBE,
 		SPIT,
 		SLOW_SPIT,
 		WAIT_FOR_CUBE,
@@ -92,6 +99,7 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 		pinchPosition = PINCHED;
 		wristPosition = RAISED;
+		rumble = false;
 		cubeSensor = new AnalogSensor(IO.ACQ_CUBE_SENSOR, CUBE_SENSOR_THRESHOLD);
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
@@ -108,9 +116,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	@Override
 	public void execute() {
-				
 		SmartDashboard.putBoolean("Arms", pinchPosition);
-		
 		switch(AcqState){
 		
 		case STANDBY:
@@ -158,10 +164,16 @@ public class Acquisitions extends GenericSubsytem{
 			//stopRollers();
 			//setStandby();
 			break;
-			
+		case GOT_CUBE:
+			pinch();
+			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
+				stopRollers();
+				setStandby();
+			}
+			break;
 		case WAIT_FOR_CUBE:
 			if(cubeSensor.get()) {
-				setRaise();
+				setCube();
 			}
 			break;
 		default:
@@ -232,6 +244,13 @@ public class Acquisitions extends GenericSubsytem{
 			regScoreTime = Timer.getFPGATimestamp();
 			log("State set to SCORE");
 		}
+	}
+	
+	public void setCube() {
+		pinchTime = Timer.getFPGATimestamp();
+		AcqState = State.GOT_CUBE;
+		log("State set to GOT_CUBE");
+		
 	}
 	
 	public void setLower() {
