@@ -84,6 +84,12 @@ public class Climbing extends GenericSubsytem
 		return climbingArms.get();
 	}
 
+	@Override
+	public void toTele() {
+		// TODO Auto-generated method stub
+		
+	}
+
 //	public void latch() 
 //	{
 //		System.out.println("Setting servo to open");

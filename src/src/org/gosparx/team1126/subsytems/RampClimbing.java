@@ -143,4 +143,10 @@ public class RampClimbing extends GenericSubsytem
 		result[1] = new DebuggerResult("Going in",true, "Going in works");
 		return result;
 	}
+
+	@Override
+	public void toTele() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -12,10 +12,10 @@ import src.org.gosparx.team1126.util.DebuggerResult;
 public class Elevations extends GenericSubsytem {
 
 	private double height; //Height of elevator
-	private int top;
+	private double top;
 	private double climbingLocation;
-	private int middle;
-	private int floor; 
+	private double middle;
+	private double floor; 
 	private WPI_TalonSRX motor1; 
 	private WPI_TalonSRX motor2;
 	private DigitalInput limitSwitch; //Limit switch at the bottom of winch
@@ -49,7 +49,7 @@ public class Elevations extends GenericSubsytem {
 		//climbingLocation = 91.5; //TODO: change
 		climbingLocation = 85.5;
 		middle = 39;
-		floor = 1;
+		floor = 2.5; //1
 //		trimValue = 0;
 		slowSpeed = false;
 		state = State.STANDBY;
@@ -77,7 +77,6 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
-		System.out.println("Height: " + height);
 		switch(state)
 		{
 
@@ -359,6 +358,11 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public long sleepTime() {
 		return 20;
+	}
+
+	@Override
+	public void toTele() {
+		isMoving = false;
 	}
 }
 

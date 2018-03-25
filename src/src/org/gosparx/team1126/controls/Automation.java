@@ -92,6 +92,10 @@ public class Automation {
 		startingBackgroundTime = Timer.getFPGATimestamp();
 		startingTime = -1;
 		updateAutoStep = -1;
+		drives.toAuto();
+		acq.toTele();
+		ele.toTele();
+		climb.toTele();
 		System.out.println("Starting automated mode");
 	}
 	
@@ -241,6 +245,8 @@ public class Automation {
 					break;
 				}
 			} else {
+				System.out.println("Automated mode finished");
+				drives.toTele();
 				hasInit = false;
 				state = State.STANDBY;
 				currentAuto = null;

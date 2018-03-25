@@ -18,6 +18,8 @@ public abstract class GenericSubsytem extends Thread{
 	
 	public abstract boolean isDone();
 	
+	public abstract void toTele();
+	
 	public abstract long sleepTime();
 	
 	public abstract DebuggerResult[] debug();

@@ -83,7 +83,7 @@ public class RobotSystem extends Thread{
 	}
 
 	public void teleStart(){
-		drives.toTeleop();
+		drives.toTele();
 		ele.startInit();
 		currentControl = teleopControl;
 		currentState = RobotState.TELE;

@@ -429,21 +429,26 @@ public class Drives extends GenericSubsytem {
 		}
 
 	}
-
+	
 	/**
 	 * Changes state to teleop
 	 */
-	public void toTeleop() {
-		changeState(DriveState.TELEOP);
+	@Override
+	public void toTele() {
+		isMoving = false;
+		if(state != DriveState.CLIMB_INIT) {
+			changeState(DriveState.TELEOP);
+		}
 		leftDrives.setNeutralMode(NeutralMode.Coast);
 		rightDrives.setNeutralMode(NeutralMode.Coast);
 	}
-
+	
 	/**
 	 * Changes state to auto
 	 */
 	public void toAuto() {
 		changeState(DriveState.STANDBY);
+		isMoving = false;
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
 	}
@@ -684,7 +689,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	private double rampUp() {
 		double rampUp = (Math.abs(moveSpeed) - DEADPOOL)/(BLEEP * Math.abs(moveDist));
-		return (rampUp * distance()) + DEADPOOL;
+		return (rampUp * Math.abs(distance()) + DEADPOOL);
 	}
 
 	/**
@@ -693,7 +698,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	private double rampDown() {
 		double rampDown = (DEADPOOL - moveSpeed)/(moveDist-BLOOP * moveDist);
-		return (rampDown * (distance() - BLOOP*moveDist)) + moveSpeed;
+		return (rampDown * (Math.abs(distance()) - BLOOP*moveDist)) + moveSpeed;
 	}
 
 	/**

@@ -42,7 +42,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final boolean LOWERED = !RAISED;
 	
-	private static final double MOTOR_ACQ = .7; //originally 0.9 
+	private static final double MOTOR_ACQ = 1; //originally 0.9 
 	
 	private static final double MOTOR_LAUNCH = .8;
 	
@@ -403,5 +403,10 @@ public class Acquisitions extends GenericSubsytem{
 	@Override
 	public long sleepTime() {
 		return 20;
+	}
+
+	@Override
+	public void toTele() {
+		
 	}
 }
