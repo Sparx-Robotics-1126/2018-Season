@@ -13,6 +13,7 @@ public class Automation {
 	private Elevations ele;
 	private Climbing climb;
 	
+	private int updateAutoStep;
 	private int autoStep;
 	private int[][] currentAuto;
 	
@@ -53,11 +54,12 @@ public class Automation {
 		ELE_SCALE(19),
 		ELE_FLOOR(20),
 		ELE_CLIMB(21),
-		ELE_DONE(22),
-		CLIMBING_PTO(23),
-		CLIMBING_ARMS(24),
-		TIMER(25),
-		BGR_TIMER(26);
+		ELE_STAYDOWN(22),
+		ELE_DONE(23),
+		CLIMBING_PTO(24),
+		CLIMBING_ARMS(25),
+		TIMER(26),
+		BGR_TIMER(27);
 		
 		private final int value;
 		private AutoState(int val) {
@@ -78,6 +80,7 @@ public class Automation {
 		
 		autoStep = 0;
 		startingTime = -1;
+		updateAutoStep = -1;
 	}
 	
 	public void setAuto(int[][] autoSequence) {
@@ -88,6 +91,8 @@ public class Automation {
 		isBackgroundTimer = false;
 		startingBackgroundTime = Timer.getFPGATimestamp();
 		startingTime = -1;
+		updateAutoStep = -1;
+		System.out.println("Starting automated mode");
 	}
 	
 	public void execute() {
@@ -96,7 +101,7 @@ public class Automation {
 			return;
 		case AUTO:
 			if(currentAuto == null) {
-				System.err.println("Auto not set!");
+				System.out.println("Auto not set!");
 				return;
 			}
 			if(isBackgroundTimer && startingBackgroundTime + currentAuto[timerStep][1] < Timer.getFPGATimestamp()) {
@@ -104,6 +109,11 @@ public class Automation {
 				isBackgroundTimer = false;
 			}
 			if(currentAuto.length > autoStep) {
+				if(updateAutoStep != autoStep) {
+					System.out.println("Current auto step:" + autoStep);
+					System.out.println("Current auto function: " + currentAuto[autoStep][0]);
+					updateAutoStep = autoStep;
+				}
 				switch(currentAuto[autoStep][0]) {
 				case 0: //DRIVES_FORWARD
 					drives.move(currentAuto[autoStep][1], currentAuto[autoStep][2]);
@@ -197,20 +207,24 @@ public class Automation {
 					ele.setClimb();
 					autoStep++;
 					break;
-				case 22: //ELE_DONE
+				case 22:
+					ele.setStayDown();
+					autoStep++;
+					break;
+				case 23: //ELE_DONE
 					if(ele.isDone()){
 						autoStep++;
 					}
 					break;
-				case 23: //CLIMB_PTO
+				case 24: //CLIMB_PTO
 					climb.enableClimbing(currentAuto[autoStep][1] == 1 ? true : false);
 					autoStep++;
 					break;
-				case 24:
+				case 25:
 					climb.climbingArms(currentAuto[autoStep][1] == 1 ? true : false);
 					autoStep++;
 					break;
-				case 25: //TIMER
+				case 26: //TIMER
 					if(startingTime < 0) {
 						startingTime = Timer.getFPGATimestamp() * 1000;
 					} else if(startingTime + currentAuto[autoStep][1] < Timer.getFPGATimestamp()*1000) {
@@ -218,7 +232,7 @@ public class Automation {
 						startingTime = -1;
 					}
 					break;
-				case 26: //BGR_TIMER
+				case 27: //BGR_TIMER
 					isBackgroundTimer = true;
 					timerStep = autoStep;
 					autoStep++;

@@ -1,17 +1,9 @@
  package src.org.gosparx.team1126.controls;
 
-import java.util.Arrays;
-
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.controls.Automation.AutoState;
-import src.org.gosparx.team1126.subsytems.Acquisitions;
-import src.org.gosparx.team1126.subsytems.Drives;
-import src.org.gosparx.team1126.subsytems.Elevations;
 
 public class Autonomous implements Controls {
 	
@@ -154,16 +146,16 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT_AND_SCALE = {
-			{AutoState.DRIVES_FORWARD.toInt(), 226, 70},
+			{AutoState.DRIVES_FORWARD.toInt(), 226, 90},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_TURNRIGHT.toInt(), 90, 70},
+			{AutoState.DRIVES_TURNRIGHT.toInt(), 86, 70},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_FORWARD.toInt(), 194, 70},
+			{AutoState.DRIVES_FORWARD.toInt(), 182, 90}, //dist = 194
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ELE_SCALE.toInt()},
-			{AutoState.DRIVES_TURNLEFT.toInt(), 90, 50},
+			{AutoState.DRIVES_TURNLEFT.toInt(), 95, 70},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_FORWARD.toInt(), 44, 35},
+			{AutoState.DRIVES_FORWARD.toInt(), 24, 50}, //44
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ELE_DONE.toInt()},
 			{AutoState.ACQ_LOWER.toInt()},
@@ -206,7 +198,7 @@ public class Autonomous implements Controls {
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.DRIVES_TURNRIGHT.toInt(), 90, 75},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_FORWARD.toInt(), 180, 70},
+			{AutoState.DRIVES_FORWARD.toInt(), 168, 70}, //180
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ELE_SWITCH.toInt()},
 			{AutoState.DRIVES_TURNRIGHT.toInt(), 90, 75},
@@ -295,6 +287,8 @@ public class Autonomous implements Controls {
 		isRightAllySwitch = false;
 		isRightScale = false;
 		isRightOpponentSwitch = false;
+		
+		this.automation = automation;
 
 		firstRun = false;
 		

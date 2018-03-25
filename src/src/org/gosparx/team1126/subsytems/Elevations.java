@@ -13,7 +13,7 @@ public class Elevations extends GenericSubsytem {
 
 	private double height; //Height of elevator
 	private int top;
-	private int climbingLocation;
+	private double climbingLocation;
 	private int middle;
 	private int floor; 
 	private WPI_TalonSRX motor1; 
@@ -39,13 +39,15 @@ public class Elevations extends GenericSubsytem {
 		MOVECLIMB,
 		MOVEUP, //Go to the top
 		MOVEDOWN, //Go to the bottom
+		STAYDOWN,
 		TRIM;
 	}
 
 	@Override
 	public void init() {
 		top = 95; 
-		climbingLocation = 70; //TODO: change
+		//climbingLocation = 91.5; //TODO: change
+		climbingLocation = 85.5;
 		middle = 39;
 		floor = 1;
 //		trimValue = 0;
@@ -75,6 +77,7 @@ public class Elevations extends GenericSubsytem {
 	public void execute() {
 		encoder.calculateSpeed();
 		height = -encoder.getDistance();
+		System.out.println("Height: " + height);
 		switch(state)
 		{
 
@@ -157,9 +160,13 @@ public class Elevations extends GenericSubsytem {
 				setMotor(-.7);
 			}
 			break;
+		case STAYDOWN:
+			setMotor(-0.2);
+			state = State.STANDBY;
+			break;
 		case TRIM:
 			if(trimValue > 0)
-				setMotor(0.55);
+				setMotor(0.70);	//setMotor(0.55);
 			else if(trimValue < 0)
 				setMotor(-0.1);
 			else
@@ -282,6 +289,16 @@ public class Elevations extends GenericSubsytem {
 			state = State.MOVEDOWN;
 			return true;
 		}else {return false;}
+	}
+	
+	public boolean setStayDown() {
+		if(state != State.STAYDOWN) {
+			isMoving = true;
+			state = State.STAYDOWN;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public boolean stopAll() //Stops all motors and state to standby 

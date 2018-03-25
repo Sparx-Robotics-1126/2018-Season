@@ -166,7 +166,7 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 		case GOT_CUBE:
 			pinch();
-			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
+			if (Timer.getFPGATimestamp() > pinchTime + 1.0){ //.5
 				stopRollers();
 				setStandby();
 			}

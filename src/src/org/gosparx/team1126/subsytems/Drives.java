@@ -58,9 +58,9 @@ public class Drives extends GenericSubsytem {
 
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
-	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .35;//.3		//The speed we want when turning after we went the DIZZY_SPINNER
 
-	private final int DEADBAND_TELL_NO_TALES = 5;	//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
+	private final int DEADBAND_TELL_NO_TALES = 7;//5//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 
 	private final double KEVIN = .8;				//Sets the over-performing motor in auto to this percentage of its speed until within allowable error
 
@@ -160,6 +160,7 @@ public class Drives extends GenericSubsytem {
 		TELEOP,
 		CLIMB_INIT,
 		CLIMB,
+		CLIMB_ALIGN,
 		MOVE_FRWD,
 		MOVE_BKWD,
 		TURN_R,
@@ -215,8 +216,11 @@ public class Drives extends GenericSubsytem {
 				boolean right = false;
 				boolean left = false;
 				if(climbTimer + 1.25 < Timer.getFPGATimestamp()) {
+					System.out.print("Right: ");
 					right = isTaught(rightDrives);
+					System.out.print("\nLeft: ");
 					left = isTaught(leftDrives);
+					System.out.println();
 				}
 				if(!notRightYet && !notLeftYet) {
 					System.out.print("Switching to CLIMB!! Highest amp: " + highestAmp);
@@ -250,33 +254,73 @@ public class Drives extends GenericSubsytem {
 			}
 			break;
 		case CLIMB:
-			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
-			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			if(distOff < 0) {
-				print("offsetting left");
-				rightDrives.set(speedRight);
-				if(distOff < -5) {
-					leftDrives.set(0);
-				} else {
-					leftDrives.set(levelOffset);
-				}
-			} else if(distOff > 0) {
-				print("offsetting right");
-				leftDrives.set(speedRight);
-				if(distOff > 5) {
-					rightDrives.set(0);
-				} else {
-					rightDrives.set(levelOffset);
-				}
-			}else {
-				rightDrives.set(speedRight);
-				leftDrives.set(speedRight);
-			}
-			if(distance() < -340)
+			double distOff = rightEnc.getDistance() - leftEnc.getDistance();
+			double levelOffset = ((-0.2*(Math.abs(distOff))) + 1)*speedRight;
+			System.out.println("Left Encoder: " + leftEnc.getDistance());
+			System.out.println("Right Encoder: " + rightEnc.getDistance());
+			System.out.print("Left Drives: ");
+			isTaught(leftDrives);
+			System.out.print("Right Drives: ");
+			isTaught(rightDrives);
+			if(distance() < -375) {
+				rightDrives.set(0);
+				leftDrives.set(0);
 				climbed = true;
+				notLeftYet = true;
+				notRightYet = true;
+				state = DriveState.CLIMB_ALIGN;
+			} else {
+				if(distOff < 0) {
+					print("offsetting left");
+					rightDrives.set(speedRight);
+					if(distOff < -5) {
+						leftDrives.set(0);
+					} else {
+						leftDrives.set(levelOffset);
+					}
+				} else if(distOff > 0) {
+					print("offsetting right");
+					leftDrives.set(speedRight);
+					if(distOff > 5) {
+						rightDrives.set(0);
+					} else {
+						rightDrives.set(levelOffset);
+					}
+				}else {
+					rightDrives.set(speedRight);
+					leftDrives.set(speedRight);
+				}
+			}
+
 			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
+			break;
+		case CLIMB_ALIGN:
+			boolean right = false;
+			boolean left = false;
+			right = isStallingRight(rightDrives);
+			left = isStallingLeft(leftDrives);
+			if(!notRightYet && !notLeftYet) {
+				System.out.print("Switching to STANDBY!! Highest amp: " + highestAmp);
+				leftDrives.set(0);
+				rightDrives.set(0);
+				changeState(DriveState.STANDBY);
+			}
+			if(!right && notRightYet){
+				rightDrives.set(-.50); 
+			}else {
+				rightDrives.set(0); 
+				notRightYet = false;
+			}
+			if(!left && notLeftYet){
+				leftDrives.set(-.50);
+			}else {
+				leftDrives.set(0);
+				notLeftYet = false;
+			}
+			System.out.println("Right side: " + (right || !notRightYet));
+			System.out.println("Left side: " + (left || !notLeftYet));
 			break;
 		case TURN_R:
 			if(getAngle() > turnAngle - DEADBAND_TELL_NO_TALES) {
@@ -432,12 +476,57 @@ public class Drives extends GenericSubsytem {
 	private boolean isTaught(MotorGroup side) {
 		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
 		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
-		System.out.println("Motor 1: " + motor1Amp + " Motor 2: " + motor2Amp);
+		double motor3Amp = ((WPI_TalonSRX)side.getSpeedController(2)).getOutputCurrent();
+		System.out.println("Motor 1: " + motor1Amp + " Motor 2: " + motor2Amp + " Motor 3: " + motor3Amp);
 		if(motor1Amp > highestAmp)
 			highestAmp = motor1Amp;
 		if(motor2Amp > highestAmp)
 			highestAmp = motor2Amp;
-		if(motor1Amp > 6 || motor2Amp > 6)
+		if(motor3Amp > highestAmp)
+			highestAmp = motor3Amp;
+		if(motor1Amp > 6 || motor2Amp > 6 || motor3Amp > 6)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Checks if robot side is almost off ground 
+	 * @param side - the side we're checking
+	 * @return true if side is almost off ground
+	 */
+	private boolean isStallingLeft(MotorGroup side) {
+		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
+		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
+		double motor3Amp = ((WPI_TalonSRX)side.getSpeedController(2)).getOutputCurrent();
+		System.out.println("Left: Motor 1: " + motor1Amp + " Motor 2: " + motor2Amp + " Motor 3: " + motor3Amp);
+		if(motor1Amp > highestAmp)
+			highestAmp = motor1Amp;
+		if(motor2Amp > highestAmp)
+			highestAmp = motor2Amp;
+		if(motor3Amp > highestAmp)
+			highestAmp = motor3Amp;
+		if(motor1Amp > 30 || motor2Amp > 30 || motor3Amp > 30)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Checks if robot side is almost off ground 
+	 * @param side - the side we're checking
+	 * @return true if side is almost off ground
+	 */
+	private boolean isStallingRight(MotorGroup side) {
+		double motor1Amp = ((WPI_TalonSRX)side.getSpeedController(0)).getOutputCurrent();
+		double motor2Amp = ((WPI_TalonSRX)side.getSpeedController(1)).getOutputCurrent();
+		double motor3Amp = ((WPI_TalonSRX)side.getSpeedController(2)).getOutputCurrent();
+		System.out.println("Right: Motor 1: " + motor1Amp + " Motor 2: " + motor2Amp + " Motor 3: " + motor3Amp);
+		if(motor1Amp > highestAmp)
+			highestAmp = motor1Amp;
+		if(motor2Amp > highestAmp)
+			highestAmp = motor2Amp;
+		if(motor3Amp > highestAmp)
+			highestAmp = motor3Amp;
+		if(motor1Amp > 20 || motor2Amp > 20 || motor3Amp > 20)
 			return true;
 		return false;
 	}
