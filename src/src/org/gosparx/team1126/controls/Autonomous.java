@@ -122,7 +122,7 @@ public class Autonomous implements Controls {
 			{AutoState.ACQ_DONE.toInt()},
 			{AutoState.DRIVES_BACKWARD.toInt(), 6, 50},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_TURNRIGHT.toInt(), 119, 65},
+			{AutoState.DRIVES_TURNRIGHT.toInt(), 114, 65},
 			{AutoState.DRIVES_SLOW.toInt()},
 			{AutoState.ELE_FLOOR.toInt()},
 			{AutoState.ELE_DONE.toInt()},
