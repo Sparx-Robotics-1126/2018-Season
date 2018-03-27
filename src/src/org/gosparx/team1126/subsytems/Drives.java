@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.subsytems;
 
+import javax.swing.ToolTipManager;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -54,11 +56,13 @@ public class Drives extends GenericSubsytem {
 
 	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (Replaced by bleep bloop blurp)
 
-	private final double DIZZY_SPINNER = .3;		//What decimal part of the way through a turn we start moving at slow speed (turn)
+	private final double DIZZY_SPINNER = .40;//.3		//What decimal part of the way through a turn we start moving at slow speed (turn)
 
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
-	private final double TOURNAMENT_WIFI = .35;//.3		//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .40; //0.35 //.3		//The speed we want when turning after we went the DIZZY_SPINNER
+	
+	private final double RIT_WIFI = 0.65; 
 
 	private final int DEADBAND_TELL_NO_TALES = 7;//5//The deadband inside which a turn will stop, so robot doesn't over-turn (was 12)
 
@@ -270,6 +274,7 @@ public class Drives extends GenericSubsytem {
 				climbed = true;
 				notLeftYet = true;
 				notRightYet = true;
+				climbTimer = Timer.getFPGATimestamp();
 				state = DriveState.CLIMB_ALIGN;
 			} else {
 				if(distOff < 0) {
@@ -297,6 +302,9 @@ public class Drives extends GenericSubsytem {
 			print("Left: " + leftEnc.getDistance() + "Right: " + rightEnc.getDistance());
 			break;
 		case CLIMB_ALIGN:
+			if(climbTimer + 0.25 > Timer.getFPGATimestamp()) {
+				return;
+			}
 			boolean right = false;
 			boolean left = false;
 			right = isStallingRight(rightDrives);
@@ -329,10 +337,15 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 				System.out.println("Turn right finished");
 			}else if(getAngle() > turnAngle * DIZZY_SPINNER){
-				turnSpeed = TOURNAMENT_WIFI;
-				slow = true;
-				leftDrives.set(-turnSpeed);
-				rightDrives.set(turnSpeed);
+				if(turnAngle > 100) {
+					turnSpeed = RIT_WIFI;
+				} else {
+					turnSpeed = TOURNAMENT_WIFI;
+				}
+					slow = true;
+					leftDrives.set(-turnSpeed);
+					rightDrives.set(turnSpeed);
+				
 			}else {
 				leftDrives.set(-turnSpeed);
 				rightDrives.set(turnSpeed);
@@ -345,7 +358,11 @@ public class Drives extends GenericSubsytem {
 				isMoving = false;
 				System.out.println("Turn left finished");
 			}else if(getAngle() < turnAngle * DIZZY_SPINNER) {
-				turnSpeed = TOURNAMENT_WIFI;
+				if(turnAngle > 100) {
+					turnSpeed = RIT_WIFI;
+				} else {
+					turnSpeed = TOURNAMENT_WIFI;
+				}
 				slow = true;
 				leftDrives.set(turnSpeed);
 				rightDrives.set(-turnSpeed);
@@ -441,6 +458,8 @@ public class Drives extends GenericSubsytem {
 		}
 		leftDrives.setNeutralMode(NeutralMode.Coast);
 		rightDrives.setNeutralMode(NeutralMode.Coast);
+		speedLeft = 0;
+		speedRight = 0;
 	}
 	
 	/**
@@ -448,6 +467,8 @@ public class Drives extends GenericSubsytem {
 	 */
 	public void toAuto() {
 		changeState(DriveState.STANDBY);
+		speedLeft = 0;
+		speedRight = 0;
 		isMoving = false;
 		leftDrives.setNeutralMode(NeutralMode.Brake);
 		rightDrives.setNeutralMode(NeutralMode.Brake);
@@ -510,7 +531,7 @@ public class Drives extends GenericSubsytem {
 			highestAmp = motor2Amp;
 		if(motor3Amp > highestAmp)
 			highestAmp = motor3Amp;
-		if(motor1Amp > 30 || motor2Amp > 30 || motor3Amp > 30)
+		if(motor1Amp > 20 || motor2Amp > 20 || motor3Amp > 20)
 			return true;
 		return false;
 	}
