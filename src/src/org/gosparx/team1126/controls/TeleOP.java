@@ -1,5 +1,7 @@
 package src.org.gosparx.team1126.controls;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,6 +16,8 @@ public class TeleOP implements Controls{
 
 	private Joystick[] joysticks;
 
+	private NetworkTableEntry arduinoValue;
+	
 	private Drives drives;
 	private Acquisitions acq;
 	private Climbing climbing;
@@ -87,6 +91,8 @@ public class TeleOP implements Controls{
 		this.ele = ele;
 		this.climbing = climb;
 		this.teleauto = new TeleAutomation(automation);
+		arduinoValue = NetworkTableInstance.getDefault().getTable("arduinoTable").getEntry("arduinoValue");
+		arduinoValue.setBoolean(false);
 		state = State.TELEOP;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
 	}
@@ -97,22 +103,24 @@ public class TeleOP implements Controls{
 	@Override
 	public void execute() {
 		setJoystickStates();
-		switch(state) {
-		case TELEOP:
-			if(DriverStation.getInstance().getMatchTime() > 45) {
+		if(DriverStation.getInstance().getMatchTime() > 45) {
+			SmartDashboard.putBoolean("climbingTime", false);
+			arduinoValue.setBoolean(false);
+		} else {
+			arduinoValue.setBoolean(true);
+			if(DriverStation.getInstance().getMatchTime() > 40) {
+				joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
+			} else {
+				joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
+			}
+			if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
 				SmartDashboard.putBoolean("climbingTime", false);
 			} else {
-				if(DriverStation.getInstance().getMatchTime() > 40) {
-					joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
-				} else {
-					joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
-				}
-				if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
-					SmartDashboard.putBoolean("climbingTime", false);
-				} else {
-					SmartDashboard.putBoolean("climbingTime", true);
-				}
+				SmartDashboard.putBoolean("climbingTime", true);
 			}
+		}
+		switch(state) {
+		case TELEOP:
 //			Joystick Buttons Left
 			if(isRisingEdgeButton(0)) { //right joystick left button
 				climbing.climbingArms(!climbing.getClimbingArms());
