@@ -60,7 +60,7 @@ public class Drives extends GenericSubsytem {
 
 	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
-	private final double TOURNAMENT_WIFI = .40; //0.35 //.3		//The speed we want when turning after we went the DIZZY_SPINNER
+	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
 	
 	private final double RIT_WIFI = 0.65; 
 

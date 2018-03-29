@@ -130,7 +130,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
+			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5 //if this var is changed the var in setRaise has to be changed
 				stopRollers();
 				raise();
 				setStandby();
@@ -166,7 +166,7 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 		case GOT_CUBE:
 			pinch();
-			if (Timer.getFPGATimestamp() > pinchTime + 1.0){ //.5
+			if (Timer.getFPGATimestamp() > pinchTime + 1.5){ //1.0 second
 				stopRollers();
 				setStandby();
 			}
@@ -231,6 +231,9 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.RAISE){
 			AcqState = State.RAISE;
 			pinchTime = Timer.getFPGATimestamp();
+			if(pinchPosition == PINCHED) {
+				pinchTime -= 1;
+			}
 			log("State set to RAISE");
 		}
 	}

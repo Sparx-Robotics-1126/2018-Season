@@ -103,20 +103,25 @@ public class TeleOP implements Controls{
 	@Override
 	public void execute() {
 		setJoystickStates();
-		if(DriverStation.getInstance().getMatchTime() > 45) {
+		if(DriverStation.getInstance().getMatchTime() > 50) {
 			SmartDashboard.putBoolean("climbingTime", false);
 			arduinoValue.setBoolean(false);
 		} else {
-			arduinoValue.setBoolean(true);
 			if(DriverStation.getInstance().getMatchTime() > 40) {
-				joysticks[2].setRumble(RumbleType.kLeftRumble, 0.5);
+				joysticks[2].setRumble(RumbleType.kLeftRumble, 1);
+				joysticks[2].setRumble(RumbleType.kRightRumble, 1);
 			} else {
 				joysticks[2].setRumble(RumbleType.kLeftRumble, 0);
+				joysticks[2].setRumble(RumbleType.kRightRumble, 0);
 			}
-			if(DriverStation.getInstance().getMatchTime() % 2 < 0.5) {
+			if(DriverStation.getInstance().getMatchTime() % 1 < 0.5) {
 				SmartDashboard.putBoolean("climbingTime", false);
+				if(DriverStation.getInstance().isFMSAttached()) {
+					arduinoValue.setBoolean(true);
+				}
 			} else {
 				SmartDashboard.putBoolean("climbingTime", true);
+				arduinoValue.setBoolean(false);
 			}
 		}
 		switch(state) {
@@ -239,10 +244,10 @@ public class TeleOP implements Controls{
 				acq.setRaise();
 			}
 			if(isRisingEdgeButton(14)) { //xbox back button
-				ele.setClimb();
+				acq.setSlowSpit();
 			}   
 			if(isRisingEdgeButton(15)) { //xbox start button
-				acq.setSlowSpit();
+				ele.setClimb();
 			}
 			if(isRisingEdgeButton(16)) { //xbox L2 button
 				acq.setLower();

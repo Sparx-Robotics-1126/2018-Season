@@ -47,7 +47,7 @@ public class Elevations extends GenericSubsytem {
 	public void init() {
 		top = 95; 
 		//climbingLocation = 91.5; //TODO: change
-		climbingLocation = 91;
+		climbingLocation = 88.75;
 		middle = 39;
 		floor = 2.5; //1
 //		trimValue = 0;
@@ -76,7 +76,7 @@ public class Elevations extends GenericSubsytem {
 	@Override
 	public void execute() {
 		encoder.calculateSpeed();
-		height = -encoder.getDistance();
+		height = encoder.getDistance();
 		switch(state)
 		{
 

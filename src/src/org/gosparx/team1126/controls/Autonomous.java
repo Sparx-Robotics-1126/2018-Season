@@ -108,7 +108,7 @@ public class Autonomous implements Controls {
 			{AutoState.DRIVES_FORWARD.toInt(), 158, 95},
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ELE_SCALE.toInt()},
-			{AutoState.DRIVES_TURNRIGHT.toInt(), 15, 40},
+			{AutoState.DRIVES_TURNRIGHT.toInt(), 13, 40},
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.DRIVES_FORWARD.toInt(), 98, 70}, //110
 			{AutoState.DRIVES_WAIT.toInt()},
@@ -156,7 +156,7 @@ public class Autonomous implements Controls {
 	private final int[][] CUBE_ON_RIGHT_SCALE_FROM_LEFT_AND_SCALE = {
 			{AutoState.DRIVES_FORWARD.toInt(), 226, 90},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_TURNRIGHT.toInt(), 86, 70},
+			{AutoState.DRIVES_TURNRIGHT.toInt(), 84, 70},
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.DRIVES_FORWARD.toInt(), 182, 90}, //dist = 194
 			{AutoState.DRIVES_WAIT.toInt()},
@@ -179,7 +179,8 @@ public class Autonomous implements Controls {
 			{AutoState.ELE_DONE.toInt()},
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ACQ_ACQUIRE.toInt()},
-			{AutoState.DRIVES_FORWARD.toInt(), 55, 50}, 
+			{AutoState.TIMER.toInt(), 250},
+			{AutoState.DRIVES_TIMED.toInt(), 500, 40}, 
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ACQ_RAISE.toInt()},
 			{AutoState.ACQ_DONE.toInt()},
