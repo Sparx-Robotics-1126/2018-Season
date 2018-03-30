@@ -174,12 +174,10 @@ public class Autonomous implements Controls {
 			{AutoState.ACQ_HOME.toInt()},		
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.DRIVES_TURNLEFT.toInt(), 170, 95},
-			{AutoState.DRIVES_SLOW.toInt()},
-			{AutoState.ELE_FLOOR.toInt()},
-			{AutoState.ELE_DONE.toInt()},
 			{AutoState.DRIVES_WAIT.toInt()},
+			{AutoState.ELE_FLOOR.toInt()},
 			{AutoState.ACQ_ACQUIRE.toInt()},
-			{AutoState.TIMER.toInt(), 250},
+			{AutoState.ELE_DONE.toInt()},
 			{AutoState.DRIVES_TIMED.toInt(), 500, 40}, 
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.ACQ_RAISE.toInt()},
@@ -203,9 +201,9 @@ public class Autonomous implements Controls {
 	};
 	
 	private final int[][] CUBE_ON_RIGHT_SWITCH_FROM_LEFT = {
-			{AutoState.DRIVES_FORWARD.toInt(), 226, 70},
+			{AutoState.DRIVES_FORWARD.toInt(), 226, 90},
 			{AutoState.DRIVES_WAIT.toInt()},
-			{AutoState.DRIVES_TURNRIGHT.toInt(), 90, 75},
+			{AutoState.DRIVES_TURNRIGHT.toInt(), 84, 70},
 			{AutoState.DRIVES_WAIT.toInt()},
 			{AutoState.DRIVES_FORWARD.toInt(), 150, 70}, //180
 			{AutoState.DRIVES_WAIT.toInt()},
