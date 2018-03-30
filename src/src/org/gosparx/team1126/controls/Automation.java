@@ -220,11 +220,11 @@ public class Automation {
 						autoStep++;
 					}
 					break;
-				case 24: //CLIMB_PTO
+				case 24: //CLIMBNG_PTO
 					climb.enableClimbing(currentAuto[autoStep][1] == 1 ? true : false);
 					autoStep++;
 					break;
-				case 25:
+				case 25: //CLIMBING_ARMS
 					climb.climbingArms(currentAuto[autoStep][1] == 1 ? true : false);
 					autoStep++;
 					break;

@@ -156,7 +156,7 @@ public class Elevations extends GenericSubsytem {
 				setMotor(-.1);
 			}
 			else {
-				setMotor(-.9);
+				setMotor(-1);
 			}
 			break;
 		case STAYDOWN:

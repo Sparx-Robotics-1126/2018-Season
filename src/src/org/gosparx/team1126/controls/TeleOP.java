@@ -24,11 +24,6 @@ public class TeleOP implements Controls{
 	private Elevations ele;
 	private TeleAutomation teleauto;
 
-	private boolean climbingActivated;
-	private boolean latched;
-
-	private double startTime;
-	
 	private State state;
 
 	private boolean[][] buttonStates =
@@ -85,7 +80,6 @@ public class TeleOP implements Controls{
 	 * @param climb - an instance of Climbing created by RobotSystem.
 	 */
 	public TeleOP(Drives drives, Acquisitions acq, Elevations ele, Climbing climb, Automation automation) {
-		climbingActivated = false;
 		this.drives = drives;
 		this.acq = acq;
 		this.ele = ele;
@@ -330,7 +324,7 @@ public class TeleOP implements Controls{
 
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
-				buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
+		buttonStates[14][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_BACK);
 		buttonStates[15][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_START);
 		buttonStates[16][0] = isPressedTrigger(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L2);
 		buttonStates[17][0] = isPressedTrigger(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R2);
