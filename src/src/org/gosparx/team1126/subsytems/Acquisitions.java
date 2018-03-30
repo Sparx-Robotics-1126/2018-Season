@@ -44,11 +44,11 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double MOTOR_ACQ = 1; //originally 0.9 
 	
-	private static final double MOTOR_LAUNCH = .8;
+	private static final double MOTOR_LAUNCH = .75;
 	
 	private static final double MOTOR_STOP = 0.0;
 	
-	private static final double MOTOR_LOW = .7;
+	private static final double MOTOR_LOW = .5;
 	
 	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	

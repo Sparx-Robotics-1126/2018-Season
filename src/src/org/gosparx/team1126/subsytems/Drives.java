@@ -268,7 +268,7 @@ public class Drives extends GenericSubsytem {
 			isTaught(leftDrives);
 			System.out.print("Right Drives: ");
 			isTaught(rightDrives);
-			if(distance() < -375) {
+			if(distance() < -500) { //-375
 				rightDrives.set(0);
 				leftDrives.set(0);
 				climbed = true;

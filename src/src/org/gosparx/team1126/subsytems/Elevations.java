@@ -49,7 +49,7 @@ public class Elevations extends GenericSubsytem {
 		//climbingLocation = 91.5; //TODO: change
 		climbingLocation = 88.75;
 		middle = 39;
-		floor = 2.5; //1
+		floor = 1.25; //2.5
 //		trimValue = 0;
 		slowSpeed = false;
 		state = State.STANDBY;
