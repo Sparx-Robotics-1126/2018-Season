@@ -44,11 +44,11 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double MOTOR_ACQ = 1; //originally 0.9 
 	
-	private static final double MOTOR_LAUNCH = .8;
+	private static final double MOTOR_LAUNCH = .75;
 	
 	private static final double MOTOR_STOP = 0.0;
 	
-	private static final double MOTOR_LOW = .7;
+	private static final double MOTOR_LOW = .5;
 	
 	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
@@ -65,6 +65,8 @@ public class Acquisitions extends GenericSubsytem{
 	private double pinchTime;
 		
 	private double regScoreTime;
+	
+	private double sensorTime;
 
 	private boolean pinchPosition;  //true = pinched 
 	
@@ -130,7 +132,7 @@ public class Acquisitions extends GenericSubsytem{
 		case RAISE:
 			pinch();
 			rollerAcq();
-			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5
+			if (Timer.getFPGATimestamp() > pinchTime + .5){ //.5 //if this var is changed the var in setRaise has to be changed
 				stopRollers();
 				raise();
 				setStandby();
@@ -166,14 +168,20 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 		case GOT_CUBE:
 			pinch();
-			if (Timer.getFPGATimestamp() > pinchTime + 1.0){ //.5
+			if (Timer.getFPGATimestamp() > pinchTime + 1.5){ //1.0 second
 				stopRollers();
 				setStandby();
 			}
 			break;
 		case WAIT_FOR_CUBE:
 			if(cubeSensor.get()) {
-				setCube();
+				if(sensorTime < 0) {
+					sensorTime = Timer.getFPGATimestamp();
+				} else if(Timer.getFPGATimestamp() > sensorTime + 0.1) {
+					setCube();
+				}
+			} else {
+				sensorTime = -1;
 			}
 			break;
 		default:
@@ -231,6 +239,9 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.RAISE){
 			AcqState = State.RAISE;
 			pinchTime = Timer.getFPGATimestamp();
+			if(pinchPosition == PINCHED) {
+				pinchTime -= 1;
+			}
 			log("State set to RAISE");
 		}
 	}
@@ -289,6 +300,7 @@ public class Acquisitions extends GenericSubsytem{
 	public void setWaitForCube() {
 		if (AcqState != State.WAIT_FOR_CUBE){
 			AcqState = State.WAIT_FOR_CUBE;
+			sensorTime = -1;
 			log("State set to WAIT_FOR_CUBE");
 		}
 	}
