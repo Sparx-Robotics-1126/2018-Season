@@ -65,6 +65,8 @@ public class Acquisitions extends GenericSubsytem{
 	private double pinchTime;
 		
 	private double regScoreTime;
+	
+	private double sensorTime;
 
 	private boolean pinchPosition;  //true = pinched 
 	
@@ -173,7 +175,13 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 		case WAIT_FOR_CUBE:
 			if(cubeSensor.get()) {
-				setCube();
+				if(sensorTime < 0) {
+					sensorTime = Timer.getFPGATimestamp();
+				} else if(Timer.getFPGATimestamp() > sensorTime + 0.1) {
+					setCube();
+				}
+			} else {
+				sensorTime = -1;
 			}
 			break;
 		default:
@@ -292,6 +300,7 @@ public class Acquisitions extends GenericSubsytem{
 	public void setWaitForCube() {
 		if (AcqState != State.WAIT_FOR_CUBE){
 			AcqState = State.WAIT_FOR_CUBE;
+			sensorTime = -1;
 			log("State set to WAIT_FOR_CUBE");
 		}
 	}

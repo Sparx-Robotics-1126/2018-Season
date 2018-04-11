@@ -122,12 +122,14 @@ public class TeleOP implements Controls{
 		case TELEOP:
 //			Joystick Buttons Left
 			if(isRisingEdgeButton(0)) { //right joystick left button
+				System.out.println("Right joystick - Left Button pressed");
 				climbing.climbingArms(!climbing.getClimbingArms());
 			}
 //			if(isRisingEdgeButton(1)) { //right joystick middle button
 //				System.out.println("right joystick middle button");
 //			}
 			if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
+				System.out.println("Right joystick - Middle Button pressed");
 				state = State.TELEAUTO;
 				teleauto.init();
 				return;
@@ -217,6 +219,7 @@ public class TeleOP implements Controls{
 //			}
 			//xBox Buttons
 			if(isRisingEdgeButton(8)) { //xbox a button
+				System.out.println("XBOX Controller - A Button");
 				acq.setHome();
 			}
 //			if(isRisingEdgeButton(9)) { //xbox b button
@@ -226,27 +229,34 @@ public class TeleOP implements Controls{
 //				
 //			}
 			if(isRisingEdgeButton(10)) { //xbox x button
+				System.out.println("XBOX Controller - X Button");
 				acq.setSpit();
 			}
 //			if(isRisingEdgeButton(11)) { //xbox y button
 //				acq.setRaise(); //raise
 //			}
 			if(isRisingEdgeButton(12)) { //xbox L1 button
+				System.out.println("XBOX Controller - L1 Button");
 				acq.setScore();
 			}
 			if(isRisingEdgeButton(13)) { //xbox R1 button
+				System.out.println("XBOX Controller - R1 Button");
 				acq.setRaise();
 			}
 			if(isRisingEdgeButton(14)) { //xbox back button
+				System.out.println("XBOX Controller - Back Button");
 				acq.setSlowSpit();
 			}   
 			if(isRisingEdgeButton(15)) { //xbox start button
+				System.out.println("XBOX Controller - Start Button");
 				ele.setClimb();
 			}
 			if(isRisingEdgeButton(16)) { //xbox L2 button
+				System.out.println("XBOX Controller - L2 Button");
 				acq.setLower();
 			}
 			if(isRisingEdgeButton(17)) { //xbox R2 button
+				System.out.println("XBOX Controller - R2 Button");
 				acq.setAcquire();
 			}
 //			if(isRisingEdgeButton(18)) { //xbox L3 button
@@ -269,15 +279,19 @@ public class TeleOP implements Controls{
 			}
 			//xbox POV		 
 			if(isRisingEdgePOV(8)) { //xbox pov up
+				System.out.println("XBOX Controller - POV Up");
 				ele.setScale();
 			}
 			if(isRisingEdgePOV(9)) { //xbox pov right
+				System.out.println("XBOX Controller - POV Right");
 				ele.setSwitch();
 			}
 			if(isRisingEdgePOV(10)) { //xbox pov down
+				System.out.println("XBOX Controller - POV Down");
 				ele.setFloor();
 			}
 			if(isRisingEdgePOV(11)) { //xbox pov left
+				System.out.println("XBOX Controller - POV Left");
 				ele.setSwitch();
 			}
 			break;
@@ -312,10 +326,10 @@ public class TeleOP implements Controls{
 		buttonStates[1][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
 //		buttonStates[2][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
 //		buttonStates[3][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_TRIGGER);
-		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
-		buttonStates[5][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
+//		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
+//		buttonStates[5][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
 //		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
-		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
+//		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 
 		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
 		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
