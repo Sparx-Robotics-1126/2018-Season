@@ -1,7 +1,5 @@
 package src.org.gosparx.team1126.subsytems;
 
-import javax.swing.ToolTipManager;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
