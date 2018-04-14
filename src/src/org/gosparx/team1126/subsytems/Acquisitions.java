@@ -50,7 +50,7 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private static final double MOTOR_LOW = .5;
 	
-	private static final double CUBE_SENSOR_THRESHOLD = 1.7;//originally 2.4
+	private static final double CUBE_SENSOR_THRESHOLD = 2.4;
 	
 
 	
