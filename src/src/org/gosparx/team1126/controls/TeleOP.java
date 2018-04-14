@@ -121,19 +121,19 @@ public class TeleOP implements Controls{
 		switch(state) {
 		case TELEOP:
 //			Joystick Buttons Left
-			if(isRisingEdgeButton(0)) { //right joystick left button
-				System.out.println("Right joystick - Left Button pressed");
-				climbing.climbingArms(!climbing.getClimbingArms());
-			}
+//			if(isRisingEdgeButton(0)) { //right joystick left button
+//				System.out.println("Right joystick - Left Button pressed");
+//				climbing.climbingArms(!climbing.getClimbingArms());
+//			}
 //			if(isRisingEdgeButton(1)) { //right joystick middle button
 //				System.out.println("right joystick middle button");
 //			}
-			if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
-				System.out.println("Right joystick - Middle Button pressed");
-				state = State.TELEAUTO;
-				teleauto.init();
-				return;
-			}
+//			if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
+//				System.out.println("Right joystick - Middle Button pressed");
+//				state = State.TELEAUTO;
+//				teleauto.init();
+//				return;
+//			}
 			if(!buttonStates[1][0] && buttonStates[4][0]) {
 				climbing.enableClimbing(false);
 				drives.enableClimb(false);

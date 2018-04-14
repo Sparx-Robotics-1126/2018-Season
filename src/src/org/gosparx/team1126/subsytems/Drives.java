@@ -456,8 +456,8 @@ public class Drives extends GenericSubsytem {
 		if(state != DriveState.CLIMB_INIT) {
 			changeState(DriveState.TELEOP);
 		}
-		leftDrives.setNeutralMode(NeutralMode.Coast);
-		rightDrives.setNeutralMode(NeutralMode.Coast);
+		leftDrives.setNeutralMode(NeutralMode.Brake);
+		rightDrives.setNeutralMode(NeutralMode.Brake);
 		speedLeft = 0;
 		speedRight = 0;
 	}
