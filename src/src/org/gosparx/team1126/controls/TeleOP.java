@@ -104,6 +104,13 @@ public class TeleOP implements Controls{
 		SmartDashboard.putData(send);
 	}
 
+	public void init() {
+		inDemoMode = send.getSelected();
+		if(inDemoMode) {
+			drives.toTele(true);
+		}
+	}
+	
 	/**
 	 * Execute - 2 mana destroy a damaged enemy minion.
 	 */

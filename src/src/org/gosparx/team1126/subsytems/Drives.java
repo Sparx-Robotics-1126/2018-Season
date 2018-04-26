@@ -205,6 +205,7 @@ public class Drives extends GenericSubsytem {
 	 */
 	@Override
 	public void execute() {
+		
 		switch(state) {
 		case STANDBY:  
 			break;
@@ -217,8 +218,16 @@ public class Drives extends GenericSubsytem {
 		case DEMO:
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
-			rightDrives.set(speedRight == 0 ? 0 : 0.3 + speedRight*0.2);
-			leftDrives.set(speedRight == 0 ? 0 : 0.3 + speedLeft*0.2);
+			if(speedRight >= 0) {
+				rightDrives.set(speedRight == 0 ? 0 : 0.25 + speedRight*0.1);
+			} else {
+				rightDrives.set(-0.25 + speedRight*0.1);
+			}
+			if(speedLeft >= 0) {
+				leftDrives.set(speedLeft == 0 ? 0 : 0.25 + speedLeft*0.1);
+			} else {
+				leftDrives.set(-0.25 + speedLeft*0.1);
+			}
 			break;
 		case CLIMB_INIT:
 			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
