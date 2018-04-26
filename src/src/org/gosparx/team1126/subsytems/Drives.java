@@ -160,6 +160,7 @@ public class Drives extends GenericSubsytem {
 	public enum DriveState{
 		STANDBY,
 		TELEOP,
+		DEMO,
 		CLIMB_INIT,
 		CLIMB,
 		CLIMB_ALIGN,
@@ -212,6 +213,12 @@ public class Drives extends GenericSubsytem {
 			rightEnc.calculateSpeed();
 			rightDrives.set(speedRight);
 			leftDrives.set(speedLeft);
+			break;
+		case DEMO:
+			leftEnc.calculateSpeed();
+			rightEnc.calculateSpeed();
+			rightDrives.set(speedRight == 0 ? 0 : 0.3 + speedRight*0.2);
+			leftDrives.set(speedRight == 0 ? 0 : 0.3 + speedLeft*0.2);
 			break;
 		case CLIMB_INIT:
 			if(climbTimer + 1 < Timer.getFPGATimestamp()) {
@@ -459,6 +466,18 @@ public class Drives extends GenericSubsytem {
 		speedLeft = 0;
 		speedRight = 0;
 	}
+	
+	/**
+	 * changes state to teleop with option for demo
+	 * @param demo - enable demo or not
+	 */
+	public void toTele(boolean demo) {
+		toTele();
+		if(demo) {
+			changeState(DriveState.DEMO);
+		}
+	}
+
 	
 	/**
 	 * Changes state to auto

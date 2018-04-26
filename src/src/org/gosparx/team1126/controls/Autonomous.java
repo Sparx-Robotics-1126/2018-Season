@@ -23,7 +23,6 @@ public class Autonomous implements Controls {
 
 	private int[][] currentAuto;
 	
-	
 	private final int[][] DEFAULT_AUTO = {
 			
 	};

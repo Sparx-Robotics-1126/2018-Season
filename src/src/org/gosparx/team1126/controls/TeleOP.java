@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
@@ -25,6 +26,10 @@ public class TeleOP implements Controls{
 	private TeleAutomation teleauto;
 
 	private State state;
+	
+	private SendableChooser<Boolean> send;
+	
+	private boolean inDemoMode;
 
 	private boolean[][] buttonStates =
 		{{false, false}, //LEFTJOY_LEFT
@@ -89,6 +94,14 @@ public class TeleOP implements Controls{
 		arduinoValue.setBoolean(false);
 		state = State.TELEOP;
 		joysticks = new Joystick[] {new Joystick(CtrlMap.RIGHTJOYSTICK), new Joystick(CtrlMap.LEFTJOYSTICK), new Joystick(CtrlMap.XBOXCONTROLLER)};
+		inDemoMode = false;
+		
+		send = new SendableChooser<Boolean>();
+		
+		send.addDefault("Normal Mode", new Boolean(false));
+		send.addObject("Demo Mode", new Boolean(true));
+		
+		SmartDashboard.putData(send);
 	}
 
 	/**
@@ -120,6 +133,14 @@ public class TeleOP implements Controls{
 		}
 		switch(state) {
 		case TELEOP:
+			if(send.getSelected() != inDemoMode) {
+				inDemoMode = send.getSelected();
+				if(inDemoMode) {
+					drives.toTele(true);
+				} else {
+					drives.toTele();
+				}
+			}
 //			Joystick Buttons Left
 //			if(isRisingEdgeButton(0)) { //right joystick left button
 //				System.out.println("Right joystick - Left Button pressed");
