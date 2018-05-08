@@ -52,11 +52,7 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Constants------------------------------------------------------------
 
-	private final double EVERYTHING = .85;			//What part of the way to destination in auto we start moving at a slow speed (Replaced by bleep bloop blurp)
-
 	private final double DIZZY_SPINNER = .40;//.3		//What decimal part of the way through a turn we start moving at slow speed (turn)
-
-	private final double SCHOOL_WIFI = .25;			//The speed we move at in auto when almost at destination to achieve higher accuracy (replaced by ramping)
 
 	private final double TOURNAMENT_WIFI = .30;		//The speed we want when turning after we went the DIZZY_SPINNER
 	
@@ -78,6 +74,8 @@ public class Drives extends GenericSubsytem {
 
 	//-------------------------------------------------------Variables------------------------------------------------------------
 
+	private double scaleFactor;
+	
 	private boolean isMoving;
 
 	private double speedRight;
@@ -219,14 +217,14 @@ public class Drives extends GenericSubsytem {
 			leftEnc.calculateSpeed();
 			rightEnc.calculateSpeed();
 			if(speedRight >= 0) {
-				rightDrives.set(speedRight == 0 ? 0 : 0.25 + speedRight*0.1);
+				rightDrives.set(speedRight == 0 ? 0 : 0.25 + speedRight*scaleFactor);
 			} else {
-				rightDrives.set(-0.25 + speedRight*0.1);
+				rightDrives.set(-0.25 + speedRight*scaleFactor);
 			}
 			if(speedLeft >= 0) {
-				leftDrives.set(speedLeft == 0 ? 0 : 0.25 + speedLeft*0.1);
+				leftDrives.set(speedLeft == 0 ? 0 : 0.25 + speedLeft*scaleFactor);
 			} else {
-				leftDrives.set(-0.25 + speedLeft*0.1);
+				leftDrives.set(-0.25 + speedLeft*scaleFactor);
 			}
 			break;
 		case CLIMB_INIT:
@@ -462,31 +460,32 @@ public class Drives extends GenericSubsytem {
 	}
 	
 	/**
-	 * Changes state to teleop
-	 */
-	@Override
-	public void toTele() {
-		isMoving = false;
-		if(state != DriveState.CLIMB_INIT) {
-			changeState(DriveState.TELEOP);
-		}
-		leftDrives.setNeutralMode(NeutralMode.Brake);
-		rightDrives.setNeutralMode(NeutralMode.Brake);
-		speedLeft = 0;
-		speedRight = 0;
-	}
-	
-	/**
 	 * changes state to teleop with option for demo
 	 * @param demo - enable demo or not
 	 */
 	public void toTele(boolean demo) {
-		toTele();
-		if(demo) {
-			changeState(DriveState.DEMO);
+		isMoving = false;
+		if(state != DriveState.CLIMB_INIT) {
+			if(demo) {
+				changeState(DriveState.DEMO);
+				leftDrives.setNeutralMode(NeutralMode.Brake);
+				rightDrives.setNeutralMode(NeutralMode.Brake);
+			} else {
+				changeState(DriveState.TELEOP);
+				leftDrives.setNeutralMode(NeutralMode.Coast);
+				rightDrives.setNeutralMode(NeutralMode.Coast);
+			}
 		}
+		speedLeft = 0;
+		speedRight = 0;
 	}
 
+	/**
+	 * The slow factor is only used when in demo mode, from 0-1 0 being the slowest speed increment and 1 being the max
+	 */
+	public void setSlowFactor(double slowFactor){
+		scaleFactor = slowFactor*.75;
+	}
 	
 	/**
 	 * Changes state to auto
@@ -838,6 +837,11 @@ public class Drives extends GenericSubsytem {
 	 */
 	public long sleepTime() {
 		return 20;
+	}
+
+	@Override
+	public void toTele() {
+		toTele(false);
 	}
 
 }
