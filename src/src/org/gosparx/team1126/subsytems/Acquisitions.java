@@ -90,7 +90,8 @@ public class Acquisitions extends GenericSubsytem{
 		SPIT,
 		SLOW_SPIT,
 		WAIT_FOR_CUBE,
-		WRIST_LOWER;
+		WRIST_LOWER,
+		TOGGLE_PINCH;
 	}
 	
 	
@@ -183,6 +184,14 @@ public class Acquisitions extends GenericSubsytem{
 			} else {
 				sensorTime = -1;
 			}
+			break;
+		case TOGGLE_PINCH:
+			if(pinchPosition == RELEASED) {
+				pinch();
+			} else {
+				release();
+			}
+			setStandby();
 			break;
 		default:
 			log("STATE ERROR");
@@ -305,6 +314,13 @@ public class Acquisitions extends GenericSubsytem{
 		}
 	}
 	
+	public void setTogglePinch() {
+		if (AcqState != State.TOGGLE_PINCH) {
+			System.out.println("Toggling pinch");
+			AcqState = State.TOGGLE_PINCH;
+		}
+	}
+	
 	/**
 	 * Sets acquisition state to standby.
 	 */
@@ -341,14 +357,6 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	private void release(){
 		pinchPosition = RELEASED;
-	}
-	
-	/**
-	 * Sets the pincher to the opposite of what it is
-	 */
-	public void togglePinch() {
-		pinchPosition = !pinchPosition;
-		pincher.set(pinchPosition);
 	}
 	
 	/**

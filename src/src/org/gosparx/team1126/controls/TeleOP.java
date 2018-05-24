@@ -233,9 +233,6 @@ public class TeleOP implements Controls{
 			//			if(isFallingEdgeButton(9)) {
 			//				
 			//			}
-			//			if(isRisingEdgeButton(11)) { //xbox y button
-			//				acq.setRaise(); //raise
-			//			}
 			//			if(isRisingEdgeButton(18)) { //xbox L3 button
 			//	
 			//			}
@@ -254,24 +251,30 @@ public class TeleOP implements Controls{
 				isInDemoMode = demoModeSwitch.getSelected();
 				if(isInDemoMode) {
 					drives.toTele(true);
+					drives.setSlowFactor(0.4/3);
 					state = State.TELEBASE;
 				} else {
 					drives.toTele();
 					state = State.TELEOP;
 				}
 			}
-			if(demoModeSwitch.getSelected()) {
-				drives.setSlowFactor((getAxis(0, 2)+1)/2);
-			}
+			//if(demoModeSwitch.getSelected()) {
+				//drives.setSlowFactor((getAxis(0, 2)+1)/2);
+			//}
 
 			//xBox Buttons
 			if(isRisingEdgeButton(8)) { //xbox a button
 				System.out.println("XBOX Controller - A Button");
 				acq.setHome();
 			}
+			
 			if(isRisingEdgeButton(10)) { //xbox x button
 				System.out.println("XBOX Controller - X Button");
 				acq.setSpit();
+			}
+			if(isRisingEdgeButton(11)) { //xbox y button
+				System.out.println("XBOX Controller - Y Button");
+				acq.setTogglePinch(); //toggles pinch
 			}
 			if(isRisingEdgeButton(12)) { //xbox L1 button
 				System.out.println("XBOX Controller - L1 Button");
@@ -367,10 +370,10 @@ public class TeleOP implements Controls{
 		//		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
 		//		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 
-		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
+		//buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
 		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
 		buttonStates[10][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X);
-		//		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
+		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
 
 		buttonStates[12][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_L1);
 		buttonStates[13][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_R1);
