@@ -19,3 +19,7 @@
 
 sysProps.xml
 /bin/
+
+*.gradle
+*.json
+build/*
