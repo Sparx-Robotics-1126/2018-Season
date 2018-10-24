@@ -105,7 +105,7 @@ public class TeleOP implements Controls{
 	}
 
 	public void init() {
-		isInDemoMode = demoModeSwitch.getSelected();
+		isInDemoMode = !demoModeSwitch.getSelected();
 		if(!isInDemoMode) {
 			state = State.TELEOP;
 			drives.toTele(true);
@@ -248,7 +248,7 @@ public class TeleOP implements Controls{
 			//			}
 		case TELEBASE:
 			if(demoModeSwitch.getSelected() != isInDemoMode) {
-				isInDemoMode = demoModeSwitch.getSelected();
+				isInDemoMode = !demoModeSwitch.getSelected();
 				if(!isInDemoMode) {
 					drives.toTele(true);
 					drives.setSlowFactor(0.4/3);

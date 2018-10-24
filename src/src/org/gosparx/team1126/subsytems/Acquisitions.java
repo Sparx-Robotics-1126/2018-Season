@@ -169,7 +169,7 @@ public class Acquisitions extends GenericSubsytem{
 			break;
 		case GOT_CUBE:
 			pinch();
-			if (Timer.getFPGATimestamp() > pinchTime + 1.5){ //1.0 second
+			if (Timer.getFPGATimestamp() > pinchTime + 0.5){ //1.0 second
 				stopRollers();
 				setStandby();
 			}
@@ -283,6 +283,7 @@ public class Acquisitions extends GenericSubsytem{
 	public void setHome(){
 		if (AcqState != State.HOME){
 			AcqState = State.HOME;
+			System.out.println("Setting Home");
 		}
 	}
 	
