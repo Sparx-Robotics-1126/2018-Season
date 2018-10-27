@@ -16,7 +16,7 @@ import src.org.gosparx.team1126.util.DebuggerResult;
  * 
  * drewt015@gmail.com)
  */
-public class Acquisitions extends GenericSubsytem{
+public class Acquisitions extends GenericSubsystem{
 
 	//Objects
 	private WPI_TalonSRX leftIntake;
@@ -104,7 +104,7 @@ public class Acquisitions extends GenericSubsytem{
 		pincher = new Solenoid(IO.PNU_PINCHER);
 		wrist.set(wristPosition);
 		pincher.set(pinchPosition);
-		log("Successfully INITIALIZED");
+		log("init", "Successfully INITIALIZED");
 		SmartDashboard.putBoolean("Arms", pinchPosition);
 	}
 	
@@ -177,7 +177,7 @@ public class Acquisitions extends GenericSubsytem{
 			}
 			break;
 		default:
-			log("STATE ERROR");
+			error("execute", "STATE ERROR");
 			break;
 		}
 		
@@ -194,7 +194,7 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	@Override
 	public DebuggerResult[] debug() {
-		log("Entered DEBUG");
+		log("debug", "Entered DEBUG");
 		wristPosition = !wristPosition;
 		pinchPosition = !pinchPosition;
 		wrist.set(wristPosition);
@@ -220,7 +220,7 @@ public class Acquisitions extends GenericSubsytem{
 	public void setAcquire() {
 		if (AcqState != State.ACQUIRE){
 			AcqState = State.ACQUIRE;
-			log("State set to ACQUIRE");
+			log("setAcquire", "State set to ACQUIRE");
 		}
 	}
 	
@@ -234,7 +234,7 @@ public class Acquisitions extends GenericSubsytem{
 			if(pinchPosition == PINCHED) {
 				pinchTime -= 1;
 			}
-			log("State set to RAISE");
+			log("setRaise", "State set to RAISE");
 		}
 	}
 	
@@ -245,14 +245,14 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.SCORE) {
 			AcqState = State.SCORE;
 			regScoreTime = Timer.getFPGATimestamp();
-			log("State set to SCORE");
+			log("setScore", "State set to SCORE");
 		}
 	}
 	
 	public void setCube() {
 		pinchTime = Timer.getFPGATimestamp();
 		AcqState = State.GOT_CUBE;
-		log("State set to GOT_CUBE");
+		log("setCube", "State set to GOT_CUBE");
 		
 	}
 	
@@ -274,14 +274,14 @@ public class Acquisitions extends GenericSubsytem{
 	 */
 	public void setSpit() {
 		if (AcqState != State.SPIT) {
-			System.out.println("Starting spit");
+			log("setSpit", "Starting spit");
 			AcqState = State.SPIT;
 		}
 	}
 	
 	public void setSlowSpit() {
 		if (AcqState != State.SLOW_SPIT) {
-			System.out.println("Starting slow spit");
+			log("setSlowSpit", "Starting slow spit");
 			AcqState = State.SLOW_SPIT;
 		}
 	}
@@ -293,7 +293,7 @@ public class Acquisitions extends GenericSubsytem{
 		if (AcqState != State.WAIT_FOR_CUBE){
 			AcqState = State.WAIT_FOR_CUBE;
 			sensorTime = -1;
-			log("State set to WAIT_FOR_CUBE");
+			log("setWaitForCube", "State set to WAIT_FOR_CUBE");
 		}
 	}
 	
@@ -303,7 +303,7 @@ public class Acquisitions extends GenericSubsytem{
 	public void setStandby() {
 		if (AcqState != State.STANDBY){
 			AcqState = State.STANDBY;
-			log("State set to STANDBY");
+			log("setStandby", "State set to STANDBY");
 		}
 	}
 	

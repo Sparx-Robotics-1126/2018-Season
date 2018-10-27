@@ -11,6 +11,7 @@ import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Elevations;
+import src.org.gosparx.team1126.util.Logger;
 
 public class TeleOP implements Controls{
 
@@ -122,14 +123,14 @@ public class TeleOP implements Controls{
 		case TELEOP:
 //			Joystick Buttons Left
 			if(isRisingEdgeButton(0)) { //right joystick left button
-				System.out.println("Right joystick - Left Button pressed");
+				Logger.getInstance().log("TeleOP", "execute", "Right joystick - Left Button pressed");
 				climbing.climbingArms(!climbing.getClimbingArms());
 			}
 //			if(isRisingEdgeButton(1)) { //right joystick middle button
-//				System.out.println("right joystick middle button");
+//				Logger.getInstance().log("TeleOP", "execute", "right joystick middle button");
 //			}
 			if(isRisingEdgeButton(1)) { //right joystick middle button or missile switch
-				System.out.println("Right joystick - Middle Button pressed");
+				Logger.getInstance().log("TeleOP", "execute", "Right joystick - Middle Button pressed");
 				state = State.TELEAUTO;
 				teleauto.init();
 				return;
@@ -157,16 +158,16 @@ public class TeleOP implements Controls{
 			}
 //			//POV Left
 //			if(isRisingEdgePOV(0)) { //right joystick pov up
-//				System.out.println("right joystick pov up");
+//				Logger.getInstance().log("TeleOP", "execute", "right joystick pov up");
 //			}
 //			if(isRisingEdgePOV(1)) { //right joystick pov right
-//				System.out.println("right joystick pov right");
+//				Logger.getInstance().log("TeleOP", "execute", "right joystick pov right");
 //			}
 //			if(isRisingEdgePOV(2)) { //right joystick pov down
-//				System.out.println("right joystick pov down");
+//				Logger.getInstance().log("TeleOP", "execute", "right joystick pov down");
 //			}
 //			if(isRisingEdgePOV(3)) { //right joystick pov left
-//				System.out.println("right joystick pov left");
+//				Logger.getInstance().log("TeleOP", "execute", "right joystick pov left");
 //			}
 			//Joystick Buttons Right
 //			if(isRisingEdgeButton(4)) { //left joystick left button	
@@ -185,10 +186,10 @@ public class TeleOP implements Controls{
 //
 //			}
 //			if(isRisingEdgeButton(6)) { //left joystick right button
-//				System.out.println("left joystick right button");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick right button");
 //			}
 //			if(isRisingEdgeButton(7)) { //left joystick trigger
-//				System.out.println("left joystick trigger button");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick trigger button");
 //			}
 //			//Axis Right
 //			if(axisStates[3][0]) {
@@ -206,20 +207,20 @@ public class TeleOP implements Controls{
 //			}
 			//POV Right
 //			if(isRisingEdgePOV(4)) { //left joystick pov up
-//				System.out.println("left joystick pov up");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick pov up");
 //			}
 //			if(isRisingEdgePOV(5)) { //left joystick pov right
-//				System.out.println("left joystick pov right");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick pov right");
 //			}
 //			if(isRisingEdgePOV(6)) { //left joystick pov down
-//				System.out.println("left joystick pov down");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick pov down");
 //			}
 //			if(isRisingEdgePOV(7)) { //left joystick pov left
-//				System.out.println("left joystick pov left");
+//				Logger.getInstance().log("TeleOP", "execute", "left joystick pov left");
 //			}
 			//xBox Buttons
 			if(isRisingEdgeButton(8)) { //xbox a button
-				System.out.println("XBOX Controller - A Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - A Button");
 				acq.setHome();
 			}
 //			if(isRisingEdgeButton(9)) { //xbox b button
@@ -229,34 +230,34 @@ public class TeleOP implements Controls{
 //				
 //			}
 			if(isRisingEdgeButton(10)) { //xbox x button
-				System.out.println("XBOX Controller - X Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - X Button");
 				acq.setSpit();
 			}
 //			if(isRisingEdgeButton(11)) { //xbox y button
 //				acq.setRaise(); //raise
 //			}
 			if(isRisingEdgeButton(12)) { //xbox L1 button
-				System.out.println("XBOX Controller - L1 Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - L1 Button");
 				acq.setScore();
 			}
 			if(isRisingEdgeButton(13)) { //xbox R1 button
-				System.out.println("XBOX Controller - R1 Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - R1 Button");
 				acq.setRaise();
 			}
 			if(isRisingEdgeButton(14)) { //xbox back button
-				System.out.println("XBOX Controller - Back Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - Back Button");
 				acq.setSlowSpit();
 			}   
 			if(isRisingEdgeButton(15)) { //xbox start button
-				System.out.println("XBOX Controller - Start Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - Start Button");
 				ele.setClimb();
 			}
 			if(isRisingEdgeButton(16)) { //xbox L2 button
-				System.out.println("XBOX Controller - L2 Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - L2 Button");
 				acq.setLower();
 			}
 			if(isRisingEdgeButton(17)) { //xbox R2 button
-				System.out.println("XBOX Controller - R2 Button");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - R2 Button");
 				acq.setAcquire();
 			}
 //			if(isRisingEdgeButton(18)) { //xbox L3 button
@@ -279,19 +280,19 @@ public class TeleOP implements Controls{
 			}
 			//xbox POV		 
 			if(isRisingEdgePOV(8)) { //xbox pov up
-				System.out.println("XBOX Controller - POV Up");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - POV Up");
 				ele.setScale();
 			}
 			if(isRisingEdgePOV(9)) { //xbox pov right
-				System.out.println("XBOX Controller - POV Right");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - POV Right");
 				ele.setSwitch();
 			}
 			if(isRisingEdgePOV(10)) { //xbox pov down
-				System.out.println("XBOX Controller - POV Down");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - POV Down");
 				ele.setFloor();
 			}
 			if(isRisingEdgePOV(11)) { //xbox pov left
-				System.out.println("XBOX Controller - POV Left");
+				Logger.getInstance().log("TeleOP", "execute", "XBOX Controller - POV Left");
 				ele.setSwitch();
 			}
 			break;

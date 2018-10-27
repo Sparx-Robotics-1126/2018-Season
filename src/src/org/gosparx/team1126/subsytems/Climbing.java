@@ -13,7 +13,7 @@ import src.org.gosparx.team1126.util.DebuggerResult;
  * @author Justin1205
  * @author No one else...
  */
-public class Climbing extends GenericSubsytem
+public class Climbing extends GenericSubsystem
 {
 	private Solenoid climbingSoul;
 //	private Servo latchServoLeft;

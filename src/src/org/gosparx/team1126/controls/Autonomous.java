@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.controls.Automation.AutoState;
+import src.org.gosparx.team1126.util.Logger;
+import src.org.gosparx.team1126.util.Logger.Tag;
 
 public class Autonomous implements Controls {
 	
@@ -343,7 +345,7 @@ public class Autonomous implements Controls {
 	public boolean initAuto(){
 		if(setFieldConditions()) {
 			setAuto();
-			System.out.println("Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
+			Logger.getInstance().log("Autonomous", "initAuto", "Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
 			return true;
 		}else{
 			return false;
@@ -374,7 +376,7 @@ public class Autonomous implements Controls {
 		//System.out.println("t");
 		if(!firstRun && setFieldConditions()) {
 			setAuto();
-			System.out.println("Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
+			Logger.getInstance().log("Autonomous", "execute", "Selected auto is " + selectedAuto.name() + " at " + selectedPosition.name());
 			firstRun = true;
 			automation.setAuto(currentAuto);
 		} else {
@@ -422,12 +424,12 @@ public class Autonomous implements Controls {
 				}
 				break;
 			default:
-				System.out.println("Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
+				Logger.getInstance().log("Autonomous", "setAuto", Tag.ERROR, "Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
 				break;
 			}
 		case RIGHT: 
 			if(selectedAuto != AutoSelected.SCALE && selectedAuto != AutoSelected.SWITCH) {
-				System.out.println("Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
+				Logger.getInstance().log("Autonomous", "setAuto", Tag.ERROR, "Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
 				return;
 			}
 			if(selectedAuto == AutoSelected.SCALE && isRightScale) {
@@ -443,7 +445,7 @@ public class Autonomous implements Controls {
 		case MIDDLE:
 			currentAuto = CUBE_ON_LEFT_SWITCH_FROM_MIDDLE;
 		default:
-			System.out.println("Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
+			Logger.getInstance().log("Autonomous", "setAuto", Tag.ERROR, "Invalid auto; tried: " + selectedAuto.name() + " at " + selectedPosition.name());
 			break;
 		}
 	}

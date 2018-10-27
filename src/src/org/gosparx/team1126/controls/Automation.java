@@ -5,6 +5,8 @@ import src.org.gosparx.team1126.subsytems.Acquisitions;
 import src.org.gosparx.team1126.subsytems.Climbing;
 import src.org.gosparx.team1126.subsytems.Drives;
 import src.org.gosparx.team1126.subsytems.Elevations;
+import src.org.gosparx.team1126.util.Logger;
+import src.org.gosparx.team1126.util.Logger.Tag;
 
 public class Automation {
 
@@ -96,7 +98,7 @@ public class Automation {
 		acq.toTele();
 		ele.toTele();
 		climb.toTele();
-		System.out.println("Starting automated mode");
+		Logger.getInstance().log("Automation", "setAuto", "Starting automated mode");
 	}
 	
 	public void execute() {
@@ -105,7 +107,7 @@ public class Automation {
 			return;
 		case AUTO:
 			if(currentAuto == null) {
-				System.out.println("Auto not set!");
+				Logger.getInstance().log("Automation", "execute", Tag.ERROR, "Auto not set!");
 				return;
 			}
 			if(isBackgroundTimer && startingBackgroundTime + currentAuto[timerStep][1] < Timer.getFPGATimestamp()) {
@@ -114,8 +116,8 @@ public class Automation {
 			}
 			if(currentAuto.length > autoStep) {
 				if(updateAutoStep != autoStep) {
-					System.out.println("Current auto step:" + autoStep);
-					System.out.println("Current auto function: " + currentAuto[autoStep][0]);
+					Logger.getInstance().log("Automation", "execute", "Current auto step:" + autoStep);
+					Logger.getInstance().log("Automation", "execute", "Current auto function: " + currentAuto[autoStep][0]);
 					updateAutoStep = autoStep;
 				}
 				switch(currentAuto[autoStep][0]) {
@@ -142,7 +144,7 @@ public class Automation {
 				case 5: //DRIVES_WAIT
 					if(drives.isDone()) {
 						autoStep++;
-						System.out.println("DRIVES COMPLETED");
+						Logger.getInstance().log("Automation", "execute", "DRIVES COMPLETED");
 					}
 					break;
 				case 6: //DRIVES_CLIMB
@@ -245,7 +247,7 @@ public class Automation {
 					break;
 				}
 			} else {
-				System.out.println("Automated mode finished");
+				Logger.getInstance().log("Automation", "execute", "Autonomous mode finished");
 				drives.toTele();
 				hasInit = false;
 				state = State.STANDBY;

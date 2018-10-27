@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
-public class RampClimbing extends GenericSubsytem
+public class RampClimbing extends GenericSubsystem
 {
 	private Solenoid soulEqualsVoid;
 	State newPork;

@@ -9,7 +9,7 @@ import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
 
-public class Elevations extends GenericSubsytem {
+public class Elevations extends GenericSubsystem {
 
 	private double height; //Height of elevator
 	private double top;
@@ -84,7 +84,7 @@ public class Elevations extends GenericSubsytem {
 			setMotor(-.2);
 			if(!limitSwitch.get())
 			{
-				System.out.println("Home found");
+				log("execute", "Home found");
 				motor1.stopMotor();
 				motor2.stopMotor();
 				stopAll();
@@ -307,7 +307,7 @@ public class Elevations extends GenericSubsytem {
 			state = State.STANDBY;
 			setBrake();
 			isMoving = false;
-			System.out.println("stopped");
+			log("stopAll", "stopped");
 			return true;
 		}else {return false;}
 	}
