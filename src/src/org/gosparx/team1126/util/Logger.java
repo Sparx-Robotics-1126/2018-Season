@@ -23,6 +23,7 @@ public class Logger extends Thread {
 	
 	private Timer timer;
 
+	private static PrintStream defaultPrintStream;
 	private String logName;
 	private final String COMPRESSION_MODE = "TAR.GZ";
 	private final String COUNTER_FILE = "counter.txt";
@@ -74,6 +75,7 @@ public class Logger extends Thread {
 	public static Logger getInstance() {
 		if(logger == null) {
 			logger = new Logger();
+			defaultPrintStream = System.out;
 			PrintStream os = new PrintStream(System.out) {
 				@Override
 				public void print(String str) {
@@ -103,11 +105,11 @@ public class Logger extends Thread {
 	public void log(String subsystem, String method, Tag type, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.toUpperCase() + "][" + method + "][" + type.toString().toUpperCase() + "] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -119,7 +121,7 @@ public class Logger extends Thread {
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -127,11 +129,11 @@ public class Logger extends Thread {
 	public void log(GenericSubsystem subsystem, String command, Tag type, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.getName().toUpperCase() + "][" + command + "][" + type.toString().toUpperCase() + "] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -139,11 +141,11 @@ public class Logger extends Thread {
 	public void log(GenericSubsystem subsystem, Tag type, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.getName().toUpperCase() + "][" + type.toString().toUpperCase() + "] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -151,11 +153,11 @@ public class Logger extends Thread {
 	public void log(String subsystem, String method, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.toUpperCase() + "][" + method + "][INFO] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -163,23 +165,23 @@ public class Logger extends Thread {
 	public void log(String subsystem, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.toUpperCase() + "][INFO] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
-
+	
 	public void log(GenericSubsystem subsystem, String method, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.getName().toUpperCase() + "][" + method + "][INFO] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -187,11 +189,11 @@ public class Logger extends Thread {
 	public void log(GenericSubsystem subsystem, String message) {
 		String log = "[" + timerToHMS() + "][" + subsystem.getName().toUpperCase() + "][INFO] " + message;
 		if(!logReady) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 			return;
 		}
 		if(LOG_TO_CONSOLE) {
-			System.out.println(log);
+			defaultPrintStream.println(log);
 		}
 		dataToLog.add(log);
 	}
@@ -240,7 +242,7 @@ public class Logger extends Thread {
 					//for(PeriodicLog log: periodicLogs) {
 				//		dataToLog.add(log.toString());
 				//		if(PERIODIC_LOG_TO_CONSOLE) {
-				//			System.out.println(log.toString());
+				//			defaultPrintStream.println(log.toString());
 				//		}
 				//	}
 					while(dataToLog.size() > 0) {
