@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.util.DebuggerResult;
+import src.org.gosparx.team1126.util.Logger;
+import src.org.gosparx.team1126.util.Logger.Tag;
 /**
  * @author Justin1205
  * @author No one else...
@@ -41,6 +43,7 @@ public class Climbing extends GenericSubsystem
 		//		SmartDashboard.putData("Right Servo", latchServoRight);
 		//		latchServoRight.set(ControlMode.Position,0);
 		//SmartDashboard.putData("ClimbPTO", climbingSoul);
+		periodicLogs();
 	}
 
 	@Override
@@ -103,4 +106,17 @@ public class Climbing extends GenericSubsystem
 //		latchServoLeft.set(.7);
 //		latchServoRight.set(.4);
 //	}
+	
+	public void periodicLogs() {
+		try {
+			Logger.getInstance().logPeriodically(this, Tag.STATUS, this, this.getClass().getMethod("getClimbPowers", new Class[] {}));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getClimbPowers() {
+		return "Climbing arms: {climbArms,1,"+ (climbingArms.get() ? 1 : 0) + "} climbing PTO engaged: {climbPTO,1," + (climbingSoul.get() ? 1 : 0) + "}";
+	}
+
 }

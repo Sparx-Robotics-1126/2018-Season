@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
+import src.org.gosparx.team1126.util.Logger;
+import src.org.gosparx.team1126.util.Logger.Tag;
 
 public class Elevations extends GenericSubsystem {
 
@@ -61,6 +63,7 @@ public class Elevations extends GenericSubsystem {
 		limitSwitch = new DigitalInput(IO.MAGNETICSENSOR);
 		rawEnc = new Encoder(IO.ELEVATIONSENCODER1, IO.ELEVATIONSENCODER2);
 		encoder = new EncoderData(rawEnc, 0.039); 
+		periodicLogs();
 	}
 
 	/**
@@ -165,9 +168,9 @@ public class Elevations extends GenericSubsystem {
 			break;
 		case TRIM:
 			if(trimValue > 0)
-				setMotor(0.45);	//setMotor(0.55);
+				setMotor(0.25);	//setMotor(0.55);
 			else if(trimValue < 0)
-				setMotor(-0.1);
+				setMotor(-0.075);
 			else
 				stopAll();
 			state = State.STANDBY;
@@ -363,6 +366,22 @@ public class Elevations extends GenericSubsystem {
 	@Override
 	public void toTele() {
 		isMoving = false;
+	}
+	
+	public void periodicLogs() {
+		try {
+			Logger.getInstance().logPeriodically(this, Tag.STATUS, this, this.getClass().getMethod("getElePowers", new Class[] {}));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getElePowers() {
+		String s ="Ele powers first motor: {eleOne,0,"+motor1.get()+"} and second motor power {eleTwo,0,"+motor2.get()+"}\n The individual motor currents: ";
+		s+="{eleCurrOne,3,"+motor1.getOutputCurrent()+"}{eleCurrTwo,3,"+motor2.getOutputCurrent() + "}";
+		s+="Elevator encoder: {EleEnc,2," + encoder.getDistance() + "}";
+		s+="Solenoid limit switch: {limitSwitchEle,1" + (limitSwitch.get() ? 1 : 0 ) + "}";
+		return s;
 	}
 }
 

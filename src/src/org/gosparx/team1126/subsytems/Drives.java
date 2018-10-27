@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.util.DebuggerResult;
+import src.org.gosparx.team1126.util.Logger;
 import src.org.gosparx.team1126.util.MotorGroup;
+import src.org.gosparx.team1126.util.Logger.Tag;
 
 public class Drives extends GenericSubsystem {
 
@@ -150,6 +152,7 @@ public class Drives extends GenericSubsystem {
 		lastAngle = 0;
 		highestAmp = 0;
 		addObjectsToShuffleboard();
+		periodicLogs();
 	}
 
 	/**
@@ -811,5 +814,21 @@ public class Drives extends GenericSubsystem {
 	public long sleepTime() {
 		return 20;
 	}
+	public void periodicLogs() {
+		try {
+			Logger.getInstance().logPeriodically(this, Tag.STATUS, this, this.getClass().getMethod("getDrivesPowers", new Class[] {}));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getDrivesPowers() {
+		String s ="Drives powers left side {leftDrives,0,"+leftDrives.get()+"} and right power {rightDrives,0,"+rightDrives.get()+"}\n The individual left motor current: ";
+		s+="{leftMotorOne,3,"+leftMtr1.getOutputCurrent()+"}"+"{leftMotorTwo,3,"+leftMtr2.getOutputCurrent()+"}"+"{leftMotorThree,3,"+leftMtr3.getOutputCurrent()+"}";
+		s+="Right side amps: {rightMotorOne,3,"+rightMtr1.getOutputCurrent()+"}{rightMotorTwo,3," + rightMtr2.getOutputCurrent()+"}{rightMotorThree,3,"+rightMtr3.getOutputCurrent()+"}\n";
+		s+="Left encoder: {leftEnc,2," + leftEnc.getDistance() + ". Right Encoder: {rightEnc,2" + rightEnc.getDistance() + "}"; 
+		return s;
+	}
 
 }
+

@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.AnalogSensor;
 import src.org.gosparx.team1126.util.DebuggerResult;
+import src.org.gosparx.team1126.util.Logger;
+import src.org.gosparx.team1126.util.Logger.Tag;
 
 
 /**
@@ -412,5 +414,17 @@ public class Acquisitions extends GenericSubsystem{
 	@Override
 	public void toTele() {
 		
+	}
+	
+	public void periodicLogs() {
+		try {
+			Logger.getInstance().logPeriodically(this, Tag.STATUS, this, this.getClass().getMethod("getAcqPowers", new Class[] {}));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String getAcqPowers() {
+		return "Acq powers left side {leftAcqIntake,0,"+leftIntake.get()+"} and right power {rightAcqIntake,0,"+rightIntake.get()+"}\nCurrents: {rightIntakeCurr,3"+rightIntake.getOutputCurrent()+"}{leftIntakeCurr,3"+leftIntake.getOutputCurrent()+"}";
 	}
 }

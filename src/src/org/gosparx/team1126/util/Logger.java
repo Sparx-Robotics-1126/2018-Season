@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
+import src.org.gosparx.team1126.sensors.EncoderData;
 import src.org.gosparx.team1126.subsytems.GenericSubsystem;
 
 public class Logger extends Thread {
@@ -66,16 +71,16 @@ public class Logger extends Thread {
 			df2.setGroupingUsed(false);
 			df2.setMinimumIntegerDigits(2);
 			log("LOGGER", "INFO", "Log created at " + logName);
+			logReady = true;
 		} catch (Exception e) {
-			return;
+			e.printStackTrace();
 		}
-		logReady = true;
 	}
 	
 	public static Logger getInstance() {
 		if(logger == null) {
-			logger = new Logger();
 			defaultPrintStream = System.out;
+			logger = new Logger();
 			PrintStream os = new PrintStream(System.out) {
 				@Override
 				public void print(String str) {
@@ -86,6 +91,7 @@ public class Logger extends Thread {
 				}
 			};
 			System.setOut(os);
+			logger.setPriority(Thread.MIN_PRIORITY);
 			logger.start();
 		}
 		return logger;
@@ -406,3 +412,10 @@ public class Logger extends Thread {
 		}
 	}
 }
+/*
+private WPI_TalonSRX motor1; 
+	private WPI_TalonSRX motor2;
+	private DigitalInput limitSwitch; //Limit switch at the bottom of winch
+	private Encoder rawEnc;
+	private EncoderData encoder;
+	*/ 	
