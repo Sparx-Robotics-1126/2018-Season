@@ -1,12 +1,9 @@
 package src.org.gosparx.team1126.subsytems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import src.org.gosparx.team1126.controls.TeleOP;
 import src.org.gosparx.team1126.robot.IO;
 import src.org.gosparx.team1126.sensors.AnalogSensor;
 import src.org.gosparx.team1126.util.DebuggerResult;
@@ -72,7 +69,6 @@ public class Acquisitions extends GenericSubsytem{
 	
 	private boolean wristPosition;  //true = lowered
 	
-	private boolean rumble;
 		
 	
 	public Acquisitions() {
@@ -101,7 +97,6 @@ public class Acquisitions extends GenericSubsytem{
 		leftMotorPower = MOTOR_STOP;
 		pinchPosition = PINCHED;
 		wristPosition = RAISED;
-		rumble = false;
 		cubeSensor = new AnalogSensor(IO.ACQ_CUBE_SENSOR, CUBE_SENSOR_THRESHOLD);
 		leftIntake = new WPI_TalonSRX(IO.CAN_ACQ_LEFT_INTAKE);
 		rightIntake = new WPI_TalonSRX(IO.CAN_ACQ_RIGHT_INTAKE);
@@ -162,13 +157,10 @@ public class Acquisitions extends GenericSubsytem{
 			raise();
 			stopRollers();
 			setStandby();
-			//raise();
-			//stopRollers();
-			//setStandby();
 			break;
 		case GOT_CUBE:
 			pinch();
-			if (Timer.getFPGATimestamp() > pinchTime + 1.5){ //1.0 second
+			if (Timer.getFPGATimestamp() > pinchTime + 0.5){
 				stopRollers();
 				setStandby();
 			}

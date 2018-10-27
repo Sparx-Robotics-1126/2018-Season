@@ -296,7 +296,7 @@ public class TeleOP implements Controls{
 			}
 			break;
 		case TELEAUTO:
-			if(!buttonStates[1][0] && buttonStates[4][0] || teleauto.getState() == TeleAutomation.State.STANDBY) {
+			if((!buttonStates[1][0] && buttonStates[4][0]) || teleauto.getState() == TeleAutomation.State.STANDBY) {
 				state = State.TELEOP;
 				if(!buttonStates[1][0] && buttonStates[4][0]) {
 					climbing.enableClimbing(false);
