@@ -105,10 +105,14 @@ public class TeleOP implements Controls{
 	}
 
 	public void init() {
-		isInDemoMode = !demoModeSwitch.getSelected();
-		if(!isInDemoMode) {
-			state = State.TELEOP;
+		isInDemoMode = demoModeSwitch.getSelected();
+		if(isInDemoMode) {
+			state = State.TELEBASE;
+			drives.setSlowFactor(0.4/3);
 			drives.toTele(true);
+		} else {
+			state = State.TELEOP;
+			drives.toTele(false);
 		}
 	}
 
@@ -248,8 +252,8 @@ public class TeleOP implements Controls{
 			//			}
 		case TELEBASE:
 			if(demoModeSwitch.getSelected() != isInDemoMode) {
-				isInDemoMode = !demoModeSwitch.getSelected();
-				if(!isInDemoMode) {
+				isInDemoMode = demoModeSwitch.getSelected();
+				if(isInDemoMode) {
 					drives.toTele(true);
 					drives.setSlowFactor(0.4/3);
 					state = State.TELEBASE;
@@ -259,7 +263,7 @@ public class TeleOP implements Controls{
 				}
 			}
 			//if(demoModeSwitch.getSelected()) {
-				//drives.setSlowFactor((getAxis(0, 2)+1)/2);
+			//drives.setSlowFactor((getAxis(0, 2)+1)/2);
 			//}
 
 			//xBox Buttons
@@ -267,7 +271,7 @@ public class TeleOP implements Controls{
 				System.out.println("XBOX Controller - A Button");
 				acq.setHome();
 			}
-			
+
 			if(isRisingEdgeButton(10)) { //xbox x button
 				System.out.println("XBOX Controller - X Button");
 				acq.setSpit();
@@ -365,13 +369,13 @@ public class TeleOP implements Controls{
 		buttonStates[1][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_MIDDLE);
 		//		buttonStates[2][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_RIGHT);
 		//		buttonStates[3][0] = isPressedButton(CtrlMap.RIGHTJOYSTICK, CtrlMap.JOY_TRIGGER);
-		//		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
+		buttonStates[4][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_LEFT);
 		buttonStates[5][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_MIDDLE);
 		//		buttonStates[6][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_RIGHT);
 		//		buttonStates[7][0] = isPressedButton(CtrlMap.LEFTJOYSTICK, CtrlMap.JOY_TRIGGER);
 
-		//buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
-		buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
+		buttonStates[8][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_A);
+		//buttonStates[9][0] =  isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_B);
 		buttonStates[10][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_X);
 		buttonStates[11][0] = isPressedButton(CtrlMap.XBOXCONTROLLER, CtrlMap.XBOX_Y);
 

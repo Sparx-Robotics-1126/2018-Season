@@ -39,7 +39,6 @@ public class TeleAutomation {
 	public void init() {
 		automation.setAuto(CLIMB);
 		state = State.CLIMBINGAUTO;
-		//add in an enum thingy soon?
 	}
 	
 	public void execute() {
