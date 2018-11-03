@@ -168,7 +168,7 @@ public class Elevations extends GenericSubsystem {
 			break;
 		case TRIM:
 			if(trimValue > 0)
-				setMotor(0.25);	//setMotor(0.55);
+				setMotor(0.40);	//setMotor(0.55);
 			else if(trimValue < 0)
 				setMotor(-0.075);
 			else
